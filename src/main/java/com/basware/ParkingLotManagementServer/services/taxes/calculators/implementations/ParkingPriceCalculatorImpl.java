@@ -5,9 +5,9 @@ import com.basware.ParkingLotManagementServer.models.parkings.spots.ParkingSpotT
 import com.basware.ParkingLotManagementServer.models.taxes.Price;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.models.vehicles.VehicleType;
-import com.basware.ParkingLotManagementServer.services.taxes.prices.ParkingSpotPriceServiceImpl;
-import com.basware.ParkingLotManagementServer.services.taxes.prices.UserPriceServiceImpl;
-import com.basware.ParkingLotManagementServer.services.taxes.prices.VehiclePriceServiceImpl;
+import com.basware.ParkingLotManagementServer.services.taxes.prices.ParkingSpotPriceService;
+import com.basware.ParkingLotManagementServer.services.taxes.prices.UserPriceService;
+import com.basware.ParkingLotManagementServer.services.taxes.prices.VehiclePriceService;
 import com.basware.ParkingLotManagementServer.services.taxes.calculators.ParkingPriceCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ParkingPriceCalculatorImpl implements ParkingPriceCalculator {
     @Autowired
-    private UserPriceServiceImpl userPriceServiceImpl;
+    private UserPriceService userPriceService;
     @Autowired
-    private VehiclePriceServiceImpl vehiclePriceServiceImpl;
+    private VehiclePriceService vehiclePriceService;
     @Autowired
-    private ParkingSpotPriceServiceImpl parkingSpotPriceService;
+    private ParkingSpotPriceService parkingSpotPriceService;
 
     //TODO: This method should return Price
     @Override
@@ -32,8 +32,8 @@ public class ParkingPriceCalculatorImpl implements ParkingPriceCalculator {
             //TODO: What happens if parkingTimeInMinutes <= 0?
         }
 
-        Price userPrice = userPriceServiceImpl.getPrice(userType);
-        Price vehiclePrice = vehiclePriceServiceImpl.getPrice(vehicleType);
+        Price userPrice = userPriceService.getPrice(userType);
+        Price vehiclePrice = vehiclePriceService.getPrice(vehicleType);
         Price parkingSpotPrice = parkingSpotPriceService.getPrice(parkingSpotType);
 
         return (userPrice.getUnits() + vehiclePrice.getUnits() + parkingSpotPrice.getUnits()) * hours;

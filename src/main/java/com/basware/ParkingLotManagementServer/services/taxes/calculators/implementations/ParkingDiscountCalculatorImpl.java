@@ -2,7 +2,7 @@ package com.basware.ParkingLotManagementServer.services.taxes.calculators.implem
 
 import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
-import com.basware.ParkingLotManagementServer.services.taxes.prices.discounts.UserDiscountServiceImpl;
+import com.basware.ParkingLotManagementServer.services.taxes.prices.discounts.UserDiscountPriceService;
 import com.basware.ParkingLotManagementServer.services.taxes.calculators.ParkingDiscountCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ParkingDiscountCalculatorImpl implements ParkingDiscountCalculator {
     @Autowired
-    private UserDiscountServiceImpl userDiscountServiceImpl;
+    private UserDiscountPriceService userDiscountPriceService;
 
     @Override
     public double getDiscount(double totalPrice, UserType userType) throws ResourceNotFoundException {
-        return userDiscountServiceImpl.getPrice(userType).getUnits() * totalPrice;
+        return userDiscountPriceService.getPrice(userType).getUnits() * totalPrice;
     }
 }
