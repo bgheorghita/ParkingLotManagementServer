@@ -4,7 +4,7 @@ import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundExcepti
 import com.basware.ParkingLotManagementServer.models.parkings.spots.ParkingSpotType;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.models.vehicles.VehicleType;
-import com.basware.ParkingLotManagementServer.services.taxes.calculators.implementations.ParkingPriceServiceImpl;
+import com.basware.ParkingLotManagementServer.services.taxes.calculators.ParkingPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class ParkingPriceController {
     public static final String URL_BASE = "/taxes";
     @Autowired
-    private ParkingPriceServiceImpl parkingPriceServiceImpl;
+    private ParkingPriceService parkingPriceService;
 
 //    @GetMapping("/getParkingPrice")
 //    public double getParkingPrice(@RequestParam("userType") UserType userType,
@@ -30,7 +30,7 @@ public class ParkingPriceController {
                                   @RequestParam("vehicleType") String vehicleType,
                                   @RequestParam("parkingSpotType") String parkingSpotType) throws ResourceNotFoundException {
 
-        return parkingPriceServiceImpl.getParkingPrice(Integer.parseInt(parkingTimeInMinutes), UserType.valueOf(userType),
+        return parkingPriceService.getParkingPrice(Integer.parseInt(parkingTimeInMinutes), UserType.valueOf(userType),
                 VehicleType.valueOf(vehicleType), ParkingSpotType.valueOf(parkingSpotType)).getUnits();
     }
 }
