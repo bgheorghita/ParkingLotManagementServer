@@ -2,6 +2,7 @@ package com.basware.ParkingLotManagementServer.controllers.taxes;
 
 import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementServer.models.parkings.spots.ParkingSpotType;
+import com.basware.ParkingLotManagementServer.models.taxes.Price;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.models.vehicles.VehicleType;
 import com.basware.ParkingLotManagementServer.services.taxes.calculators.ParkingPriceService;
@@ -25,12 +26,12 @@ public class ParkingPriceController {
 
     @GetMapping("/getParkingPrice")
     @ResponseStatus(HttpStatus.OK)
-    public double getParkingPrice(@RequestParam("parkingTimeInMinutes") String parkingTimeInMinutes,
-                                  @RequestParam("userType") String userType,
-                                  @RequestParam("vehicleType") String vehicleType,
-                                  @RequestParam("parkingSpotType") String parkingSpotType) throws ResourceNotFoundException {
+    public Price getParkingPrice(@RequestParam("parkingTimeInMinutes") String parkingTimeInMinutes,
+                                 @RequestParam("userType") String userType,
+                                 @RequestParam("vehicleType") String vehicleType,
+                                 @RequestParam("parkingSpotType") String parkingSpotType) throws ResourceNotFoundException {
 
         return parkingPriceService.getParkingPrice(Integer.parseInt(parkingTimeInMinutes), UserType.valueOf(userType),
-                VehicleType.valueOf(vehicleType), ParkingSpotType.valueOf(parkingSpotType)).getUnits();
+                VehicleType.valueOf(vehicleType), ParkingSpotType.valueOf(parkingSpotType));
     }
 }
