@@ -21,9 +21,9 @@ import java.util.Optional;
 public class CurrencyConverterImpl implements CurrencyConverter{
     @Override
     public Optional<Price> convert(Currency fromCurrency, Currency toCurrency, double amount) {
-        String baseURL = "https://api.apilayer.com/exchangerates_data/convert";
+        final String BASE_URL = "https://api.apilayer.com/exchangerates_data/convert";
 
-        URI uri = UriComponentsBuilder.fromUriString(baseURL)
+        URI uri = UriComponentsBuilder.fromUriString(BASE_URL)
                 .queryParam("to", toCurrency.name())
                 .queryParam("from", fromCurrency.name())
                 .queryParam("amount", String.valueOf(amount))
