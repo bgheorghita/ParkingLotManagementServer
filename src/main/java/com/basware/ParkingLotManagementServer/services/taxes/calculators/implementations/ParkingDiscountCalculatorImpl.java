@@ -1,6 +1,8 @@
 package com.basware.ParkingLotManagementServer.services.taxes.calculators.implementations;
 
 import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
+import com.basware.ParkingLotManagementServer.models.taxes.Currency;
+import com.basware.ParkingLotManagementServer.models.taxes.Price;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.services.taxes.prices.UserDiscountPriceService;
 import com.basware.ParkingLotManagementServer.services.taxes.calculators.ParkingDiscountCalculator;
@@ -13,7 +15,7 @@ public class ParkingDiscountCalculatorImpl implements ParkingDiscountCalculator 
     private UserDiscountPriceService userDiscountPriceService;
 
     @Override
-    public double getDiscount(double totalPrice, UserType userType) throws ResourceNotFoundException {
-        return userDiscountPriceService.getPrice(userType).getUnits() * totalPrice;
+    public Price getDiscount(double totalPrice, UserType userType) throws ResourceNotFoundException {
+        return new Price(userDiscountPriceService.getPrice(userType).getUnits() * totalPrice, Currency.EUR);
     }
 }

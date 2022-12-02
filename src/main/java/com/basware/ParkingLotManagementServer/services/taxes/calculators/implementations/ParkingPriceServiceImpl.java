@@ -25,10 +25,10 @@ public class ParkingPriceServiceImpl implements ParkingPriceService {
     public Price getParkingPrice(int parkingTimeInMinutes, UserType userType, VehicleType vehicleType,
                                   ParkingSpotType parkingSpotType) throws ResourceNotFoundException {
         double totalPrice = parkingPriceCalculator.getTotalPrice(parkingTimeInMinutes, userType,
-                vehicleType, parkingSpotType);
+                vehicleType, parkingSpotType).getUnits();
 
         if(parkingTimeInMinutes > DISCOUNT_AVAILABLE_AFTER_MINUTES){
-            totalPrice -= parkingDiscountCalculator.getDiscount(totalPrice, userType);
+            totalPrice -= parkingDiscountCalculator.getDiscount(totalPrice, userType).getUnits();
         }
 
         return new Price(totalPrice, Currency.EUR);

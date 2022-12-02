@@ -2,6 +2,7 @@ package com.basware.ParkingLotManagementServer.services.taxes.calculators.implem
 
 import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementServer.models.parkings.spots.ParkingSpotType;
+import com.basware.ParkingLotManagementServer.models.taxes.Currency;
 import com.basware.ParkingLotManagementServer.models.taxes.Price;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.models.vehicles.VehicleType;
@@ -21,9 +22,8 @@ public class ParkingPriceCalculatorImpl implements ParkingPriceCalculator {
     @Autowired
     private ParkingSpotPriceService parkingSpotPriceService;
 
-    //TODO: This method should return Price
     @Override
-    public double getTotalPrice(int parkingTimeInMinutes, UserType userType, VehicleType vehicleType, ParkingSpotType parkingSpotType) throws ResourceNotFoundException {
+    public Price getTotalPrice(int parkingTimeInMinutes, UserType userType, VehicleType vehicleType, ParkingSpotType parkingSpotType) throws ResourceNotFoundException {
         int hours = parkingTimeInMinutes / 60;
         int minutes = parkingTimeInMinutes % 60;
         if(minutes >= 30 || (hours == 0 && minutes > 0)){
@@ -32,10 +32,10 @@ public class ParkingPriceCalculatorImpl implements ParkingPriceCalculator {
             //TODO: What happens if parkingTimeInMinutes <= 0?
         }
 
-        Price userPrice = userPriceService.getPrice(userType);
-        Price vehiclePrice = vehiclePriceService.getPrice(vehicleType);
-        Price parkingSpotPrice = parkingSpotPriceService.getPrice(parkingSpotType);
+        double userPrice = userPriceService.getPrice(userType).getUnits();
+        double vehiclePrice = vehiclePriceService.getPrice(vehicleType).getUnits();
+        double parkingSpotPrice = parkingSpotPriceService.getPrice(parkingSpotType).getUnits();
 
-        return (userPrice.getUnits() + vehiclePrice.getUnits() + parkingSpotPrice.getUnits()) * hours;
+        return new Price (userPrice + vehiclePrice + parkingSpotPrice * hours, Currency.EUR);
     }
 }
