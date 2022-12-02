@@ -1,10 +1,11 @@
-package com.basware.ParkingLotManagementServer.services.taxes.prices.discounts;
+package com.basware.ParkingLotManagementServer.services.taxes.prices.impl;
 
 import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementServer.models.taxes.Price;
 import com.basware.ParkingLotManagementServer.models.taxes.discounts.UserDiscount;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.repositories.taxes.UserTypeDiscountDao;
+import com.basware.ParkingLotManagementServer.services.taxes.prices.UserDiscountPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

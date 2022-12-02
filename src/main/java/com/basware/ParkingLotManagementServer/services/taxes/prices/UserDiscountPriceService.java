@@ -1,4 +1,4 @@
-package com.basware.ParkingLotManagementServer.services.taxes.prices.discounts;
+package com.basware.ParkingLotManagementServer.services.taxes.prices;
 
 import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementServer.models.taxes.Price;
