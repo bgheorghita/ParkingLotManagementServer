@@ -8,4 +8,12 @@ import lombok.Getter;
 public class Price {
     private double units;
     private Currency currency;
+
+    @Override
+    public String toString() {
+        return "Price{" +
+                "units=" + units +
+                ", currency=" + currency +
+                '}';
+    }
 }
