@@ -1,11 +1,12 @@
-package com.basware.ParkingLotManagementServer.repositories.taxes.discounts;
+package com.basware.ParkingLotManagementServer.repositories.taxes;
 
 import com.basware.ParkingLotManagementServer.models.taxes.discounts.UserDiscount;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface UserDiscountRepository extends MongoRepository<UserDiscount, String> {
+public interface UserTypeDiscountDao {
     Optional<UserDiscount> findByUserType(UserType userType);
+    void save(UserDiscount userPrice);
+    void deleteAll();
 }
