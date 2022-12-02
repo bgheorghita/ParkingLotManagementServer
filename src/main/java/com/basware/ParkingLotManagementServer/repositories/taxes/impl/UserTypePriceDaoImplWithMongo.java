@@ -27,7 +27,7 @@ public class UserTypePriceDaoImplWithMongo implements UserTypePriceDao {
     }
 
     @Override
-    public Optional<UserPrice> findByUserType(UserType userType) {
+    public Optional<Price> findByUserType(UserType userType) {
         Document doc = getCollectionFromDatabase().find(eq("userType", userType)).first();
         if(doc == null) return Optional.empty();
 
@@ -37,10 +37,7 @@ public class UserTypePriceDaoImplWithMongo implements UserTypePriceDao {
             JsonNode priceNode = jsonNode.get("price");
             double units = priceNode.get("units").asDouble();
             String currency = priceNode.get("currency").asText();
-
-            Price price = new Price(units, Currency.valueOf(currency));
-            UserPrice userPrice = new UserPrice(userType, price);
-            return Optional.of(userPrice);
+            return Optional.of(new Price(units, Currency.valueOf(currency)));
         } catch (JsonProcessingException e) {
             return Optional.empty();
         }

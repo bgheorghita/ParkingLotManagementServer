@@ -2,7 +2,6 @@ package com.basware.ParkingLotManagementServer.services.taxes.prices.impl;
 
 import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementServer.models.taxes.Price;
-import com.basware.ParkingLotManagementServer.models.taxes.UserPrice;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.repositories.taxes.UserTypePriceDao;
 import com.basware.ParkingLotManagementServer.services.taxes.prices.UserPriceService;
@@ -18,9 +17,9 @@ public class UserPriceServiceImpl implements UserPriceService {
 
     @Override
     public Price getPrice(UserType userType) throws ResourceNotFoundException {
-        Optional<UserPrice> userPriceOptional = userTypePriceDao.findByUserType(userType);
+        Optional<Price> userPriceOptional = userTypePriceDao.findByUserType(userType);
         if(userPriceOptional.isPresent()) {
-            return userPriceOptional.get().getPrice();
+            return userPriceOptional.get();
         } else {
             String msg = "Resource user type \"" + userType + "\" has not been found";
             throw new ResourceNotFoundException(msg);

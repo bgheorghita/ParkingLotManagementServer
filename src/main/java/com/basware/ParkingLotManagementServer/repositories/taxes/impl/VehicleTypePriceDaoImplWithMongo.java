@@ -27,7 +27,7 @@ public class VehicleTypePriceDaoImplWithMongo implements VehicleTypePriceDao {
     }
 
     @Override
-    public Optional<VehiclePrice> findByVehicleType(VehicleType vehicleType) {
+    public Optional<Price> findByVehicleType(VehicleType vehicleType) {
         Document doc = getCollectionFromDatabase().find(eq("vehicleType", vehicleType)).first();
         if(doc == null) return Optional.empty();
 
@@ -37,10 +37,7 @@ public class VehicleTypePriceDaoImplWithMongo implements VehicleTypePriceDao {
             JsonNode priceNode = jsonNode.get("price");
             double units = priceNode.get("units").asDouble();
             String currency = priceNode.get("currency").asText();
-
-            Price price = new Price(units, Currency.valueOf(currency));
-            VehiclePrice vehiclePrice = new VehiclePrice(vehicleType, price);
-            return Optional.of(vehiclePrice);
+            return Optional.of(new Price(units, Currency.valueOf(currency)));
         } catch (JsonProcessingException e) {
             return Optional.empty();
         }

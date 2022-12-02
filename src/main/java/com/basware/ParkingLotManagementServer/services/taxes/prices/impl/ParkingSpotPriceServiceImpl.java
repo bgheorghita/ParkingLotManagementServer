@@ -2,7 +2,6 @@ package com.basware.ParkingLotManagementServer.services.taxes.prices.impl;
 
 import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementServer.models.parkings.spots.ParkingSpotType;
-import com.basware.ParkingLotManagementServer.models.taxes.ParkingSpotPrice;
 import com.basware.ParkingLotManagementServer.models.taxes.Price;
 import com.basware.ParkingLotManagementServer.repositories.taxes.ParkingSpotTypePriceDao;
 import com.basware.ParkingLotManagementServer.services.taxes.prices.ParkingSpotPriceService;
@@ -18,9 +17,9 @@ public class ParkingSpotPriceServiceImpl implements ParkingSpotPriceService {
 
     @Override
     public Price getPrice(ParkingSpotType parkingSpotType) throws ResourceNotFoundException {
-        Optional<ParkingSpotPrice> parkingSpotPriceOptional = parkingSpotTypePriceDao.findByParkingSpotType(parkingSpotType);
+        Optional<Price> parkingSpotPriceOptional = parkingSpotTypePriceDao.findByParkingSpotType(parkingSpotType);
         if(parkingSpotPriceOptional.isPresent()){
-            return parkingSpotPriceOptional.get().getPrice();
+            return parkingSpotPriceOptional.get();
         } else {
             String exceptionMsg = "Parking spot type \"" + parkingSpotType+ "\" has not been found";
             throw new ResourceNotFoundException(exceptionMsg);

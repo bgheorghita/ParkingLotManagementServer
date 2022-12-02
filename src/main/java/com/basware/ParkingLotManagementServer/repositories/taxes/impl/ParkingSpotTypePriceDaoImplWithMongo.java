@@ -26,7 +26,7 @@ public class ParkingSpotTypePriceDaoImplWithMongo implements ParkingSpotTypePric
     }
 
     @Override
-    public Optional<ParkingSpotPrice> findByParkingSpotType(ParkingSpotType parkingSpotType) {
+    public Optional<Price> findByParkingSpotType(ParkingSpotType parkingSpotType) {
         Document doc = getCollectionFromDatabase().find(eq("parkingSpotType", parkingSpotType)).first();
         if(doc == null) return Optional.empty();
 
@@ -36,10 +36,7 @@ public class ParkingSpotTypePriceDaoImplWithMongo implements ParkingSpotTypePric
             JsonNode priceNode = jsonNode.get("price");
             double units = priceNode.get("units").asDouble();
             String currency = priceNode.get("currency").asText();
-
-            Price price = new Price(units, Currency.valueOf(currency));
-            ParkingSpotPrice parkingSpotPrice = new ParkingSpotPrice(parkingSpotType, price);
-            return Optional.of(parkingSpotPrice);
+            return Optional.of(new Price(units, Currency.valueOf(currency)));
         } catch (JsonProcessingException e) {
             return Optional.empty();
         }
