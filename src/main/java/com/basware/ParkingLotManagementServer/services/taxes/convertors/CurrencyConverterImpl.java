@@ -1,26 +1,23 @@
 package com.basware.ParkingLotManagementServer.services.taxes.convertors;
 
+import com.basware.ParkingLotManagementServer.exceptions.ServiceNotAvailable;
 import com.basware.ParkingLotManagementServer.models.taxes.Currency;
 import com.basware.ParkingLotManagementServer.models.taxes.Price;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Optional;
 
 @Service
 public class CurrencyConverterImpl implements CurrencyConverter{
     @Override
-    public Optional<Price> convert(Currency fromCurrency, Currency toCurrency, double amount) {
+    public Price convert(Currency fromCurrency, Currency toCurrency, double amount) throws ServiceNotAvailable {
         final String BASE_URL = "https://api.apilayer.com/exchangerates_data/convert";
 
         URI uri = UriComponentsBuilder.fromUriString(BASE_URL)
@@ -37,10 +34,11 @@ public class CurrencyConverterImpl implements CurrencyConverter{
             ResponseEntity<String> responseEntity = new RestTemplate()
                     .exchange(uri, HttpMethod.GET, new HttpEntity<String>(headers), String.class);
             JsonNode jsonNode = new ObjectMapper().readTree(responseEntity.getBody());
-
-            return Optional.of(new Price(Double.parseDouble(String.valueOf(jsonNode.get("result"))), toCurrency));
-        } catch (RestClientException | JsonProcessingException e){
-            return Optional.empty();
+            return new Price(Double.parseDouble(String.valueOf(jsonNode.get("result"))), toCurrency);
+        } catch (RestClientException e){
+            throw new ServiceNotAvailable("There was a problem in calling the external server for exchange rates.");
+        } catch (JsonProcessingException e) {
+            throw new ServiceNotAvailable("There was a problem in processing the exchange rates.");
         }
     }
 }
