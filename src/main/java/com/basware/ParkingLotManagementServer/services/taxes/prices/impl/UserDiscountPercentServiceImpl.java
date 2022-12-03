@@ -1,23 +1,22 @@
 package com.basware.ParkingLotManagementServer.services.taxes.prices.impl;
 
 import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
-import com.basware.ParkingLotManagementServer.models.taxes.Price;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
-import com.basware.ParkingLotManagementServer.repositories.taxes.UserTypeDiscountDao;
-import com.basware.ParkingLotManagementServer.services.taxes.prices.UserDiscountPriceService;
+import com.basware.ParkingLotManagementServer.repositories.taxes.UserTypeDiscountPercentDao;
+import com.basware.ParkingLotManagementServer.services.taxes.prices.UserDiscountPercentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserDiscountServiceImpl implements UserDiscountPriceService {
+public class UserDiscountPercentServiceImpl implements UserDiscountPercentService {
     @Autowired
-    private UserTypeDiscountDao userTypeDiscountDao;
+    private UserTypeDiscountPercentDao userTypeDiscountPercentDao;
 
     @Override
-    public Price getPrice(UserType userType) throws ResourceNotFoundException {
-        Optional<Price> userDiscountOptional = userTypeDiscountDao.findByUserType(userType);
+    public Double getDiscountPercent(UserType userType) throws ResourceNotFoundException {
+        Optional<Double> userDiscountOptional = userTypeDiscountPercentDao.findByUserType(userType);
         if(userDiscountOptional.isPresent()){
             return userDiscountOptional.get();
         } else {

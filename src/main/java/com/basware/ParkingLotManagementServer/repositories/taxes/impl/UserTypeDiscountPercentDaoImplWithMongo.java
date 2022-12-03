@@ -1,11 +1,9 @@
 package com.basware.ParkingLotManagementServer.repositories.taxes.impl;
 
 import com.basware.ParkingLotManagementServer.databases.MongoDb;
-import com.basware.ParkingLotManagementServer.models.taxes.Currency;
-import com.basware.ParkingLotManagementServer.models.taxes.Price;
 import com.basware.ParkingLotManagementServer.models.taxes.discounts.UserDiscount;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
-import com.basware.ParkingLotManagementServer.repositories.taxes.UserTypeDiscountDao;
+import com.basware.ParkingLotManagementServer.repositories.taxes.UserTypeDiscountPercentDao;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,25 +17,23 @@ import java.util.Optional;
 import static com.mongodb.client.model.Filters.eq;
 
 @Component
-public class UserTypeDiscountDaoImplWithMongo implements UserTypeDiscountDao {
+public class UserTypeDiscountPercentDaoImplWithMongo implements UserTypeDiscountPercentDao {
     private final MongoDb mongoDb;
 
-    public UserTypeDiscountDaoImplWithMongo(final MongoDb mongoDb){
+    public UserTypeDiscountPercentDaoImplWithMongo(final MongoDb mongoDb){
         this.mongoDb = mongoDb;
     }
 
     @Override
-    public Optional<Price> findByUserType(UserType userType) {
+    public Optional<Double> findByUserType(UserType userType) {
         Document doc = getCollectionFromDatabase().find(eq("userType", userType)).first();
         if(doc == null) return Optional.empty();
 
         String json = doc.toJson();
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
-            JsonNode priceNode = jsonNode.get("price");
-            double units = priceNode.get("units").asDouble();
-            String currency = priceNode.get("currency").asText();
-            return Optional.of(new Price(units, Currency.valueOf(currency)));
+            double percent = jsonNode.get("percent").asDouble();
+            return Optional.of(percent);
         } catch (JsonProcessingException e) {
             return Optional.empty();
         }
