@@ -1,7 +1,9 @@
 package com.basware.ParkingLotManagementServer.controllers.taxes;
 
 import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
+import com.basware.ParkingLotManagementServer.exceptions.ServiceNotAvailable;
 import com.basware.ParkingLotManagementServer.models.parkings.spots.ParkingSpotType;
+import com.basware.ParkingLotManagementServer.models.taxes.Currency;
 import com.basware.ParkingLotManagementServer.models.taxes.Price;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.models.vehicles.VehicleType;
@@ -17,21 +19,15 @@ public class ParkingPriceController {
     @Autowired
     private ParkingPriceService parkingPriceService;
 
-//    @GetMapping("/getParkingPrice")
-//    public double getParkingPrice(@RequestParam("userType") UserType userType,
-//                                  @RequestParam("vehicleType") VehicleType vehicleType,
-//                                  @RequestParam("parkingSpotType") ParkingSpotType parkingSpotType){
-//        return parkingPriceService.getParkingPrice(userType, vehicleType, parkingSpotType);
-//    }
-
     @GetMapping("/getParkingPrice")
     @ResponseStatus(HttpStatus.OK)
     public Price getParkingPrice(@RequestParam("parkingTimeInMinutes") String parkingTimeInMinutes,
                                  @RequestParam("userType") String userType,
                                  @RequestParam("vehicleType") String vehicleType,
-                                 @RequestParam("parkingSpotType") String parkingSpotType) throws ResourceNotFoundException {
+                                 @RequestParam("parkingSpotType") String parkingSpotType,
+                                 @RequestParam("toCurrency") String toCurrency) throws ResourceNotFoundException, ServiceNotAvailable {
 
         return parkingPriceService.getParkingPrice(Integer.parseInt(parkingTimeInMinutes), UserType.valueOf(userType),
-                VehicleType.valueOf(vehicleType), ParkingSpotType.valueOf(parkingSpotType));
+                VehicleType.valueOf(vehicleType), ParkingSpotType.valueOf(parkingSpotType), Currency.valueOf(toCurrency));
     }
 }
