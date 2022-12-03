@@ -25,7 +25,11 @@ public class ParkingPriceController {
                                  @RequestParam("userType") String userType,
                                  @RequestParam("vehicleType") String vehicleType,
                                  @RequestParam("parkingSpotType") String parkingSpotType,
-                                 @RequestParam("toCurrency") String toCurrency) throws ResourceNotFoundException, ServiceNotAvailable {
+                                 @RequestParam(required = false, name = "toCurrency") String toCurrency) throws ResourceNotFoundException, ServiceNotAvailable {
+
+        if(toCurrency == null){
+            toCurrency = Currency.EUR.name();
+        }
 
         return parkingPriceService.getParkingPrice(Integer.parseInt(parkingTimeInMinutes), UserType.valueOf(userType),
                 VehicleType.valueOf(vehicleType), ParkingSpotType.valueOf(parkingSpotType), Currency.valueOf(toCurrency));
