@@ -25,14 +25,14 @@ public class DataLoader implements CommandLineRunner {
     private VehicleTypePriceDao vehicleTypePriceDao;
 
     @Autowired
-    private UserTypeDiscountDao userTypeDiscountDao;
+    private UserTypeDiscountPercentDao userTypeDiscountPercentDao;
 
     @Override
     public void run(String... args) {
         parkingSpotTypePriceDao.deleteAll();
         userTypePriceDao.deleteAll();
         vehicleTypePriceDao.deleteAll();
-        userTypeDiscountDao.deleteAll();
+        userTypeDiscountPercentDao.deleteAll();
         loadPricesForParkingSpots();
         loadPricesForUsers();
         loadPricesForVehicles();
@@ -40,8 +40,8 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void loadUserDiscounts() {
-        userTypeDiscountDao.save(new UserDiscount(UserType.REGULAR, new Price(0.25, Currency.EUR)));
-        userTypeDiscountDao.save(new UserDiscount(UserType.VIP, new Price(0.50, Currency.EUR)));
+        userTypeDiscountPercentDao.save(new UserDiscount(UserType.REGULAR, 0.25));
+        userTypeDiscountPercentDao.save(new UserDiscount(UserType.VIP, 0.50));
     }
 
     private void loadPricesForVehicles() {
