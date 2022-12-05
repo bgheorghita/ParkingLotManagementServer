@@ -3,6 +3,7 @@ package com.basware.ParkingLotManagementServer.services.taxes.prices.impl;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.repositories.taxes.UserTypeDiscountPercentDao;
 import com.basware.ParkingLotManagementServer.services.taxes.prices.UserDiscountPercentService;
+import com.basware.ParkingLotManagementServer.utils.Constants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,7 +33,7 @@ class UserDiscountPercentServiceImplTest {
     void getDiscountPercent_ShouldReturnDefaultDiscountWhenThereIsNotADiscountForSearchedUser(){
         when(userTypeDiscountPercentDao.findByUserType(UserType.REGULAR)).thenReturn(Optional.empty());
         Double discountPercent = userDiscountPercentService.getDiscountPercent(UserType.REGULAR);
-        assertEquals(0, discountPercent);
+        assertEquals(Constants.DEFAULT_USER_DISCOUNT_PERCENT, discountPercent);
         verify(userTypeDiscountPercentDao, times(1)).findByUserType(UserType.REGULAR);
     }
 

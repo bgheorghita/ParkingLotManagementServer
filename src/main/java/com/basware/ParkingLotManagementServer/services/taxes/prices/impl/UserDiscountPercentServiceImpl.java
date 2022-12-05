@@ -8,16 +8,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.basware.ParkingLotManagementServer.utils.Constants.DEFAULT_USER_DISCOUNT_PERCENT;
+
 @Service
 public class UserDiscountPercentServiceImpl implements UserDiscountPercentService {
     @Autowired
     private UserTypeDiscountPercentDao userTypeDiscountPercentDao;
 
-    public final static double DEFAULT_DISCOUNT = 0;
-
     @Override
     public Double getDiscountPercent(UserType userType) {
         Optional<Double> userDiscountOptional = userTypeDiscountPercentDao.findByUserType(userType);
-        return userDiscountOptional.orElse(DEFAULT_DISCOUNT);
+        return userDiscountOptional.orElse(DEFAULT_USER_DISCOUNT_PERCENT);
     }
 }

@@ -1,6 +1,5 @@
 package com.basware.ParkingLotManagementServer.services.taxes.calculators.implementations;
 
-import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementServer.exceptions.ServiceNotAvailable;
 import com.basware.ParkingLotManagementServer.models.taxes.Currency;
 import com.basware.ParkingLotManagementServer.models.taxes.Price;
@@ -20,7 +19,7 @@ public class ParkingDiscountCalculatorImpl implements ParkingDiscountCalculator 
     private CurrencyConverter currencyConverter;
 
     @Override
-    public Price getDiscount(Price totalPrice, UserType userType, Currency toCurrency) throws ResourceNotFoundException, ServiceNotAvailable {
+    public Price getDiscount(Price totalPrice, UserType userType, Currency toCurrency) throws ServiceNotAvailable {
         Double userDiscountPercent = userDiscountPercentService.getDiscountPercent(userType);
         totalPrice = exchangeToCurrency(totalPrice, toCurrency);
         return new Price(userDiscountPercent * totalPrice.getUnits(), toCurrency);
