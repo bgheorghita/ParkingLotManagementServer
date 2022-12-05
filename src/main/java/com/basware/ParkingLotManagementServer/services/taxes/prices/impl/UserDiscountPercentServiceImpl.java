@@ -1,6 +1,5 @@
 package com.basware.ParkingLotManagementServer.services.taxes.prices.impl;
 
-import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.repositories.taxes.UserTypeDiscountPercentDao;
 import com.basware.ParkingLotManagementServer.services.taxes.prices.UserDiscountPercentService;
@@ -14,14 +13,11 @@ public class UserDiscountPercentServiceImpl implements UserDiscountPercentServic
     @Autowired
     private UserTypeDiscountPercentDao userTypeDiscountPercentDao;
 
+    public final double DEFAULT_DISCOUNT = 0;
+
     @Override
-    public Double getDiscountPercent(UserType userType) throws ResourceNotFoundException {
+    public Double getDiscountPercent(UserType userType) {
         Optional<Double> userDiscountOptional = userTypeDiscountPercentDao.findByUserType(userType);
-        if(userDiscountOptional.isPresent()){
-            return userDiscountOptional.get();
-        } else {
-            String msg = "Resource user type \"" + userType + "\" has not been found";
-            throw new ResourceNotFoundException(msg);
-        }
+        return userDiscountOptional.orElse(DEFAULT_DISCOUNT);
     }
 }
