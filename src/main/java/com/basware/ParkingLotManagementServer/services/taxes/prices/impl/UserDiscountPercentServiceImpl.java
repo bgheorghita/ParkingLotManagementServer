@@ -13,7 +13,7 @@ public class UserDiscountPercentServiceImpl implements UserDiscountPercentServic
     @Autowired
     private UserTypeDiscountPercentDao userTypeDiscountPercentDao;
 
-    public final double DEFAULT_DISCOUNT = 0;
+    public final static double DEFAULT_DISCOUNT = 0;
 
     @Override
     public Double getDiscountPercent(UserType userType) {

@@ -1,6 +1,5 @@
 package com.basware.ParkingLotManagementServer.services.taxes.prices.impl;
 
-import com.basware.ParkingLotManagementServer.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.repositories.taxes.UserTypeDiscountPercentDao;
 import com.basware.ParkingLotManagementServer.services.taxes.prices.UserDiscountPercentService;
@@ -30,14 +29,15 @@ class UserDiscountPercentServiceImplTest {
     }
 
     @Test
-    void getDiscountPercent_ShouldThrowResourceNotFoundExceptionWhenThereIsNotADiscountForSearchedUser(){
+    void getDiscountPercent_ShouldReturnDefaultDiscountWhenThereIsNotADiscountForSearchedUser(){
         when(userTypeDiscountPercentDao.findByUserType(UserType.REGULAR)).thenReturn(Optional.empty());
-        assertThrows(ResourceNotFoundException.class, () -> userDiscountPercentService.getDiscountPercent(UserType.REGULAR));
+        Double discountPercent = userDiscountPercentService.getDiscountPercent(UserType.REGULAR);
+        assertEquals(0, discountPercent);
         verify(userTypeDiscountPercentDao, times(1)).findByUserType(UserType.REGULAR);
     }
 
     @Test
-    void getDiscountPercent_ShouldReturnDiscountIfThereIsADiscountForSearchedUser() throws ResourceNotFoundException {
+    void getDiscountPercent_ShouldReturnDiscountIfThereIsADiscountForSearchedUser() {
         Double discountPercent = 0.5;
         when(userTypeDiscountPercentDao.findByUserType(UserType.REGULAR)).thenReturn(Optional.of(discountPercent));
         Double resultDiscountPercent = userDiscountPercentService.getDiscountPercent(UserType.REGULAR);
