@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.basware.ParkingLotManagementServer.utils.Constants.DEFAULT_CURRENCY;
+
 @RestController
 @RequestMapping(ParkingPriceController.URL_BASE)
 public class ParkingPriceController {
@@ -28,7 +30,7 @@ public class ParkingPriceController {
                                  @RequestParam(required = false, name = "toCurrency") String toCurrency) throws ResourceNotFoundException, ServiceNotAvailable {
 
         if(toCurrency == null){
-            toCurrency = Currency.EUR.name();
+            toCurrency = DEFAULT_CURRENCY.name();
         }
 
         return parkingPriceService.getParkingPrice(Integer.parseInt(parkingTimeInMinutes), UserType.valueOf(userType),
