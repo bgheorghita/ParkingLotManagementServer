@@ -25,7 +25,7 @@ public class ParkingPriceCalculatorImpl implements ParkingPriceCalculator {
     private ParkingSpotPriceService parkingSpotPriceService;
 
     @Autowired
-    CurrencyConverter currencyConverter;
+    private CurrencyConverter currencyConverter;
 
     @Override
     public Price getTotalPrice(int parkingTimeInMinutes, UserType userType, VehicleType vehicleType, ParkingSpotType parkingSpotType, Currency toCurrency) throws ResourceNotFoundException, ServiceNotAvailable {
