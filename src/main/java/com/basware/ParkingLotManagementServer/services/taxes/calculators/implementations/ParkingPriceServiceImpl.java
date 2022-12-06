@@ -30,7 +30,7 @@ public class ParkingPriceServiceImpl implements ParkingPriceService {
         Price totalPrice = parkingPriceCalculator.getTotalPrice(parkingTimeInMinutes, userType,
                 vehicleType, parkingSpotType, toCurrency);
 
-        if(parkingTimeInMinutes > DISCOUNT_AVAILABLE_AFTER_MINUTES){
+        if(parkingTimeInMinutes >= DISCOUNT_AVAILABLE_AFTER_MINUTES){
             Price discount = parkingDiscountCalculator.getDiscount(totalPrice, userType, toCurrency);
             totalPrice = new Price(totalPrice.getUnits() - discount.getUnits(), toCurrency);
         }
