@@ -1,6 +1,6 @@
 package com.basware.ParkingLotManagementServer.repositories.taxes.impl;
 
-import com.basware.ParkingLotManagementServer.databases.MongoDb;
+import com.basware.ParkingLotManagementServer.databases.MongoDB;
 import com.basware.ParkingLotManagementServer.models.taxes.discounts.UserDiscount;
 import com.basware.ParkingLotManagementServer.models.users.UserType;
 import com.basware.ParkingLotManagementServer.repositories.taxes.UserTypeDiscountPercentDao;
@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +17,10 @@ import static com.mongodb.client.model.Filters.eq;
 
 @Component
 public class UserTypeDiscountPercentDaoImplWithMongo implements UserTypeDiscountPercentDao {
-    private final MongoDb mongoDb;
+    private final MongoDB mongoDB;
 
-    public UserTypeDiscountPercentDaoImplWithMongo(final MongoDb mongoDb){
-        this.mongoDb = mongoDb;
+    public UserTypeDiscountPercentDaoImplWithMongo(final MongoDB mongoDB){
+        this.mongoDB = mongoDB;
     }
 
     @Override
@@ -56,8 +55,8 @@ public class UserTypeDiscountPercentDaoImplWithMongo implements UserTypeDiscount
     }
 
     private MongoCollection<Document> getCollectionFromDatabase(){
-        String dbName = mongoDb.getDatabaseProperties().getDatabaseName();
-        MongoDatabase database = mongoDb.getDbConnection().getDatabase(dbName);
-        return database.getCollection(MongoDb.USER_TYPE_DISCOUNT_PRICE_COLLECTION);
+        String dbName = mongoDB.getDatabaseProperties().getDatabaseName();
+        com.mongodb.client.MongoDatabase database = mongoDB.getDatabaseConnection().getDatabase(dbName);
+        return database.getCollection(MongoDB.USER_TYPE_DISCOUNT_PRICE_COLLECTION);
     }
 }
