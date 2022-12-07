@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ParkingSpotTypePriceDao {
     Optional<Price> findByParkingSpotType(ParkingSpotType parkingSpotType);
-    void save(ParkingSpotPrice parkingSpotPrice);
-    void delete(ParkingSpotPrice parkingSpotPrice);
+    boolean save(ParkingSpotPrice parkingSpotPrice);
+    long deleteByParkingSpotType(ParkingSpotType parkingSpotType);
     void deleteAll();
 }
