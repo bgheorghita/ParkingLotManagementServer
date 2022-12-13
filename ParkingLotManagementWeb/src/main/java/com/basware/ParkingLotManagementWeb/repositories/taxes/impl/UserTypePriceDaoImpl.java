@@ -1,6 +1,6 @@
 package com.basware.ParkingLotManagementWeb.repositories.taxes.impl;
 
-import com.basware.ParkingLotManagementWeb.databases.MongoDB;
+import com.basware.ParkingLotManagementWeb.databases.MongoDbHelper;
 import com.basware.ParkingLotManagementCommon.models.taxes.Currency;
 import com.basware.ParkingLotManagementCommon.models.taxes.Price;
 import com.basware.ParkingLotManagementCommon.models.taxes.UserPrice;
@@ -18,16 +18,18 @@ import java.util.Optional;
 import static com.mongodb.client.model.Filters.eq;
 
 @Component
-public class UserTypePriceDaoImplWithMongo implements UserTypePriceDao {
-    private final MongoDB mongoDB;
+public class UserTypePriceDaoImpl implements UserTypePriceDao {
+    private final MongoDbHelper mongoDbHelper;
 
-    public UserTypePriceDaoImplWithMongo(final MongoDB mongoDB){
-        this.mongoDB = mongoDB;
+    public UserTypePriceDaoImpl(final MongoDbHelper mongoDbHelper){
+        this.mongoDbHelper = mongoDbHelper;
     }
 
     @Override
     public Optional<Price> findByUserType(UserType userType) {
-        Document doc = getCollectionFromDatabase().find(eq("userType", userType)).first();
+        Document doc = getCollectionFromDatabase()
+                .find(eq(MongoDbHelper.USER_TYPE_DATABASE_FIELD_NAME, userType))
+                .first();
         if(doc == null) return Optional.empty();
 
         String json = doc.toJson();
@@ -59,8 +61,6 @@ public class UserTypePriceDaoImplWithMongo implements UserTypePriceDao {
     }
 
     private MongoCollection<Document> getCollectionFromDatabase(){
-        String dbName = mongoDB.getDatabaseProperties().getDatabaseName();
-        com.mongodb.client.MongoDatabase database = mongoDB.getDatabaseConnection().getDatabase(dbName);
-        return database.getCollection(MongoDB.USER_PRICE_COLLECTION);
+        return mongoDbHelper.getMongoCollection(MongoDbHelper.USER_TYPE_PRICE_COLLECTION);
     }
 }

@@ -1,11 +1,10 @@
 package com.basware.ParkingLotManagementWeb.repositories.taxes.impl;
 
-import com.basware.ParkingLotManagementWeb.databases.MongoDB;
+import com.basware.ParkingLotManagementWeb.databases.MongoDbHelper;
 import com.basware.ParkingLotManagementCommon.models.parkings.spots.ParkingSpotType;
 import com.basware.ParkingLotManagementCommon.models.taxes.Currency;
 import com.basware.ParkingLotManagementCommon.models.taxes.ParkingSpotPrice;
 import com.basware.ParkingLotManagementCommon.models.taxes.Price;
-import com.basware.ParkingLotManagementWeb.repositories.taxes.impl.ParkingSpotTypePriceDaoImplWithMongo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("dev")
 @ImportAutoConfiguration(exclude = EmbeddedMongoAutoConfiguration.class)
-class ParkingSpotTypePriceDaoImplWithMongoIT {
+class ParkingSpotTypePriceDaoImplIT {
     @Autowired
-    private MongoDB mongoDB;
-    private ParkingSpotTypePriceDaoImplWithMongo parkingSpotTypePriceDaoImplWithMongo;
+    private MongoDbHelper mongoDbHelper;
+    private ParkingSpotTypePriceDaoImpl parkingSpotTypePriceDaoImpl;
 
     @BeforeEach
     void setUp() {
-        parkingSpotTypePriceDaoImplWithMongo = new ParkingSpotTypePriceDaoImplWithMongo(mongoDB);
+        parkingSpotTypePriceDaoImpl = new ParkingSpotTypePriceDaoImpl(mongoDbHelper);
     }
 
     @Test
@@ -37,8 +36,8 @@ class ParkingSpotTypePriceDaoImplWithMongoIT {
         ParkingSpotType parkingSpotType = ParkingSpotType.SMALL;
         ParkingSpotPrice parkingSpotPrice = new ParkingSpotPrice(parkingSpotType, price);
 
-        Optional<Price> parkingSpotPriceOptional = parkingSpotTypePriceDaoImplWithMongo.findByParkingSpotType(parkingSpotType);
-        boolean saved = parkingSpotTypePriceDaoImplWithMongo.save(parkingSpotPrice);
+        Optional<Price> parkingSpotPriceOptional = parkingSpotTypePriceDaoImpl.findByParkingSpotType(parkingSpotType);
+        boolean saved = parkingSpotTypePriceDaoImpl.save(parkingSpotPrice);
 
         if(parkingSpotPriceOptional.isPresent()){
             assertFalse(saved);
@@ -54,8 +53,8 @@ class ParkingSpotTypePriceDaoImplWithMongoIT {
         ParkingSpotType parkingSpotType = ParkingSpotType.SMALL;
         ParkingSpotPrice parkingSpotPrice = new ParkingSpotPrice(parkingSpotType, searchedPrice);
 
-        boolean saved = parkingSpotTypePriceDaoImplWithMongo.save(parkingSpotPrice);
-        Optional<Price> resultPrice = parkingSpotTypePriceDaoImplWithMongo.findByParkingSpotType(parkingSpotType);
+        boolean saved = parkingSpotTypePriceDaoImpl.save(parkingSpotPrice);
+        Optional<Price> resultPrice = parkingSpotTypePriceDaoImpl.findByParkingSpotType(parkingSpotType);
 
         assertTrue(resultPrice.isPresent());
 
@@ -71,23 +70,23 @@ class ParkingSpotTypePriceDaoImplWithMongoIT {
         ParkingSpotType parkingSpotType = ParkingSpotType.SMALL;
         ParkingSpotPrice parkingSpotPrice = new ParkingSpotPrice(parkingSpotType, searchedPrice);
 
-        Optional<Price> parkingSpotPriceOptional = parkingSpotTypePriceDaoImplWithMongo.findByParkingSpotType(parkingSpotType);
+        Optional<Price> parkingSpotPriceOptional = parkingSpotTypePriceDaoImpl.findByParkingSpotType(parkingSpotType);
         long deletedCount;
 
         if(parkingSpotPriceOptional.isPresent()){
-            deletedCount = parkingSpotTypePriceDaoImplWithMongo.deleteByParkingSpotType(parkingSpotType);
+            deletedCount = parkingSpotTypePriceDaoImpl.deleteByParkingSpotType(parkingSpotType);
             assertEquals(1, deletedCount);
             // save back
-            parkingSpotTypePriceDaoImplWithMongo.save(new ParkingSpotPrice(parkingSpotType, parkingSpotPriceOptional.get()));
+            parkingSpotTypePriceDaoImpl.save(new ParkingSpotPrice(parkingSpotType, parkingSpotPriceOptional.get()));
         } else {
-            parkingSpotTypePriceDaoImplWithMongo.save(parkingSpotPrice);
-            deletedCount = parkingSpotTypePriceDaoImplWithMongo.deleteByParkingSpotType(parkingSpotType);
+            parkingSpotTypePriceDaoImpl.save(parkingSpotPrice);
+            deletedCount = parkingSpotTypePriceDaoImpl.deleteByParkingSpotType(parkingSpotType);
             assertEquals(1, deletedCount);
         }
     }
 
     private void cleanUp(ParkingSpotType parkingSpotType){
-        parkingSpotTypePriceDaoImplWithMongo.deleteByParkingSpotType(parkingSpotType);
+        parkingSpotTypePriceDaoImpl.deleteByParkingSpotType(parkingSpotType);
     }
 
 }

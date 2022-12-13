@@ -1,6 +1,6 @@
 package com.basware.ParkingLotManagementWeb.repositories.taxes.impl;
 
-import com.basware.ParkingLotManagementWeb.databases.MongoDB;
+import com.basware.ParkingLotManagementWeb.databases.MongoDbHelper;
 import com.basware.ParkingLotManagementCommon.models.taxes.Currency;
 import com.basware.ParkingLotManagementCommon.models.taxes.Price;
 import com.basware.ParkingLotManagementCommon.models.taxes.VehiclePrice;
@@ -18,16 +18,18 @@ import java.util.Optional;
 import static com.mongodb.client.model.Filters.eq;
 
 @Component
-public class VehicleTypePriceDaoImplWithMongo implements VehicleTypePriceDao {
-    private final MongoDB mongoDB;
+public class VehicleTypePriceDaoImpl implements VehicleTypePriceDao {
+    private final MongoDbHelper mongoDbHelper;
 
-    public VehicleTypePriceDaoImplWithMongo(final MongoDB mongoDB){
-        this.mongoDB = mongoDB;
+    public VehicleTypePriceDaoImpl(final MongoDbHelper mongoDbHelper){
+        this.mongoDbHelper = mongoDbHelper;
     }
 
     @Override
     public Optional<Price> findByVehicleType(VehicleType vehicleType) {
-        Document doc = getCollectionFromDatabase().find(eq("vehicleType", vehicleType)).first();
+        Document doc = getCollectionFromDatabase()
+                .find(eq(MongoDbHelper.VEHICLE_TYPE_DATABASE_FIELD_NAME, vehicleType))
+                .first();
         if(doc == null) return Optional.empty();
 
         String json = doc.toJson();
@@ -59,8 +61,6 @@ public class VehicleTypePriceDaoImplWithMongo implements VehicleTypePriceDao {
     }
 
     private MongoCollection<Document> getCollectionFromDatabase(){
-        String dbName = mongoDB.getDatabaseProperties().getDatabaseName();
-        com.mongodb.client.MongoDatabase database = mongoDB.getDatabaseConnection().getDatabase(dbName);
-        return database.getCollection(MongoDB.VEHICLE_PRICE_COLLECTION);
+        return mongoDbHelper.getMongoCollection(MongoDbHelper.VEHICLE_TYPE_PRICE_COLLECTION);
     }
 }

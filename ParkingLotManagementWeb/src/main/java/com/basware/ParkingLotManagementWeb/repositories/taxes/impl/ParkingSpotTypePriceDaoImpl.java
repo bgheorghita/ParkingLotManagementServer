@@ -4,7 +4,7 @@ import com.basware.ParkingLotManagementCommon.models.parkings.spots.ParkingSpotT
 import com.basware.ParkingLotManagementCommon.models.taxes.Currency;
 import com.basware.ParkingLotManagementCommon.models.taxes.ParkingSpotPrice;
 import com.basware.ParkingLotManagementCommon.models.taxes.Price;
-import com.basware.ParkingLotManagementWeb.databases.MongoDB;
+import com.basware.ParkingLotManagementWeb.databases.MongoDbHelper;
 import com.basware.ParkingLotManagementWeb.repositories.taxes.ParkingSpotTypePriceDao;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,18 +21,18 @@ import java.util.Optional;
 import static com.mongodb.client.model.Filters.eq;
 
 @Service
-public class ParkingSpotTypePriceDaoImplWithMongo implements ParkingSpotTypePriceDao {
+public class ParkingSpotTypePriceDaoImpl implements ParkingSpotTypePriceDao {
 
-    private final MongoDB mongoDB;
-    public ParkingSpotTypePriceDaoImplWithMongo(MongoDB mongoDB){
-        this.mongoDB = mongoDB;
+    private final MongoDbHelper mongoDbHelper;
+    public ParkingSpotTypePriceDaoImpl(MongoDbHelper mongoDbHelper){
+        this.mongoDbHelper = mongoDbHelper;
         createIndex();
     }
 
     private void createIndex() {
         IndexOptions uniqueIndex = new IndexOptions();
         uniqueIndex.unique(true);
-        Document index = new Document(MongoDB.PARKING_SPOT_TYPE_INDEX, 1);
+        Document index = new Document(MongoDbHelper.PARKING_SPOT_TYPE_INDEX, 1);
         try{
             getCollectionFromDatabase().createIndex(index, uniqueIndex);
         } catch (MongoCommandException| MongoWriteException e){
@@ -43,7 +43,9 @@ public class ParkingSpotTypePriceDaoImplWithMongo implements ParkingSpotTypePric
 
     @Override
     public Optional<Price> findByParkingSpotType(ParkingSpotType parkingSpotType) {
-        Document doc = getCollectionFromDatabase().find(eq("parkingSpotType", parkingSpotType)).first();
+        Document doc = getCollectionFromDatabase()
+                .find(eq(MongoDbHelper.PARKING_SPOT_TYPE_DATABASE_FIELD_NAME, parkingSpotType))
+                .first();
         if(doc == null) return Optional.empty();
 
         String json = doc.toJson();
@@ -73,7 +75,7 @@ public class ParkingSpotTypePriceDaoImplWithMongo implements ParkingSpotTypePric
     @Override
     public long deleteByParkingSpotType(ParkingSpotType parkingSpotType) {
         Document document = getCollectionFromDatabase()
-                .find(eq("parkingSpotType", parkingSpotType))
+                .find(eq(MongoDbHelper.PARKING_SPOT_TYPE_DATABASE_FIELD_NAME, parkingSpotType))
                 .first();
         return document == null ? 0 : getCollectionFromDatabase().deleteOne(document).getDeletedCount();
     }
@@ -84,8 +86,6 @@ public class ParkingSpotTypePriceDaoImplWithMongo implements ParkingSpotTypePric
     }
 
     private MongoCollection<Document> getCollectionFromDatabase(){
-        String dbName = mongoDB.getDatabaseProperties().getDatabaseName();
-        MongoDatabase database = mongoDB.getDatabaseConnection().getDatabase(dbName);
-        return database.getCollection(MongoDB.PARKING_SPOT_PRICE_COLLECTION);
+        return mongoDbHelper.getMongoCollection(MongoDbHelper.PARKING_SPOT_TYPE_PRICE_COLLECTION);
     }
 }

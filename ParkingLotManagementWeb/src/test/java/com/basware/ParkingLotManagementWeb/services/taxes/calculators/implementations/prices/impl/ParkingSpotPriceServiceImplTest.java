@@ -1,4 +1,4 @@
-package com.basware.ParkingLotManagementWeb.repositories.taxes.impl;
+package com.basware.ParkingLotManagementWeb.services.taxes.calculators.implementations.prices.impl;
 
 import com.basware.ParkingLotManagementCommon.models.parkings.spots.ParkingSpotType;
 import com.basware.ParkingLotManagementCommon.models.taxes.Currency;

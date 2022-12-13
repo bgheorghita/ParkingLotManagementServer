@@ -2,7 +2,7 @@ package com.basware.ParkingLotManagementWeb.repositories.taxes.impl;
 
 import com.basware.ParkingLotManagementCommon.models.taxes.discounts.UserDiscount;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
-import com.basware.ParkingLotManagementWeb.databases.MongoDB;
+import com.basware.ParkingLotManagementWeb.databases.MongoDbHelper;
 import com.basware.ParkingLotManagementWeb.repositories.taxes.UserTypeDiscountPercentDao;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,16 +16,18 @@ import java.util.Optional;
 import static com.mongodb.client.model.Filters.eq;
 
 @Component
-public class UserTypeDiscountPercentDaoImplWithMongo implements UserTypeDiscountPercentDao {
-    private final MongoDB mongoDB;
+public class UserTypeDiscountPercentDaoImpl implements UserTypeDiscountPercentDao {
+    private final MongoDbHelper mongoDbHelper;
 
-    public UserTypeDiscountPercentDaoImplWithMongo(final MongoDB mongoDB){
-        this.mongoDB = mongoDB;
+    public UserTypeDiscountPercentDaoImpl(final MongoDbHelper mongoDbHelper){
+        this.mongoDbHelper = mongoDbHelper;
     }
 
     @Override
     public Optional<Double> findByUserType(UserType userType) {
-        Document doc = getCollectionFromDatabase().find(eq("userType", userType)).first();
+        Document doc = getCollectionFromDatabase()
+                .find(eq(MongoDbHelper.USER_TYPE_DISCOUNT_DATABASE_FIELD_NAME, userType))
+                .first();
         if(doc == null) return Optional.empty();
 
         String json = doc.toJson();
@@ -55,8 +57,6 @@ public class UserTypeDiscountPercentDaoImplWithMongo implements UserTypeDiscount
     }
 
     private MongoCollection<Document> getCollectionFromDatabase(){
-        String dbName = mongoDB.getDatabaseProperties().getDatabaseName();
-        com.mongodb.client.MongoDatabase database = mongoDB.getDatabaseConnection().getDatabase(dbName);
-        return database.getCollection(MongoDB.USER_TYPE_DISCOUNT_PRICE_COLLECTION);
+        return mongoDbHelper.getMongoCollection(MongoDbHelper.USER_TYPE_DISCOUNT_PRICE_COLLECTION);
     }
 }
