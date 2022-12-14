@@ -26,14 +26,14 @@ public class UserTypeDiscountPercentDaoImpl implements UserTypeDiscountPercentDa
     @Override
     public Optional<Double> findByUserType(UserType userType) {
         Document doc = getCollectionFromDatabase()
-                .find(eq(MongoDbHelper.USER_TYPE_DISCOUNT_DATABASE_FIELD_NAME, userType))
+                .find(eq(UserDiscount.USER_TYPE_FIELD, userType))
                 .first();
         if(doc == null) return Optional.empty();
 
         String json = doc.toJson();
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
-            double percent = jsonNode.get("percent").asDouble();
+            double percent = jsonNode.get(UserDiscount.PERCENT_FIELD).asDouble();
             return Optional.of(percent);
         } catch (JsonProcessingException e) {
             return Optional.empty();
@@ -57,6 +57,6 @@ public class UserTypeDiscountPercentDaoImpl implements UserTypeDiscountPercentDa
     }
 
     private MongoCollection<Document> getCollectionFromDatabase(){
-        return mongoDbHelper.getMongoCollection(MongoDbHelper.USER_TYPE_DISCOUNT_PRICE_COLLECTION);
+        return mongoDbHelper.getMongoCollection(MongoDbHelper.USER_TYPE_DISCOUNT_COLLECTION);
     }
 }
