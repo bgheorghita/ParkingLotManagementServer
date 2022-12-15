@@ -41,19 +41,20 @@ public class UserTypeDiscountPercentDaoImpl implements UserTypeDiscountPercentDa
     }
 
     @Override
-    public void save(UserDiscount userDiscount) {
+    public boolean save(UserDiscount userDiscount) {
         try {
             String object = new ObjectMapper().writeValueAsString(userDiscount);
             Document doc = Document.parse(object);
             getCollectionFromDatabase().insertOne(doc);
+            return true;
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
     @Override
-    public void deleteAll() {
-        getCollectionFromDatabase().deleteMany(new Document());
+    public long deleteAll() {
+        return getCollectionFromDatabase().deleteMany(new Document()).getDeletedCount();
     }
 
     private MongoCollection<Document> getCollectionFromDatabase(){
