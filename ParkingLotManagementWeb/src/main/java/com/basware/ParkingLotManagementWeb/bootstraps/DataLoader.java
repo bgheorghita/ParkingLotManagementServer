@@ -32,24 +32,24 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void loadUserDiscounts() {
-        userTypeDiscountPercentDao.save(new UserDiscount(UserType.REGULAR, 0.25));
-        userTypeDiscountPercentDao.save(new UserDiscount(UserType.VIP, 0.50));
+        userTypeDiscountPercentDao.saveUnique(new UserDiscount(UserType.REGULAR, 0.25));
+        userTypeDiscountPercentDao.saveUnique(new UserDiscount(UserType.VIP, 0.50));
     }
 
     private void loadPricesForVehicles() {
-        typePriceDao.save(new TypePrice(new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.MOTORCYCLE.name()), new Price(0.5, Currency.EUR)));
-        typePriceDao.save(new TypePrice(new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.CAR.name()), new Price(0.15, Currency.EUR)));
-        typePriceDao.save(new TypePrice(new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.TRUCK.name()), new Price(0.20, Currency.EUR)));
+        typePriceDao.saveUnique(new TypePrice(new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.MOTORCYCLE.name()), new Price(0.5, Currency.EUR)));
+        typePriceDao.saveUnique(new TypePrice(new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.CAR.name()), new Price(0.15, Currency.EUR)));
+        typePriceDao.saveUnique(new TypePrice(new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.TRUCK.name()), new Price(0.20, Currency.EUR)));
     }
 
     private void loadPricesForParkingSpots() {
-        typePriceDao.save(new TypePrice(new TypeInfo(TypeInfo.PARKING_SPOT_IDENTIFIER, ParkingSpotType.SMALL.name()), new Price(0.1, Currency.EUR)));
-        typePriceDao.save(new TypePrice(new TypeInfo(TypeInfo.PARKING_SPOT_IDENTIFIER, ParkingSpotType.MEDIUM.name()), new Price(0.2, Currency.EUR)));
-        typePriceDao.save(new TypePrice(new TypeInfo(TypeInfo.PARKING_SPOT_IDENTIFIER, ParkingSpotType.LARGE.name()), new Price(0.3, Currency.EUR)));
+        typePriceDao.saveUnique(new TypePrice(new TypeInfo(TypeInfo.PARKING_SPOT_IDENTIFIER, ParkingSpotType.SMALL.name()), new Price(0.1, Currency.EUR)));
+        typePriceDao.saveUnique(new TypePrice(new TypeInfo(TypeInfo.PARKING_SPOT_IDENTIFIER, ParkingSpotType.MEDIUM.name()), new Price(0.2, Currency.EUR)));
+        typePriceDao.saveUnique(new TypePrice(new TypeInfo(TypeInfo.PARKING_SPOT_IDENTIFIER, ParkingSpotType.LARGE.name()), new Price(0.3, Currency.EUR)));
     }
 
     private void loadPricesForUsers() {
-        typePriceDao.save(new TypePrice(new TypeInfo(TypeInfo.USER_IDENTIFIER, UserType.REGULAR.name()), new Price(0.5, Currency.EUR)));
-        typePriceDao.save(new TypePrice(new TypeInfo(TypeInfo.USER_IDENTIFIER, UserType.VIP.name()), new Price(1.0, Currency.EUR)));
+        typePriceDao.saveUnique(new TypePrice(new TypeInfo(TypeInfo.USER_IDENTIFIER, UserType.REGULAR.name()), new Price(0.5, Currency.EUR)));
+        typePriceDao.saveUnique(new TypePrice(new TypeInfo(TypeInfo.USER_IDENTIFIER, UserType.VIP.name()), new Price(1.0, Currency.EUR)));
     }
 }

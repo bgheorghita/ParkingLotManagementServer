@@ -28,12 +28,25 @@ class UserTypeDiscountPercentDaoImplIT {
     }
 
     @Test
-    void save_ShouldSaveUserDiscountIntoDatabase(){
+    void saveUnique_ShouldSaveUserDiscountIntoDatabase(){
         UserDiscount userDiscount = new UserDiscount(UserType.REGULAR, 0.25);
 
-        boolean saved = userTypeDiscountPercentDao.save(userDiscount);
+        boolean saved = userTypeDiscountPercentDao.saveUnique(userDiscount);
 
         assertTrue(saved);
+    }
+
+    @Test
+    void saveUnique_ShouldNotSaveUserDiscountWhenUserTypeIsAlreadySavedIntoDatabase(){
+        UserType userType = UserType.REGULAR;
+        UserDiscount userDiscount1 = new UserDiscount(userType, 0.25);
+        UserDiscount userDiscount2 = new UserDiscount(userType, 0.30);
+
+        boolean saved1 = userTypeDiscountPercentDao.saveUnique(userDiscount1);
+        boolean saved2 = userTypeDiscountPercentDao.saveUnique(userDiscount2);
+
+        assertTrue(saved1);
+        assertFalse(saved2);
     }
 
     @Test
@@ -41,8 +54,8 @@ class UserTypeDiscountPercentDaoImplIT {
         UserDiscount userDiscount1 = new UserDiscount(UserType.REGULAR, 0.25);
         UserDiscount userDiscount2 = new UserDiscount(UserType.VIP, 0.50);
 
-        userTypeDiscountPercentDao.save(userDiscount1);
-        userTypeDiscountPercentDao.save(userDiscount2);
+        userTypeDiscountPercentDao.saveUnique(userDiscount1);
+        userTypeDiscountPercentDao.saveUnique(userDiscount2);
 
         userTypeDiscountPercentDao.deleteAll();
 
@@ -55,7 +68,7 @@ class UserTypeDiscountPercentDaoImplIT {
         double discount = 0.25;
         UserDiscount userDiscount = new UserDiscount(userType, discount);
 
-        userTypeDiscountPercentDao.save(userDiscount);
+        userTypeDiscountPercentDao.saveUnique(userDiscount);
 
         Optional<Double> discountOptional = userTypeDiscountPercentDao.findByUserType(userType);
         assertTrue(discountOptional.isPresent());
