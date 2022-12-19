@@ -5,7 +5,7 @@ import com.basware.ParkingLotManagementCommon.models.taxes.Currency;
 import com.basware.ParkingLotManagementCommon.models.taxes.Price;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
-import com.basware.ParkingLotManagementWeb.services.taxes.calculators.implementations.ParkingPriceServiceImpl;
+import com.basware.ParkingLotManagementWeb.exceptions.InvalidInput;
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.exceptions.ServiceNotAvailable;
 import com.basware.ParkingLotManagementWeb.services.taxes.calculators.ParkingDiscountCalculator;
@@ -49,7 +49,8 @@ class ParkingPriceServiceImplTest {
                 .thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class,
-                () -> parkingPriceService.getParkingPrice(parkingTime, userType, vehicleType, parkingSpotType, Currency.EUR));
+                () -> parkingPriceService.getParkingPrice(String.valueOf(parkingTime), userType.name(), vehicleType.name(),
+                        parkingSpotType.name(), Currency.EUR.name()));
 
         verify(parkingPriceCalculator, times(1))
                 .getTotalPrice(parkingTime, userType, vehicleType, parkingSpotType, Currency.EUR);
@@ -72,8 +73,8 @@ class ParkingPriceServiceImplTest {
         when(parkingDiscountCalculator.getDiscount(returnPrice, userType, wantedCurrency))
                 .thenThrow(ServiceNotAvailable.class);
 
-        assertThrows(ServiceNotAvailable.class, () -> parkingPriceService.getParkingPrice(parkingTime,
-                userType, vehicleType, parkingSpotType, wantedCurrency));
+        assertThrows(ServiceNotAvailable.class, () -> parkingPriceService.getParkingPrice(String.valueOf(parkingTime), userType.name(), vehicleType.name(),
+                parkingSpotType.name(), Currency.EUR.name()));
 
         verify(parkingPriceCalculator, times(1))
                 .getTotalPrice(parkingTime, userType, vehicleType, parkingSpotType, wantedCurrency);
@@ -82,7 +83,7 @@ class ParkingPriceServiceImplTest {
     }
 
     @Test
-    void getParkingPrice_ShouldReturnPriceWithoutDiscountWhenTheDiscountIsNotAvailableForTheSpecifiedParkingTime() throws ResourceNotFoundException, ServiceNotAvailable {
+    void getParkingPrice_ShouldReturnPriceWithoutDiscountWhenTheDiscountIsNotAvailableForTheSpecifiedParkingTime() throws ResourceNotFoundException, ServiceNotAvailable, InvalidInput {
         UserType userType = UserType.REGULAR;
         VehicleType vehicleType = VehicleType.CAR;
         ParkingSpotType parkingSpotType = ParkingSpotType.MEDIUM;
@@ -93,8 +94,8 @@ class ParkingPriceServiceImplTest {
         when(parkingPriceCalculator.getTotalPrice(parkingTime, userType, vehicleType, parkingSpotType, wantedCurrency))
                 .thenReturn(returnPrice);
 
-        Price resultPrice = parkingPriceService.getParkingPrice(parkingTime,
-                userType, vehicleType, parkingSpotType, wantedCurrency);
+        Price resultPrice = parkingPriceService.getParkingPrice(String.valueOf(parkingTime), userType.name(), vehicleType.name(),
+                parkingSpotType.name(), Currency.EUR.name());
 
         assertEquals(returnPrice.toString(), resultPrice.toString());
 
@@ -105,7 +106,7 @@ class ParkingPriceServiceImplTest {
     }
 
     @Test
-    void getParkingPrice_ShouldReturnPriceWithDiscountWhenTheDiscountIsAvailableForTheSpecifiedParkingTime() throws ResourceNotFoundException, ServiceNotAvailable {
+    void getParkingPrice_ShouldReturnPriceWithDiscountWhenTheDiscountIsAvailableForTheSpecifiedParkingTime() throws ResourceNotFoundException, ServiceNotAvailable, InvalidInput {
         UserType userType = UserType.REGULAR;
         VehicleType vehicleType = VehicleType.CAR;
         ParkingSpotType parkingSpotType = ParkingSpotType.MEDIUM;
@@ -122,8 +123,8 @@ class ParkingPriceServiceImplTest {
         when(parkingDiscountCalculator.getDiscount(returnPrice, userType, wantedCurrency))
                 .thenReturn(returnDiscount);
 
-        Price resultPrice = parkingPriceService.getParkingPrice(parkingTime,
-                userType, vehicleType, parkingSpotType, wantedCurrency);
+        Price resultPrice = parkingPriceService.getParkingPrice(String.valueOf(parkingTime), userType.name(), vehicleType.name(),
+                parkingSpotType.name(), Currency.EUR.name());
 
         assertEquals(returnPriceAfterDiscount.toString(), resultPrice.toString());
 
