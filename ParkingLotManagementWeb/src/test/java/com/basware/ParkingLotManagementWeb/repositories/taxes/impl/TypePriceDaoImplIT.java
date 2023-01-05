@@ -37,7 +37,7 @@ class TypePriceDaoImplIT {
         Price price = new Price(1, Currency.EUR);
         TypePrice typePrice = new TypePrice(typeInfo, price);
 
-        boolean saved = typePriceDao.saveUnique(typePrice);
+        boolean saved = typePriceDao.save(typePrice);
         assertTrue(saved);
     }
 
@@ -48,8 +48,8 @@ class TypePriceDaoImplIT {
         TypePrice typePrice1 = new TypePrice(typeInfo, price);
         TypePrice typePrice2 = new TypePrice(typeInfo, price);
 
-        boolean saved1 = typePriceDao.saveUnique(typePrice1);
-        boolean saved2 = typePriceDao.saveUnique(typePrice2);
+        boolean saved1 = typePriceDao.save(typePrice1);
+        boolean saved2 = typePriceDao.save(typePrice2);
         assertTrue(saved1);
         assertFalse(saved2);
     }
@@ -64,8 +64,8 @@ class TypePriceDaoImplIT {
         Price price2 = new Price(5, Currency.RON);
         TypePrice typePrice2 = new TypePrice(typeInfo2, price2);
 
-        typePriceDao.saveUnique(typePrice1);
-        typePriceDao.saveUnique(typePrice2);
+        typePriceDao.save(typePrice1);
+        typePriceDao.save(typePrice2);
         typePriceDao.deleteAll();
 
         assertEquals(0, typePriceDao.getSize());
@@ -76,7 +76,7 @@ class TypePriceDaoImplIT {
         TypeInfo typeInfo = new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.CAR.name());
         Price price = new Price(1, Currency.EUR);
         TypePrice typePrice = new TypePrice(typeInfo, price);
-        typePriceDao.saveUnique(typePrice);
+        typePriceDao.save(typePrice);
 
         Optional<Price> priceOptional = typePriceDao.getPriceByTypeInfo(typeInfo);
 

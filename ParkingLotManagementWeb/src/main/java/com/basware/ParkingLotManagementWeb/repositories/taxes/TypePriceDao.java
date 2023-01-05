@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface TypePriceDao {
     Optional<Price> getPriceByTypeInfo(TypeInfo typeInfo);
-    boolean saveUnique(TypePrice typePrice);
+    boolean save(TypePrice typePrice);
     long deleteAll();
 }

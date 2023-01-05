@@ -41,11 +41,7 @@ public class UserTypeDiscountPercentDaoImpl implements UserTypeDiscountPercentDa
     }
 
     @Override
-    public boolean saveUnique(UserDiscount userDiscount) {
-        boolean userTypeAlreadyExists = findByUserType(userDiscount.getUserType()).isPresent();
-        if(userTypeAlreadyExists){
-            return false;
-        }
+    public boolean save(UserDiscount userDiscount) {
         try {
             String object = new ObjectMapper().writeValueAsString(userDiscount);
             Document doc = Document.parse(object);

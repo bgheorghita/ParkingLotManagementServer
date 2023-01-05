@@ -3,6 +3,8 @@ db.createCollection("discounts")
 db.createCollection("prices")
 db.getCollection("discounts").remove({})
 db.getCollection("prices").remove({})
+db.getCollection("prices").createIndex({"typeInfo.typeValue" : 1}, {unique: true})
+db.getCollection("discounts").createIndex({"userType" : 1}, {unique: true})
 
 db.getCollection("discounts").insertMany
 ([

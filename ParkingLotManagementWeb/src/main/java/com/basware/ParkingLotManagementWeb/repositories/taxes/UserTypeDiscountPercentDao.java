@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface UserTypeDiscountPercentDao {
     Optional<Double> findByUserType(UserType userType);
-    boolean saveUnique(UserDiscount userPrice);
+    boolean save(UserDiscount userPrice);
     long deleteAll();
 }

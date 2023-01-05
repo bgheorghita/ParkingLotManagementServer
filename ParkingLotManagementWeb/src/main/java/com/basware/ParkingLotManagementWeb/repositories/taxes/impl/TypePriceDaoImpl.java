@@ -51,12 +51,7 @@ public class TypePriceDaoImpl implements TypePriceDao {
     }
 
     @Override
-    public boolean saveUnique(TypePrice typePrice) {
-        boolean typeInfoAlreadyExists = getPriceByTypeInfo(typePrice.getTypeInfo()).isPresent();
-        if(typeInfoAlreadyExists){
-            logger.info(typePrice.getTypeInfo().toString() + " not saved because it already exists into database");
-            return false;
-        }
+    public boolean save(TypePrice typePrice) {
         try {
             Document newDocument = Document.parse(new ObjectMapper().writeValueAsString(typePrice));
             mongoDbHelper.getMongoCollection(MongoDbHelper.PRICES_COLLECTION)
