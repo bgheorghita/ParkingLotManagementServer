@@ -2,7 +2,7 @@ package com.basware.ParkingLotManagementWeb.repositories.taxes.impl;
 
 import com.basware.ParkingLotManagementCommon.models.taxes.discounts.UserDiscount;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
-import com.basware.ParkingLotManagementWeb.databases.MongoDbHelper;
+import com.basware.ParkingLotManagementWeb.utils.databases.MongoDbHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

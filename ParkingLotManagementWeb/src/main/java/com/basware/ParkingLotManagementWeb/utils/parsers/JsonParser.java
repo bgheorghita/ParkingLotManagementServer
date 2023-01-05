@@ -1,4 +1,4 @@
-package com.basware.ParkingLotManagementWeb.services.parsers;
+package com.basware.ParkingLotManagementWeb.utils.parsers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

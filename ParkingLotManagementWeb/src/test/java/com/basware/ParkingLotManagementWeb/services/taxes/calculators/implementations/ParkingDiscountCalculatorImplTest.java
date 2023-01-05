@@ -3,9 +3,8 @@ package com.basware.ParkingLotManagementWeb.services.taxes.calculators.implement
 import com.basware.ParkingLotManagementCommon.models.taxes.Currency;
 import com.basware.ParkingLotManagementCommon.models.taxes.Price;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
-import com.basware.ParkingLotManagementWeb.services.taxes.calculators.implementations.ParkingDiscountCalculatorImpl;
 import com.basware.ParkingLotManagementWeb.exceptions.ServiceNotAvailable;
-import com.basware.ParkingLotManagementWeb.services.taxes.prices.UserDiscountPercentService;
+import com.basware.ParkingLotManagementWeb.services.taxes.prices.UserTypeDiscountPercentService;
 import com.basware.ParkingLotManagementWeb.services.taxes.calculators.ParkingDiscountCalculator;
 import com.basware.ParkingLotManagementWeb.services.taxes.convertors.CurrencyConverter;
 import com.basware.ParkingLotManagementWeb.utils.Constants;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.*;
 class ParkingDiscountCalculatorImplTest {
 
     @Mock
-    private UserDiscountPercentService userDiscountPercentService;
+    private UserTypeDiscountPercentService userTypeDiscountPercentService;
 
     @Mock
     private CurrencyConverter currencyConverter;
@@ -38,7 +37,7 @@ class ParkingDiscountCalculatorImplTest {
 
     @Test
     void getDiscount_ShouldReturnDefaultDiscountWhenThereIsNotADiscountForSearchedUserType() throws ServiceNotAvailable {
-        when(userDiscountPercentService.getDiscountPercent(UserType.REGULAR)).thenReturn(Constants.DEFAULT_USER_DISCOUNT_PERCENT);
+        when(userTypeDiscountPercentService.getDiscountPercent(UserType.REGULAR)).thenReturn(Constants.DEFAULT_USER_DISCOUNT_PERCENT);
         Price totalPrice = new Price(10, Currency.EUR);
         UserType userType = UserType.REGULAR;
         Currency currency = totalPrice.getCurrency();
@@ -47,7 +46,7 @@ class ParkingDiscountCalculatorImplTest {
         Price resultDiscount = parkingDiscountCalculator.getDiscount(totalPrice, userType, currency);
 
         assertEquals(expectedDiscount.toString(), resultDiscount.toString());
-        verify(userDiscountPercentService, times(1)).getDiscountPercent(userType);
+        verify(userTypeDiscountPercentService, times(1)).getDiscountPercent(userType);
     }
 
     @Test
@@ -56,12 +55,12 @@ class ParkingDiscountCalculatorImplTest {
         UserType userType = UserType.REGULAR;
         Currency toCurrency = Currency.RON;
         Double discountPercent = 0.5;
-        when(userDiscountPercentService.getDiscountPercent(userType)).thenReturn(discountPercent);
+        when(userTypeDiscountPercentService.getDiscountPercent(userType)).thenReturn(discountPercent);
         when(currencyConverter.convert(totalPrice.getCurrency(), toCurrency, totalPrice.getUnits())).thenThrow(ServiceNotAvailable.class);
 
         assertThrows(ServiceNotAvailable.class, () -> parkingDiscountCalculator.getDiscount(totalPrice, userType, toCurrency));
 
-        verify(userDiscountPercentService, times(1)).getDiscountPercent(userType);
+        verify(userTypeDiscountPercentService, times(1)).getDiscountPercent(userType);
         verify(currencyConverter, times(1)).convert(totalPrice.getCurrency(), toCurrency, totalPrice.getUnits());
     }
 
@@ -73,7 +72,7 @@ class ParkingDiscountCalculatorImplTest {
         UserType userType = UserType.REGULAR;
         double userTypeDiscountPercent = 0.1;
 
-        when(userDiscountPercentService.getDiscountPercent(userType)).thenReturn(userTypeDiscountPercent);
+        when(userTypeDiscountPercentService.getDiscountPercent(userType)).thenReturn(userTypeDiscountPercent);
         // assume that 10EUR = 50RON
         Price priceAfterExchange = new Price(50, ronCurrency);
         Price expectedDiscount = new Price(userTypeDiscountPercent * priceAfterExchange.getUnits(), ronCurrency);
@@ -82,7 +81,7 @@ class ParkingDiscountCalculatorImplTest {
         Price resultDiscount = parkingDiscountCalculator.getDiscount(totalPrice, userType, ronCurrency);
 
         assertEquals(expectedDiscount.toString(), resultDiscount.toString());
-        verify(userDiscountPercentService, times(1)).getDiscountPercent(userType);
+        verify(userTypeDiscountPercentService, times(1)).getDiscountPercent(userType);
         verify(currencyConverter, times(1)).convert(eurCurrency, ronCurrency, totalPrice.getUnits());
     }
 
@@ -92,12 +91,12 @@ class ParkingDiscountCalculatorImplTest {
         UserType userType = UserType.VIP;
         double userTypeDiscount = 0.5;
 
-        when(userDiscountPercentService.getDiscountPercent(userType)).thenReturn(userTypeDiscount);
+        when(userTypeDiscountPercentService.getDiscountPercent(userType)).thenReturn(userTypeDiscount);
         Price expectedDiscount = new Price(userTypeDiscount * totalPrice.getUnits(), Currency.EUR);
         Price resultDiscount = parkingDiscountCalculator.getDiscount(totalPrice, userType, Currency.EUR);
 
         assertEquals(expectedDiscount.toString(), resultDiscount.toString());
-        verify(userDiscountPercentService, times(1)).getDiscountPercent(userType);
+        verify(userTypeDiscountPercentService, times(1)).getDiscountPercent(userType);
         verify(currencyConverter, times(0)).convert(Currency.EUR, Currency.EUR, totalPrice.getUnits());
     }
 }

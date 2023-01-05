@@ -1,4 +1,4 @@
-package com.basware.ParkingLotManagementWeb.databases;
+package com.basware.ParkingLotManagementWeb.utils.databases;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -24,7 +24,7 @@ public class MongoDbHelper {
     public MongoClient getMongoClient() {
         return mongoClient;
     }
-    public DatabaseConfiguration getDatabaseProperties(){
+    public DatabaseConfiguration getDatabaseConfiguration(){
         return databaseConfiguration;
     }
 

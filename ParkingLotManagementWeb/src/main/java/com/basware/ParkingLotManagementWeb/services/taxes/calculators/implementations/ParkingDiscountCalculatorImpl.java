@@ -4,7 +4,7 @@ import com.basware.ParkingLotManagementCommon.models.taxes.Currency;
 import com.basware.ParkingLotManagementCommon.models.taxes.Price;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementWeb.services.taxes.calculators.ParkingDiscountCalculator;
-import com.basware.ParkingLotManagementWeb.services.taxes.prices.UserDiscountPercentService;
+import com.basware.ParkingLotManagementWeb.services.taxes.prices.UserTypeDiscountPercentService;
 import com.basware.ParkingLotManagementWeb.exceptions.ServiceNotAvailable;
 import com.basware.ParkingLotManagementWeb.services.taxes.convertors.CurrencyConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class ParkingDiscountCalculatorImpl implements ParkingDiscountCalculator {
     @Autowired
-    private UserDiscountPercentService userDiscountPercentService;
+    private UserTypeDiscountPercentService userTypeDiscountPercentService;
 
     @Autowired
     private CurrencyConverter currencyConverter;
 
     @Override
     public Price getDiscount(Price totalPrice, UserType userType, Currency toCurrency) throws ServiceNotAvailable {
-        Double userDiscountPercent = userDiscountPercentService.getDiscountPercent(userType);
+        Double userDiscountPercent = userTypeDiscountPercentService.getDiscountPercent(userType);
         totalPrice = exchangeToCurrency(totalPrice, toCurrency);
         return new Price(userDiscountPercent * totalPrice.getUnits(), toCurrency);
     }

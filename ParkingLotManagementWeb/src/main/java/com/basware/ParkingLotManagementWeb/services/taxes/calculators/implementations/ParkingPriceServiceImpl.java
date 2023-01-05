@@ -56,7 +56,6 @@ public class ParkingPriceServiceImpl implements ParkingPriceService {
             }
         }
     }
-
     private void validateInputs(String parkingTimeInMinutes, String userType, String vehicleType, String parkingSpotType,
                                 String toCurrency) throws ResourceNotFoundException, InvalidInput {
 

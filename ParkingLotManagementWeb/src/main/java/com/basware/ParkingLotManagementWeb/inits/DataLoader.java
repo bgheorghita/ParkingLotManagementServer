@@ -1,4 +1,4 @@
-package com.basware.ParkingLotManagementWeb.bootstraps;
+package com.basware.ParkingLotManagementWeb.inits;
 
 import com.basware.ParkingLotManagementCommon.models.parkings.spots.ParkingSpotType;
 import com.basware.ParkingLotManagementCommon.models.taxes.*;

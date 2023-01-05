@@ -4,7 +4,6 @@ db.createCollection("prices")
 db.getCollection("discounts").remove({})
 db.getCollection("prices").remove({})
 
-
 db.getCollection("discounts").insertMany
 ([
     {
