@@ -33,17 +33,7 @@ public class UserTypeDiscountDaoMorphiaImpl implements UserTypeDiscountPercentDa
                 .filter(eq(UserDiscount.USER_TYPE_FIELD, userType))
                 .first();
 
-        if(userDiscount == null) {
-            return Optional.empty();
-        }
-
-        try {
-            JsonNode jsonNode = new ObjectMapper().readTree(new ObjectMapper().writeValueAsString(userDiscount));
-            double percent = jsonNode.get(UserDiscount.PERCENT_FIELD).asDouble();
-            return Optional.of(percent);
-        } catch (JsonProcessingException e) {
-            return Optional.empty();
-        }
+        return userDiscount == null ? Optional.empty() : Optional.of(userDiscount.getPercent());
     }
 
     @Override

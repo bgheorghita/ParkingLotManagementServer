@@ -37,18 +37,7 @@ public class TypePriceDaoMorphiaImpl implements TypePriceDao {
                             eq(TypePrice.TYPE_INFO_FIELD + "." + TypeInfo.TYPE_VALUE_FIELD, typeInfo.getTypeValue())))
                 .first();
 
-        if(typePrice == null) {
-            return Optional.empty();
-        }
-
-        try {
-            JsonParser<Price> jsonParser = new JsonParser<>();
-            Price price = jsonParser.getObjectFromJson(new ObjectMapper().writeValueAsString(typePrice),
-                    TypePrice.PRICE_FIELD, Price.class);
-            return Optional.of(price);
-        } catch (JsonProcessingException e) {
-            return Optional.empty();
-        }
+        return typePrice == null ? Optional.empty() : Optional.of(typePrice.getPrice());
     }
 
     @Override
