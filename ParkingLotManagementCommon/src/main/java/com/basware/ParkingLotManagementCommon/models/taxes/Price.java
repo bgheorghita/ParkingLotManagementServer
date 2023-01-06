@@ -1,18 +1,14 @@
 package com.basware.ParkingLotManagementCommon.models.taxes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.morphia.annotations.Entity;
-import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
-import org.bson.types.ObjectId;
 
-@Entity
+@Embedded
 public class Price {
     public static final String UNITS_FIELD = "units";
     public static final String CURRENCY_FIELD = "currency";
 
-    @Id
-    private ObjectId objectId;
     @JsonProperty(UNITS_FIELD)
     @Property(UNITS_FIELD)
     private double units;
