@@ -29,6 +29,7 @@ public class DataLoader implements CommandLineRunner {
         loadPricesForUsers();
         loadPricesForVehicles();
         loadUserDiscounts();
+        loadUserDiscounts();
     }
 
     private void loadUserDiscounts() {

@@ -3,7 +3,7 @@ package com.basware.ParkingLotManagementWeb.repositories.taxes.impl;
 import com.basware.ParkingLotManagementCommon.models.taxes.Price;
 import com.basware.ParkingLotManagementCommon.models.taxes.TypeInfo;
 import com.basware.ParkingLotManagementCommon.models.taxes.TypePrice;
-import com.basware.ParkingLotManagementWeb.utils.databases.MongoDbHelper;
+import com.basware.ParkingLotManagementWeb.utils.helpers.MongoDbHelper;
 import com.basware.ParkingLotManagementWeb.repositories.taxes.TypePriceDao;
 import com.basware.ParkingLotManagementWeb.utils.parsers.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

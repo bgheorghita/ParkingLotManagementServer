@@ -2,7 +2,8 @@ package com.basware.ParkingLotManagementWeb.repositories.taxes.impl;
 
 import com.basware.ParkingLotManagementCommon.models.taxes.discounts.UserDiscount;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
-import com.basware.ParkingLotManagementWeb.utils.databases.MongoDbHelper;
+import com.basware.ParkingLotManagementWeb.repositories.taxes.morphiaImpl.UserTypeDiscountDaoMorphiaImpl;
+import dev.morphia.Datastore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,35 +16,34 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles(profiles = "test")
 class UserTypeDiscountPercentDaoImplIT {
-
     @Autowired
-    private MongoDbHelper mongoDbHelper;
+    private Datastore datastore;
 
-    private UserTypeDiscountPercentDaoImplExtended userTypeDiscountPercentDao;
+    private UserTypeDiscountDaoMorphiaExtended userTypeDiscountDaoMorphiaImpl;
 
     @BeforeEach
     void setUp() {
-        userTypeDiscountPercentDao = new UserTypeDiscountPercentDaoImplExtended(mongoDbHelper);
-        userTypeDiscountPercentDao.deleteAll();
+        userTypeDiscountDaoMorphiaImpl = new UserTypeDiscountDaoMorphiaExtended(datastore);
+        userTypeDiscountDaoMorphiaImpl.deleteAll();
     }
 
     @Test
-    void saveUnique_ShouldSaveUserDiscountIntoDatabase(){
+    void save_ShouldSaveUserDiscountIntoDatabase(){
         UserDiscount userDiscount = new UserDiscount(UserType.REGULAR, 0.25);
 
-        boolean saved = userTypeDiscountPercentDao.save(userDiscount);
+        boolean saved = userTypeDiscountDaoMorphiaImpl.save(userDiscount);
 
         assertTrue(saved);
     }
 
     @Test
-    void saveUnique_ShouldNotSaveUserDiscountWhenUserTypeIsAlreadySavedIntoDatabase(){
+    void save_ShouldNotSaveUserDiscountWhenUserTypeIsAlreadySavedIntoDatabase(){
         UserType userType = UserType.REGULAR;
         UserDiscount userDiscount1 = new UserDiscount(userType, 0.25);
         UserDiscount userDiscount2 = new UserDiscount(userType, 0.30);
 
-        boolean saved1 = userTypeDiscountPercentDao.save(userDiscount1);
-        boolean saved2 = userTypeDiscountPercentDao.save(userDiscount2);
+        boolean saved1 = userTypeDiscountDaoMorphiaImpl.save(userDiscount1);
+        boolean saved2 = userTypeDiscountDaoMorphiaImpl.save(userDiscount2);
 
         assertTrue(saved1);
         assertFalse(saved2);
@@ -54,12 +54,12 @@ class UserTypeDiscountPercentDaoImplIT {
         UserDiscount userDiscount1 = new UserDiscount(UserType.REGULAR, 0.25);
         UserDiscount userDiscount2 = new UserDiscount(UserType.VIP, 0.50);
 
-        userTypeDiscountPercentDao.save(userDiscount1);
-        userTypeDiscountPercentDao.save(userDiscount2);
+        userTypeDiscountDaoMorphiaImpl.save(userDiscount1);
+        userTypeDiscountDaoMorphiaImpl.save(userDiscount2);
 
-        userTypeDiscountPercentDao.deleteAll();
+        userTypeDiscountDaoMorphiaImpl.deleteAll();
 
-        assertEquals(0, userTypeDiscountPercentDao.getSize());
+        assertEquals(0, userTypeDiscountDaoMorphiaImpl.getSize());
     }
 
     @Test
@@ -68,9 +68,9 @@ class UserTypeDiscountPercentDaoImplIT {
         double discount = 0.25;
         UserDiscount userDiscount = new UserDiscount(userType, discount);
 
-        userTypeDiscountPercentDao.save(userDiscount);
+        userTypeDiscountDaoMorphiaImpl.save(userDiscount);
 
-        Optional<Double> discountOptional = userTypeDiscountPercentDao.findByUserType(userType);
+        Optional<Double> discountOptional = userTypeDiscountDaoMorphiaImpl.findByUserType(userType);
         assertTrue(discountOptional.isPresent());
         assertEquals(discount, discountOptional.get());
     }
@@ -78,23 +78,22 @@ class UserTypeDiscountPercentDaoImplIT {
     @Test
     void findByUserType_ShouldReturnEmptyOptionalWhenDiscountForUserTypeDoesNotExistIntoDatabase(){
         UserType userType = UserType.REGULAR;
-        Optional<Double> discountOptional = userTypeDiscountPercentDao.findByUserType(userType);
+        Optional<Double> discountOptional = userTypeDiscountDaoMorphiaImpl.findByUserType(userType);
         assertTrue(discountOptional.isEmpty());
     }
 
 }
 
-class UserTypeDiscountPercentDaoImplExtended extends UserTypeDiscountPercentDaoImpl{
+class UserTypeDiscountDaoMorphiaExtended extends UserTypeDiscountDaoMorphiaImpl{
 
-    private final MongoDbHelper mongoDbHelper;
+    private final Datastore datastore;
 
-    public UserTypeDiscountPercentDaoImplExtended(MongoDbHelper mongoDbHelper) {
-        super(mongoDbHelper);
-        this.mongoDbHelper = mongoDbHelper;
+    public UserTypeDiscountDaoMorphiaExtended(Datastore datastore) {
+        super(datastore);
+        this.datastore = datastore;
     }
 
     public long getSize(){
-        return mongoDbHelper.getMongoCollection(MongoDbHelper.USER_TYPE_DISCOUNT_COLLECTION)
-                .countDocuments();
+        return datastore.find(UserDiscount.class).count();
     }
 }

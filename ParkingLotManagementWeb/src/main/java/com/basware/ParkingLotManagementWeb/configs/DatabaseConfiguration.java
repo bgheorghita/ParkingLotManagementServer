@@ -1,4 +1,4 @@
-package com.basware.ParkingLotManagementWeb.utils.databases;
+package com.basware.ParkingLotManagementWeb.configs;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

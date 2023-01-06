@@ -6,7 +6,8 @@ import com.basware.ParkingLotManagementCommon.models.taxes.TypeInfo;
 import com.basware.ParkingLotManagementCommon.models.taxes.TypePrice;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
-import com.basware.ParkingLotManagementWeb.utils.databases.MongoDbHelper;
+import com.basware.ParkingLotManagementWeb.repositories.taxes.morphiaImpl.TypePriceDaoMorphiaImpl;
+import dev.morphia.Datastore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,34 +23,34 @@ import static org.junit.jupiter.api.Assertions.*;
 class TypePriceDaoImplIT {
 
     @Autowired
-    private MongoDbHelper mongoDbHelper;
-    private TypePriceDaoImplExtended typePriceDao;
+    private Datastore datastore;
+    private TypePriceDaoMorphiaExtended typePriceDaoMorphiaImpl;
 
     @BeforeEach
     void setUp(){
-        typePriceDao = new TypePriceDaoImplExtended(mongoDbHelper);
-        typePriceDao.deleteAll();
+        typePriceDaoMorphiaImpl = new TypePriceDaoMorphiaExtended(datastore);
+        typePriceDaoMorphiaImpl.deleteAll();
     }
 
     @Test
-    void saveUnique_ShouldSaveTypePriceIntoDatabaseCollection(){
+    void save_ShouldSaveTypePriceIntoDatabaseCollection(){
         TypeInfo typeInfo = new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.CAR.name());
         Price price = new Price(1, Currency.EUR);
         TypePrice typePrice = new TypePrice(typeInfo, price);
 
-        boolean saved = typePriceDao.save(typePrice);
+        boolean saved = typePriceDaoMorphiaImpl.save(typePrice);
         assertTrue(saved);
     }
 
     @Test
-    void saveUnique_ShouldNotSaveTypePriceWhenTheTypeInfoAlreadyExistsIntoDatabase(){
+    void save_ShouldNotSaveTypePriceWhenTheTypeInfoAlreadyExistsIntoDatabase(){
         TypeInfo typeInfo = new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.CAR.name());
         Price price = new Price(1, Currency.EUR);
         TypePrice typePrice1 = new TypePrice(typeInfo, price);
         TypePrice typePrice2 = new TypePrice(typeInfo, price);
 
-        boolean saved1 = typePriceDao.save(typePrice1);
-        boolean saved2 = typePriceDao.save(typePrice2);
+        boolean saved1 = typePriceDaoMorphiaImpl.save(typePrice1);
+        boolean saved2 = typePriceDaoMorphiaImpl.save(typePrice2);
         assertTrue(saved1);
         assertFalse(saved2);
     }
@@ -64,11 +65,11 @@ class TypePriceDaoImplIT {
         Price price2 = new Price(5, Currency.RON);
         TypePrice typePrice2 = new TypePrice(typeInfo2, price2);
 
-        typePriceDao.save(typePrice1);
-        typePriceDao.save(typePrice2);
-        typePriceDao.deleteAll();
+        typePriceDaoMorphiaImpl.save(typePrice1);
+        typePriceDaoMorphiaImpl.save(typePrice2);
+        typePriceDaoMorphiaImpl.deleteAll();
 
-        assertEquals(0, typePriceDao.getSize());
+        assertEquals(0, typePriceDaoMorphiaImpl.getSize());
     }
 
     @Test
@@ -76,9 +77,9 @@ class TypePriceDaoImplIT {
         TypeInfo typeInfo = new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.CAR.name());
         Price price = new Price(1, Currency.EUR);
         TypePrice typePrice = new TypePrice(typeInfo, price);
-        typePriceDao.save(typePrice);
+        typePriceDaoMorphiaImpl.save(typePrice);
 
-        Optional<Price> priceOptional = typePriceDao.getPriceByTypeInfo(typeInfo);
+        Optional<Price> priceOptional = typePriceDaoMorphiaImpl.getPriceByTypeInfo(typeInfo);
 
         assertTrue(priceOptional.isPresent());
         assertEquals(price.toString(), priceOptional.get().toString());
@@ -88,24 +89,22 @@ class TypePriceDaoImplIT {
     void getPriceByTypeInfo_ShouldReturnEmptyOptionalWhenPriceForTypeInfoDoesNotExistIntoDatabase(){
         TypeInfo typeInfo = new TypeInfo(TypeInfo.VEHICLE_IDENTIFIER, VehicleType.CAR.name());
 
-        Optional<Price> priceOptional = typePriceDao.getPriceByTypeInfo(typeInfo);
+        Optional<Price> priceOptional = typePriceDaoMorphiaImpl.getPriceByTypeInfo(typeInfo);
 
         assertTrue(priceOptional.isEmpty());
     }
 
 }
+class TypePriceDaoMorphiaExtended extends TypePriceDaoMorphiaImpl{
 
-class TypePriceDaoImplExtended extends TypePriceDaoImpl{
+    private final Datastore datastore;
 
-    private final MongoDbHelper mongoDbHelper;
-
-    public TypePriceDaoImplExtended(MongoDbHelper mongoDbHelper) {
-        super(mongoDbHelper);
-        this.mongoDbHelper = mongoDbHelper;
+    public TypePriceDaoMorphiaExtended(Datastore datastore){
+        super(datastore);
+        this.datastore = datastore;
     }
 
     public long getSize(){
-        return mongoDbHelper.getMongoCollection(MongoDbHelper.PRICES_COLLECTION)
-                .countDocuments();
+        return datastore.find(TypePrice.class).count();
     }
 }

@@ -1,5 +1,6 @@
-package com.basware.ParkingLotManagementWeb.utils.databases;
+package com.basware.ParkingLotManagementWeb.utils.helpers;
 
+import com.basware.ParkingLotManagementWeb.configs.DatabaseConfiguration;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
