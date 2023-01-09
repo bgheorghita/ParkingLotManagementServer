@@ -1,11 +1,23 @@
 package com.basware.ParkingLotManagementCommon.models.vehicles;
 
+import dev.morphia.annotations.*;
+import org.bson.types.ObjectId;
+
 import java.util.Objects;
 
+@Entity("vehicles")
+@Indexes({
+		@Index(options = @IndexOptions(name = "unique_vehicle_type", unique = true),
+				fields = @Field(value = "vehicleType"))
+})
 public abstract class Vehicle {
-	private final VehicleType vehicleType;
-	private final String plateNumber;
-	private final boolean isElectric;
+	@Id
+	private ObjectId objectId;
+	private VehicleType vehicleType;
+	private String plateNumber;
+	private boolean isElectric;
+
+	protected Vehicle(){}
 	protected Vehicle(VehicleType vehicleType, String plateNumber, boolean isElectric) {
 		this.vehicleType = vehicleType;
 		this.plateNumber = plateNumber;

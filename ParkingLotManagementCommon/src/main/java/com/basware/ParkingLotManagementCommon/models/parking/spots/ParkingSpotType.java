@@ -1,4 +1,4 @@
-package com.basware.ParkingLotManagementCommon.models.parkings.spots;
+package com.basware.ParkingLotManagementCommon.models.parking.spots;
 
 
 import java.util.Arrays;

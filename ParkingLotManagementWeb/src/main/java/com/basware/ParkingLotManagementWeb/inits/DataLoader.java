@@ -1,11 +1,14 @@
 package com.basware.ParkingLotManagementWeb.inits;
 
-import com.basware.ParkingLotManagementCommon.models.parkings.spots.ParkingSpotType;
+import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpotType;
 import com.basware.ParkingLotManagementCommon.models.taxes.*;
 import com.basware.ParkingLotManagementCommon.models.taxes.discounts.UserDiscount;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
-import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
+import com.basware.ParkingLotManagementCommon.models.vehicles.*;
 import com.basware.ParkingLotManagementWeb.repositories.taxes.*;
+import com.basware.ParkingLotManagementWeb.services.spots.ParkingSpotService;
+import com.basware.ParkingLotManagementWeb.services.users.UserService;
+import com.basware.ParkingLotManagementWeb.services.vehicles.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -21,6 +24,17 @@ public class DataLoader implements CommandLineRunner {
     @Autowired
     private TypePriceDao typePriceDao;
 
+    @Autowired
+    private ParkingSpotService parkingSpotService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private VehicleService vehicleService;
+
+
+
     @Override
     public void run(String... args) {
         typePriceDao.deleteAll();
@@ -28,7 +42,6 @@ public class DataLoader implements CommandLineRunner {
         loadPricesForParkingSpots();
         loadPricesForUsers();
         loadPricesForVehicles();
-        loadUserDiscounts();
         loadUserDiscounts();
     }
 

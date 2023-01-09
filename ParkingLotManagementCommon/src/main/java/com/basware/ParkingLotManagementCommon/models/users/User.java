@@ -1,11 +1,25 @@
 package com.basware.ParkingLotManagementCommon.models.users;
 
+import dev.morphia.annotations.*;
+import org.bson.types.ObjectId;
+
 import java.util.Objects;
 
+@Entity("users")
+@Indexes({
+		@Index(options = @IndexOptions(name = "unique_user_type", unique = true),
+				fields = @Field(value = "userType"))
+})
 public abstract class User {
+
+	@Id
+	private ObjectId objectId;
+
 	protected String name;
-	private final UserType userType;
-	
+	private UserType userType;
+
+	protected User() {}
+
 	protected User(String name, UserType userType) {
 		this.name = name;
 		this.userType = userType;
