@@ -7,10 +7,6 @@ import org.bson.types.ObjectId;
 
 
 @Entity("parkingSpots")
-@Indexes({
-		@Index(options = @IndexOptions(name = "unique_parking_spot_type", unique = true),
-				fields = @Field(value = "parkingSpotType"))
-})
 public abstract class ParkingSpot {
 
 	@Id
