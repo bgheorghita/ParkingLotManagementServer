@@ -7,18 +7,24 @@ import java.util.Objects;
 
 @Entity("vehicles")
 @Indexes({
-		@Index(options = @IndexOptions(name = "unique_vehicle_type", unique = true),
-				fields = @Field(value = "vehicleType"))
+		@Index(options = @IndexOptions(name = "unique_plate_number", unique = true),
+				fields = @Field(value = Vehicle.VEHICLE_PLATE_NUMBER_FIELD)),
 })
-public abstract class Vehicle {
+public class Vehicle {
+	public static final String VEHICLE_TYPE_FIELD = "vehicleType";
+	public static final String VEHICLE_PLATE_NUMBER_FIELD = "plateNumber";
 	@Id
 	private ObjectId objectId;
+
+	@Property(VEHICLE_TYPE_FIELD)
 	private VehicleType vehicleType;
+
+	@Property(VEHICLE_PLATE_NUMBER_FIELD)
 	private String plateNumber;
 	private boolean isElectric;
 
-	protected Vehicle(){}
-	protected Vehicle(VehicleType vehicleType, String plateNumber, boolean isElectric) {
+	public Vehicle(){}
+	public Vehicle(VehicleType vehicleType, String plateNumber, boolean isElectric) {
 		this.vehicleType = vehicleType;
 		this.plateNumber = plateNumber;
 		this.isElectric = isElectric;
@@ -49,7 +55,8 @@ public abstract class Vehicle {
 	@Override
 	public String toString() {
 		return "Vehicle{" +
-				"vehicleType=" + vehicleType +
+				"objectId=" + objectId +
+				", vehicleType=" + vehicleType +
 				", plateNumber='" + plateNumber + '\'' +
 				", isElectric=" + isElectric +
 				'}';

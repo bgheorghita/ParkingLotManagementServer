@@ -3,9 +3,6 @@ package com.basware.ParkingLotManagementWeb.repositories.taxes.morphiaImpl;
 import com.basware.ParkingLotManagementCommon.models.taxes.discounts.UserDiscount;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementWeb.repositories.taxes.UserTypeDiscountPercentDao;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoWriteException;
 import dev.morphia.Datastore;
 import dev.morphia.DeleteOptions;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import static dev.morphia.query.experimental.filters.Filters.eq;
+
 
 @Service
 @Primary

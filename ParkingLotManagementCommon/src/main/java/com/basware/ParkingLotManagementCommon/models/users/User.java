@@ -6,21 +6,20 @@ import org.bson.types.ObjectId;
 import java.util.Objects;
 
 @Entity("users")
-@Indexes({
-		@Index(options = @IndexOptions(name = "unique_user_type", unique = true),
-				fields = @Field(value = "userType"))
-})
 public abstract class User {
+	public static final String USER_TYPE_FIELD = "userType";
 
 	@Id
 	private ObjectId objectId;
 
 	protected String name;
+
+	@Property(USER_TYPE_FIELD)
 	private UserType userType;
 
-	protected User() {}
+	public User() {}
 
-	protected User(String name, UserType userType) {
+	public User(String name, UserType userType) {
 		this.name = name;
 		this.userType = userType;
 	}
@@ -49,7 +48,8 @@ public abstract class User {
 	@Override
 	public String toString() {
 		return "User{" +
-				"name='" + name + '\'' +
+				"objectId=" + objectId +
+				", name='" + name + '\'' +
 				", userType=" + userType +
 				'}';
 	}

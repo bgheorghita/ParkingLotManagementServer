@@ -3,46 +3,79 @@ package com.basware.ParkingLotManagementWeb.repositories;
 import com.mongodb.MongoWriteException;
 import dev.morphia.Datastore;
 import dev.morphia.DeleteOptions;
+import dev.morphia.query.Query;
+import dev.morphia.query.experimental.filters.Filters;
 import dev.morphia.query.internal.MorphiaCursor;
-import org.springframework.stereotype.Repository;
+import org.bson.BsonObjectId;
+import org.bson.BsonValue;
+import org.bson.types.ObjectId;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-@Repository
-public class CrudRepositoryImpl<T> implements CrudRepository<T>{
+public class CrudRepositoryImpl<T> implements CrudRepository<T> {
 
-    private final Datastore datastore;
+    protected final Datastore datastore;
+    private final Class<T> classType;
 
-    public CrudRepositoryImpl(Datastore datastore){
+    public CrudRepositoryImpl(Class<T> cls, Datastore datastore) {
+        this.classType = cls;
         this.datastore = datastore;
     }
 
     @Override
     public boolean save(T t) {
-        try{
-            return datastore.save(t) != null;
-        } catch (MongoWriteException e){
+        try {
+            datastore.save(t);
+            return true;
+        } catch (MongoWriteException e) {
             return false;
         }
     }
 
     @Override
-    public long deleteAll(Class<? extends T> cls) {
-        return datastore.find(cls).delete(new DeleteOptions().multi(true)).getDeletedCount();
+    public long deleteAll() {
+        return deleteByFieldValues(Map.of(), true);
     }
 
     @Override
-    public boolean delete(T t) {
-        return datastore.delete(t).getDeletedCount() == 1;
+    public long deleteByFieldValues(Map<String, BsonValue> fieldValueMap, boolean multi) {
+        Query<T> query = datastore.find(classType);
+        applyFilters(query, fieldValueMap);
+        return query.delete(new DeleteOptions().multi(multi)).getDeletedCount();
     }
 
     @Override
-    public List<? extends T> findAll(Class<? extends T> cls) {
-        try(MorphiaCursor<? extends T> iterator = datastore.find(cls).iterator()){
-            return iterator.toList();
+    public boolean deleteById(ObjectId objectId) {
+        return deleteByFieldValues(Map.of("_id", new BsonObjectId(objectId)), false) == 1;
+    }
+
+    @Override
+    public List<T> findAllByFieldValues(Map<String, BsonValue> fieldValueMap) {
+        Query<T> query = datastore.find(classType);
+        applyFilters(query, fieldValueMap);
+        List<T> resultList;
+
+        try(MorphiaCursor<T> iterator = query.iterator()){
+            resultList = iterator.toList();
         }
 
-        //        try(MongoCursor<T> iterator = datastore.getMapper().getCollection(cls).find().iterator()){
-        //        }
+        return resultList;
+    }
+
+    @Override
+    public List<T> findAll() {
+        return findAllByFieldValues(Map.of());
+    }
+
+    @Override
+    public Optional<T> findById(ObjectId objectId) {
+        List<T> list = findAllByFieldValues(Map.of("_id", new BsonObjectId(objectId)));
+        return list.size() > 0 ? Optional.of(list.get(0)) : Optional.empty();
+    }
+
+    private void applyFilters(Query<T> query, Map<String, BsonValue> fieldValueMap){
+        fieldValueMap.forEach((field, value) -> query.filter(Filters.and(Filters.eq(field, value))));
     }
 }

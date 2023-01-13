@@ -13,6 +13,8 @@ public class MorphiaConfiguration {
     public static final String DISCOUNT_MODELS_PACKAGE = "com.basware.ParkingLotManagementCommon.models.taxes.discounts";
     public static final String USERS_MODELS_PACKAGE = "com.basware.ParkingLotManagementCommon.models.users";
     public static final String VEHICLES_MODELS_PACKAGE = "com.basware.ParkingLotManagementCommon.models.vehicles";
+    public static final String PARKING_SPOTS_MODELS_PACKAGE = "com.basware.ParkingLotManagementCommon.models.parking.spots";
+    public static final String TICKET_MODEL_PACKAGE = "com.basware.ParkingLotManagementCommon.models.tickets";
 
     private final DatabaseConfiguration databaseConfiguration;
 
@@ -28,6 +30,8 @@ public class MorphiaConfiguration {
         datastore.getMapper().mapPackage(DISCOUNT_MODELS_PACKAGE);
         datastore.getMapper().mapPackage(USERS_MODELS_PACKAGE);
         datastore.getMapper().mapPackage(VEHICLES_MODELS_PACKAGE);
+        datastore.getMapper().mapPackage(PARKING_SPOTS_MODELS_PACKAGE);
+        datastore.getMapper().mapPackage(TICKET_MODEL_PACKAGE);
         datastore.ensureIndexes();
         return datastore;
     }

@@ -1,18 +1,22 @@
 package com.basware.ParkingLotManagementWeb.services.users;
 
 import com.basware.ParkingLotManagementCommon.models.users.User;
-import com.basware.ParkingLotManagementWeb.repositories.CrudRepository;
+import com.basware.ParkingLotManagementCommon.models.users.UserType;
+import com.basware.ParkingLotManagementWeb.repositories.users.UserDao;
+import com.basware.ParkingLotManagementWeb.services.CrudServiceImpl;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserServiceImpl implements UserService{
-    private final CrudRepository<User> userCrudRepository;
+import java.util.List;
 
-    public UserServiceImpl(CrudRepository<User> userCrudRepository){
-        this.userCrudRepository = userCrudRepository;
+@Service
+public class UserServiceImpl extends CrudServiceImpl<User> implements UserService{
+
+    public UserServiceImpl(UserDao userDao) {
+        super(userDao);
     }
+
     @Override
-    public boolean save(User user) {
-        return userCrudRepository.save(user);
+    public List<User> findAllByUserType(UserType userType) {
+        return ((UserDao) crudRepository).findAllByUserType(userType);
     }
 }

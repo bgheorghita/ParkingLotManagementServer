@@ -40,7 +40,8 @@ public class TypePriceDaoMorphiaImpl implements TypePriceDao {
     @Override
     public boolean save(TypePrice typePrice) {
         try{
-            return datastore.save(typePrice) != null;
+            datastore.save(typePrice);
+            return true;
         } catch (MongoWriteException e){
             return false;
         }
