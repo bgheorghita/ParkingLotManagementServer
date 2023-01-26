@@ -29,4 +29,15 @@ public class ParkingSpotDaoImpl extends CrudRepositoryImpl<ParkingSpot> implemen
         return findAllByFieldValues(Map.of(ParkingSpot.HAS_ELECTRIC_CHARGER_FIELD,
                 new BsonBoolean(hasElectricCharger)));
     }
+
+    @Override
+    public List<ParkingSpot> findAllFreeByParkingSpotType(ParkingSpotType parkingSpotType) {
+        return findAllByFieldValues(Map.of(ParkingSpot.IS_FREE_FIELD, new BsonBoolean(true),
+                ParkingSpot.PARKING_SPOT_TYPE_FIELD, new BsonString(parkingSpotType.name())));
+    }
+
+    @Override
+    public List<ParkingSpot> findAllFree() {
+        return findAllByFieldValues(Map.of(ParkingSpot.IS_FREE_FIELD, new BsonBoolean(true)));
+    }
 }

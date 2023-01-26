@@ -6,13 +6,15 @@ import org.bson.types.ObjectId;
 import java.util.Objects;
 
 @Entity("users")
-public abstract class User {
+public class User {
 	public static final String USER_TYPE_FIELD = "userType";
 
 	@Id
 	private ObjectId objectId;
 
-	protected String name;
+	private String name;
+
+	//private Vehicle vehicle;
 
 	@Property(USER_TYPE_FIELD)
 	private UserType userType;
@@ -30,6 +32,10 @@ public abstract class User {
 	
 	public UserType getUserType() {
 		return userType;
+	}
+
+	public ObjectId getObjectId(){
+		return objectId;
 	}
 
 	@Override

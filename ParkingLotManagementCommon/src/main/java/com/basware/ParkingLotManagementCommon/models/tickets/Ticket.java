@@ -1,13 +1,15 @@
 package com.basware.ParkingLotManagementCommon.models.tickets;
 
 import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpot;
-import com.basware.ParkingLotManagementCommon.models.taxes.Price;
 import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Property;
 import dev.morphia.annotations.Reference;
 import org.bson.types.ObjectId;
+
+import java.time.LocalDateTime;
 
 @Entity("tickets")
 public class Ticket {
@@ -23,19 +25,17 @@ public class Ticket {
 	@Reference(ignoreMissing = true)
 	private ParkingSpot parkingSpot;
 
-	private Price price;
-
-	private int parkingDurationTimeInMinutes;
+	@Property("startTime")
+	private LocalDateTime startTime;
 
 
 	public Ticket(){}
 
-	public Ticket(User user, Vehicle vehicle, ParkingSpot parkingSpot, Price price, int parkingDurationTimeInMinutes) {
+	public Ticket(User user, Vehicle vehicle, ParkingSpot parkingSpot) {
 		this.user = user;
 		this.vehicle = vehicle;
 		this.parkingSpot = parkingSpot;
-		this.price = price;
-		this.parkingDurationTimeInMinutes = parkingDurationTimeInMinutes;
+		startTime = LocalDateTime.now();
 	}
 
 	public ObjectId getObjectId() {
@@ -70,20 +70,8 @@ public class Ticket {
 		this.parkingSpot = parkingSpot;
 	}
 
-	public Price getPrice() {
-		return price;
-	}
-
-	public void setPrice(Price price) {
-		this.price = price;
-	}
-
-	public int getParkingDurationTimeInMinutes() {
-		return parkingDurationTimeInMinutes;
-	}
-
-	public void setParkingDurationTimeInMinutes(int parkingDurationTimeInMinutes) {
-		this.parkingDurationTimeInMinutes = parkingDurationTimeInMinutes;
+	public LocalDateTime getStartTime() {
+		return startTime;
 	}
 
 	@Override
@@ -93,8 +81,7 @@ public class Ticket {
 				", user=" + user +
 				", vehicle=" + vehicle +
 				", parkingSpot=" + parkingSpot +
-				", price=" + price +
-				", parkingDurationTimeInMinutes=" + parkingDurationTimeInMinutes +
+				", startTime=" + startTime +
 				'}';
 	}
 }

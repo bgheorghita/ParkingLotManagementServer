@@ -6,7 +6,8 @@ import com.basware.ParkingLotManagementCommon.models.taxes.discounts.UserDiscoun
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.*;
 import com.basware.ParkingLotManagementWeb.repositories.taxes.*;
-import com.basware.ParkingLotManagementWeb.services.spots.ParkingSpotService;
+import com.basware.ParkingLotManagementWeb.services.parking.spots.ParkingSpotService;
+import com.basware.ParkingLotManagementWeb.services.parking.strategies.CustomParkingStrategyService;
 import com.basware.ParkingLotManagementWeb.services.tickets.TicketService;
 import com.basware.ParkingLotManagementWeb.services.users.UserService;
 import com.basware.ParkingLotManagementWeb.services.vehicles.VehicleService;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import java.util.ConcurrentModificationException;
 
 
 @Component
@@ -37,6 +40,8 @@ public class DataLoader implements CommandLineRunner {
     @Autowired
     private TicketService ticketService;
 
+    @Autowired
+    private CustomParkingStrategyService customParkingStrategyService;
 
     @Override
     public void run(String... args) {
@@ -51,16 +56,20 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void loadParkingSpotsWithoutElectricCharger() {
-        parkingSpotService.save(new ParkingSpot(ParkingSpotType.SMALL, false));
-        parkingSpotService.save(new ParkingSpot(ParkingSpotType.MEDIUM, false));
-        parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, false));
-        parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, false));
+        try {
+            parkingSpotService.save(new ParkingSpot(ParkingSpotType.SMALL, 1L, false));
+            parkingSpotService.save(new ParkingSpot(ParkingSpotType.MEDIUM, 2L, false));
+            parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, 3L, false));
+            parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, 4L, false));
+        } catch (ConcurrentModificationException ignored) {System.out.println("Parking spots without electric charger NOT loaded");}
     }
 
     private void loadParkingSpotsWithElectricCharger() {
-        parkingSpotService.save(new ParkingSpot(ParkingSpotType.SMALL, true));
-        parkingSpotService.save(new ParkingSpot(ParkingSpotType.MEDIUM, true));
-        parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, true));
+        try{
+            parkingSpotService.save(new ParkingSpot(ParkingSpotType.SMALL, 5L, true));
+            parkingSpotService.save(new ParkingSpot(ParkingSpotType.MEDIUM, 6L, true));
+            parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, 7L, true));
+        } catch (ConcurrentModificationException ignored){System.out.println("Parking spots with electric charger NOT loaded");}
     }
 
     private void loadUserDiscounts() {

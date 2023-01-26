@@ -11,12 +11,14 @@ import java.util.List;
 @Service
 public class UserServiceImpl extends CrudServiceImpl<User> implements UserService{
 
+    private final UserDao userDao;
+
     public UserServiceImpl(UserDao userDao) {
-        super(userDao);
+        this.userDao = userDao;
     }
 
     @Override
     public List<User> findAllByUserType(UserType userType) {
-        return ((UserDao) crudRepository).findAllByUserType(userType);
+        return userDao.findAllByUserType(userType);
     }
 }

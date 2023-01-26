@@ -6,15 +6,17 @@ import com.basware.ParkingLotManagementWeb.repositories.vehicles.VehicleDao;
 import com.basware.ParkingLotManagementWeb.services.CrudServiceImpl;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class VehicleServiceImpl extends CrudServiceImpl<Vehicle> implements VehicleService{
+    private final VehicleDao vehicleDao;
 
     public VehicleServiceImpl(VehicleDao vehicleDao) {
-        super(vehicleDao);
+        this.vehicleDao = vehicleDao;
     }
 
     @Override
     public Vehicle findByPlateNumber(String plateNumber) throws ResourceNotFoundException {
-        return ((VehicleDao)crudRepository).findVehicleByPlateNumber(plateNumber).orElseThrow(ResourceNotFoundException::new);
+        return vehicleDao.findVehicleByPlateNumber(plateNumber).orElseThrow(ResourceNotFoundException::new);
     }
 }

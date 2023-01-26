@@ -29,6 +29,11 @@ public class Vehicle {
 		this.plateNumber = plateNumber;
 		this.isElectric = isElectric;
 	}
+
+	public ObjectId getObjectId(){
+		return objectId;
+	}
+
 	public VehicleType getVehicleType() {
 		return vehicleType;
 	}

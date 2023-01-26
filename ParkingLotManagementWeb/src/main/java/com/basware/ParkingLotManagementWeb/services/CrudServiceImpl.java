@@ -1,22 +1,20 @@
 package com.basware.ParkingLotManagementWeb.services;
 
-import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.repositories.CrudRepository;
 import org.bson.BsonValue;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class CrudServiceImpl<T> implements CrudService<T>{
-    protected final CrudRepository<T> crudRepository;
-
-    public CrudServiceImpl(CrudRepository<T> crudRepository){
-        this.crudRepository = crudRepository;
-    }
+    @Autowired
+    protected CrudRepository<T> crudRepository;
 
     @Override
-    public boolean save(T t) {
+    public Optional<T> save(T t) {
         return crudRepository.save(t);
     }
 
@@ -46,7 +44,7 @@ public class CrudServiceImpl<T> implements CrudService<T>{
     }
 
     @Override
-    public T findById(ObjectId objectId) throws ResourceNotFoundException {
-        return crudRepository.findById(objectId).orElseThrow(ResourceNotFoundException::new);
+    public Optional<T> findById(ObjectId objectId) {
+        return crudRepository.findById(objectId);
     }
 }

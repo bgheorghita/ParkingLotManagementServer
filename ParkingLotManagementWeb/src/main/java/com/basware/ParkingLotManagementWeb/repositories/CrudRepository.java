@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface CrudRepository<T> {
-    boolean save(T t);
+    Optional<T> save(T t);
+    boolean save(ObjectId objectId, T t);
     long deleteAll();
     long deleteByFieldValues(Map<String, BsonValue> fieldValueMap, boolean multi);
     boolean deleteById(ObjectId objectId);

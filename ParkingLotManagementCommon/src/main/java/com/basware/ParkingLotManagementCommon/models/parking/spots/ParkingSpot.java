@@ -2,29 +2,52 @@ package com.basware.ParkingLotManagementCommon.models.parking.spots;
 
 
 import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.morphia.annotations.*;
 import org.bson.types.ObjectId;
 
 
 @Entity("parkingSpots")
+@Indexes({
+		@Index(options = @IndexOptions(name = "unique_spot_number", unique = true),
+				fields = @Field(value = ParkingSpot.SPOT_NUMBER)),
+})
 public class ParkingSpot {
 	public static final String PARKING_SPOT_TYPE_FIELD = "parkingSpotType";
 	public static final String HAS_ELECTRIC_CHARGER_FIELD = "hasElectricCharger";
+	public static final String VEHICLE_FIELD = "vehicle";
+	public static final String IS_FREE_FIELD = "isFree";
+	public static final String SPOT_NUMBER = "spotNumber";
+
+	@Version
+	private Long version;
 
 	@Id
 	private ObjectId objectId;
-	@Reference(ignoreMissing = true, idOnly = true)
+
+	@Property(ParkingSpot.SPOT_NUMBER)
+	private Long spotNumber;
+
+	@Reference(value = VEHICLE_FIELD, ignoreMissing = true, idOnly = true)
 	private Vehicle vehicle;
+
 	@Property(ParkingSpot.PARKING_SPOT_TYPE_FIELD)
 	private ParkingSpotType parkingSpotType;
+
 	@Property(ParkingSpot.HAS_ELECTRIC_CHARGER_FIELD)
+	@JsonProperty(ParkingSpot.HAS_ELECTRIC_CHARGER_FIELD)
 	private boolean hasElectricCharger;
-	private boolean isEmpty;
+
+	@Property(ParkingSpot.IS_FREE_FIELD)
+	private boolean isFree;
+
 	protected ParkingSpot(){}
-	public ParkingSpot(ParkingSpotType parkingSpotType, boolean hasElectricCharger) {
+
+	public ParkingSpot(ParkingSpotType parkingSpotType, Long spotNumber, boolean hasElectricCharger) {
 		this.parkingSpotType = parkingSpotType;
+		this.spotNumber = spotNumber;
 		this.hasElectricCharger = hasElectricCharger;
-		isEmpty = true;
+		isFree = true;
 	}
 
 	public ParkingSpotType getParkingSpotType(){
@@ -35,17 +58,25 @@ public class ParkingSpot {
 		return vehicle;
 	}
 
+	public ObjectId getObjectId(){
+		return objectId;
+	}
+
+	public Long getSpotNumber() {
+		return spotNumber;
+	}
+
 	public void setVehicle(Vehicle vehicle) {
 		this.vehicle = vehicle;
-		isEmpty = false;
+		isFree = false;
 	}
 
 	public void removeVehicle(){
 		vehicle = null;
-		isEmpty = true;
+		isFree = true;
 	}
 
-	public boolean isEmpty(){return vehicle == null;}
+	public boolean isFree(){return vehicle == null;}
 
 	public boolean hasElectricCharger(){return hasElectricCharger;}
 
@@ -56,7 +87,8 @@ public class ParkingSpot {
 				", vehicle=" + vehicle +
 				", parkingSpotType=" + parkingSpotType +
 				", hasElectricCharger=" + hasElectricCharger +
-				", isEmpty=" + isEmpty +
+				", isFree=" + isFree +
+				", spotId='" + spotNumber + '\'' +
 				'}';
 	}
 }

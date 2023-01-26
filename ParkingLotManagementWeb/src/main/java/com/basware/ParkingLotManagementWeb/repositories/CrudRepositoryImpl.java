@@ -4,6 +4,7 @@ import com.mongodb.MongoWriteException;
 import dev.morphia.Datastore;
 import dev.morphia.DeleteOptions;
 import dev.morphia.query.Query;
+import dev.morphia.query.experimental.filters.Filter;
 import dev.morphia.query.experimental.filters.Filters;
 import dev.morphia.query.internal.MorphiaCursor;
 import org.bson.BsonObjectId;
@@ -13,6 +14,7 @@ import org.bson.types.ObjectId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CrudRepositoryImpl<T> implements CrudRepository<T> {
 
@@ -25,13 +27,18 @@ public class CrudRepositoryImpl<T> implements CrudRepository<T> {
     }
 
     @Override
-    public boolean save(T t) {
+    public Optional<T> save(T t) {
         try {
-            datastore.save(t);
-            return true;
+            T obj = datastore.save(t);
+            return Optional.of(obj);
         } catch (MongoWriteException e) {
-            return false;
+            return Optional.empty();
         }
+    }
+
+    @Override
+    public boolean save(ObjectId objectId, T t) {
+        return false;
     }
 
     @Override
@@ -76,6 +83,14 @@ public class CrudRepositoryImpl<T> implements CrudRepository<T> {
     }
 
     private void applyFilters(Query<T> query, Map<String, BsonValue> fieldValueMap){
-        fieldValueMap.forEach((field, value) -> query.filter(Filters.and(Filters.eq(field, value))));
+        Filter[] filters = new Filter[fieldValueMap.size()];
+        AtomicInteger i = new AtomicInteger(0);
+
+        fieldValueMap.forEach((field, value) -> {
+            filters[i.get()] = Filters.eq(field, value);
+            i.getAndIncrement();
+        });
+
+        query.filter(Filters.and(filters));
     }
 }
