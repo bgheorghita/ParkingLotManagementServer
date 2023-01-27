@@ -5,6 +5,7 @@ import com.basware.ParkingLotManagementCommon.models.tickets.Ticket;
 import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
+import com.basware.ParkingLotManagementWeb.api.v1.models.ParkingResultDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.parking.spots.ParkingSpotService;
@@ -12,9 +13,11 @@ import com.basware.ParkingLotManagementWeb.services.parking.strategies.CustomPar
 import com.basware.ParkingLotManagementWeb.services.tickets.TicketService;
 import com.basware.ParkingLotManagementWeb.services.users.UserService;
 import com.basware.ParkingLotManagementWeb.services.vehicles.VehicleService;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ConcurrentModificationException;
 import java.util.Optional;
 
@@ -60,11 +63,12 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         } catch (ConcurrentModificationException e){
             vehicleService.deleteById(savedVehicle.getObjectId());
             userService.deleteById(savedUser.getObjectId());
-            ticketService.deleteById((savedTicket.getObjectId()));
+            ticketService.deleteById(savedTicket.getObjectId());
             throw new ServiceNotAvailable("The service is unavailable. Please try again later.");
         }
 
         return new TicketOutputDto()
+                .setTicketObjectId(savedTicket.getObjectId().toString())
                 .setUserName(savedUser.getName())
                 .setUserType(savedUser.getUserType())
                 .setVehiclePlateNumber(savedVehicle.getPlateNumber())
@@ -73,15 +77,44 @@ public class ParkingLotServiceImpl implements ParkingLotService{
                 .setParkingSpotType(parkingSpot.getParkingSpotType())
                 .setParkingSpotWithElectricCharger(parkingSpot.hasElectricCharger())
                 .setParkingSpotNumber(parkingSpot.getSpotNumber())
-                .setTime(LocalDateTime.now())
+                .setTime(savedTicket.getStartTime())
                 .build();
+    }
+
+    @Override
+    public ParkingResultDto leaveParkingLot(TicketOutputDto ticketOutputDto) throws TicketNotFoundException, ServiceNotAvailable {
+        ObjectId ticketId = new ObjectId(ticketOutputDto.getTicketObjectId());
+        Optional<Ticket> ticketOptional = ticketService.findById(ticketId);
+
+        if(ticketOptional.isEmpty()){
+            throw new TicketNotFoundException("The ticket id " + ticketId + " has not been found.");
+        }
+
+        Ticket ticket = ticketOptional.get();
+        Vehicle vehicle = ticket.getVehicle();
+        User user = ticket.getUser();
+        ParkingSpot parkingSpot = ticket.getParkingSpot();
+        parkingSpot.removeVehicle();
+
+        try{
+            parkingSpotService.save(parkingSpot);
+            vehicleService.deleteById(vehicle.getObjectId());
+            userService.deleteById(user.getObjectId());
+            ticketService.deleteById(ticket.getObjectId());
+        } catch (ConcurrentModificationException e){
+            parkingSpot.setVehicle(vehicle);
+            throw new ServiceNotAvailable("The service is unavailable. Please try again later.");
+        }
+
+        long parkingDuration = ChronoUnit.MINUTES.between(ticket.getStartTime(), LocalDateTime.now());
+        return new ParkingResultDto(parkingDuration);
     }
 
     private ParkingSpot findParkingSpotByUserTypeStrategy(UserType userType, Vehicle vehicle) throws ParkingSpotNotFoundException {
         return customParkingStrategyService
                 .getParkingStrategyByUserType(userType)
                 .findParkingSpot(vehicle)
-                .orElseThrow(() -> new ParkingSpotNotFoundException("Parking lot is full."));
+                .orElseThrow(() -> new ParkingSpotNotFoundException("No parking spot was found."));
     }
 
     private void checkIfVehicleIsAlreadyParked(Vehicle vehicle) throws VehicleAlreadyParkedException {

@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 
 @Entity("tickets")
 public class Ticket {
+	public static final String PARKING_SPOT_FIELD = "parkingSpot";
+
 	@Id
 	private ObjectId objectId;
 
@@ -22,7 +24,7 @@ public class Ticket {
 	@Reference(ignoreMissing = true)
 	private Vehicle vehicle;
 
-	@Reference(ignoreMissing = true)
+	@Reference(value = PARKING_SPOT_FIELD, ignoreMissing = true)
 	private ParkingSpot parkingSpot;
 
 	@Property("startTime")

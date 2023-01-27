@@ -4,12 +4,10 @@ import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
 import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
+import com.basware.ParkingLotManagementWeb.api.v1.models.ParkingResultDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketInputDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
-import com.basware.ParkingLotManagementWeb.exceptions.ParkingSpotNotFoundException;
-import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
-import com.basware.ParkingLotManagementWeb.exceptions.ServiceNotAvailable;
-import com.basware.ParkingLotManagementWeb.exceptions.TicketException;
+import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.parking.lots.ParkingLotService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +24,7 @@ public class ParkingLotController {
         this.parkingLotService = parkingLotService;
     }
 
-    @PostMapping("/ticket")
+    @PostMapping("/in")
     @ResponseStatus(HttpStatus.CREATED)
     public TicketOutputDto generateTicket(@RequestBody TicketInputDto ticketInputDto) throws SaveException, TicketException, ParkingSpotNotFoundException, ServiceNotAvailable {
         String userName = ticketInputDto.getUserName();
@@ -39,5 +37,11 @@ public class ParkingLotController {
         Vehicle vehicle =  new Vehicle(vehicleType, vehiclePlateNumber, vehicleIsElectric);
 
         return parkingLotService.generateTicket(user, vehicle);
+    }
+
+    @PostMapping("/out")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ParkingResultDto leaveParkingLot(@RequestBody TicketOutputDto ticketOutputDto) throws TicketException, ServiceNotAvailable, ResourceNotFoundException {
+        return parkingLotService.leaveParkingLot(ticketOutputDto);
     }
 }

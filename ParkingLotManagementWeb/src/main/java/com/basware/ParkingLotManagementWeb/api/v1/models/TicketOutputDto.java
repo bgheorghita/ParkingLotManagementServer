@@ -7,6 +7,7 @@ import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
 import java.time.LocalDateTime;
 
 public class TicketOutputDto {
+    private String ticketObjectId;
     private String userName;
     private UserType userType;
     private String vehiclePlateNumber;
@@ -17,7 +18,8 @@ public class TicketOutputDto {
     private Long parkingSpotNumber;
     private LocalDateTime time;
 
-    public TicketOutputDto(String userName, UserType userType, String vehiclePlateNumber, VehicleType vehicleType, boolean electricVehicle, ParkingSpotType parkingSpotType, boolean parkingSpotWithElectricCharger, Long parkingSpotNumber, LocalDateTime time) {
+    public TicketOutputDto(String ticketObjectId, String userName, UserType userType, String vehiclePlateNumber, VehicleType vehicleType, boolean electricVehicle, ParkingSpotType parkingSpotType, boolean parkingSpotWithElectricCharger, Long parkingSpotNumber, LocalDateTime time) {
+        this.ticketObjectId = ticketObjectId;
         this.userName = userName;
         this.userType = userType;
         this.vehiclePlateNumber = vehiclePlateNumber;
@@ -30,6 +32,8 @@ public class TicketOutputDto {
     }
 
     public TicketOutputDto(){}
+
+    public String getTicketObjectId(){return ticketObjectId;}
 
     public String getUserName() {
         return userName;
@@ -112,7 +116,12 @@ public class TicketOutputDto {
         return this;
     }
 
+    public TicketOutputDto setTicketObjectId(String ticketObjectId) {
+        this.ticketObjectId = ticketObjectId;
+        return this;
+    }
+
     public TicketOutputDto build() {
-        return new TicketOutputDto(userName, userType, vehiclePlateNumber, vehicleType, electricVehicle, parkingSpotType, parkingSpotWithElectricCharger, parkingSpotNumber, time);
+        return new TicketOutputDto(ticketObjectId, userName, userType, vehiclePlateNumber, vehicleType, electricVehicle, parkingSpotType, parkingSpotWithElectricCharger, parkingSpotNumber, time);
     }
 }

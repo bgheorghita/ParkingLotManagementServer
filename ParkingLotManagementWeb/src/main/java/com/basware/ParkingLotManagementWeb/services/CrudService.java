@@ -12,6 +12,7 @@ public interface CrudService<T> {
     long deleteAll();
     long deleteByFieldValues(Map<String, BsonValue> fieldValuesMap, boolean multi);
     boolean deleteById(ObjectId objectId);
+    boolean deleteById(Long id);
     List<T> findAllByFieldValues(Map<String, BsonValue> fieldValuesMap);
     List<T> findAll();
     Optional<T> findById(ObjectId objectId);

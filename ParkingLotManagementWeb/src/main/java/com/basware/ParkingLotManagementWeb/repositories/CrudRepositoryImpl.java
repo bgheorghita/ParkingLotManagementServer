@@ -7,6 +7,7 @@ import dev.morphia.query.Query;
 import dev.morphia.query.experimental.filters.Filter;
 import dev.morphia.query.experimental.filters.Filters;
 import dev.morphia.query.internal.MorphiaCursor;
+import org.bson.BsonInt64;
 import org.bson.BsonObjectId;
 import org.bson.BsonValue;
 import org.bson.types.ObjectId;
@@ -56,6 +57,11 @@ public class CrudRepositoryImpl<T> implements CrudRepository<T> {
     @Override
     public boolean deleteById(ObjectId objectId) {
         return deleteByFieldValues(Map.of("_id", new BsonObjectId(objectId)), false) == 1;
+    }
+
+    @Override
+    public boolean deleteById(Long id) {
+        return deleteByFieldValues(Map.of("_id", new BsonInt64(id)), false) == 1;
     }
 
     @Override
