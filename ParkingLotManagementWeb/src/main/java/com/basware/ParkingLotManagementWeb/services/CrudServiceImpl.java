@@ -34,11 +34,6 @@ public class CrudServiceImpl<T> implements CrudService<T>{
     }
 
     @Override
-    public boolean deleteById(Long id) {
-        return crudRepository.deleteById(id);
-    }
-
-    @Override
     public List<T> findAllByFieldValues(Map<String, BsonValue> fieldValuesMap) {
         return crudRepository.findAllByFieldValues(fieldValuesMap);
     }
