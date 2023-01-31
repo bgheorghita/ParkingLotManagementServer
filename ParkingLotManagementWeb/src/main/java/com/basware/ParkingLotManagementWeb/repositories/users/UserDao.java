@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface UserDao extends CrudRepository<User> {
     List<User> findAllByUserType(UserType userType);
+    List<User> findByVehiclePlateNumber(String vehiclePlateNumber);
 }

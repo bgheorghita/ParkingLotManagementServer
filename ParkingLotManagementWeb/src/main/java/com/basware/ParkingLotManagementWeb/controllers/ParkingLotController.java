@@ -26,7 +26,7 @@ public class ParkingLotController {
 
     @PostMapping("/in")
     @ResponseStatus(HttpStatus.CREATED)
-    public TicketOutputDto generateTicket(@RequestBody TicketInputDto ticketInputDto) throws SaveException, TicketException, ParkingSpotNotFoundException, ServiceNotAvailable {
+    public TicketOutputDto generateTicket(@RequestBody TicketInputDto ticketInputDto) throws SaveException, TicketException, ServiceNotAvailable, TooManyRequestsException, ResourceNotFoundException {
         String userName = ticketInputDto.getUserName();
         UserType userType = ticketInputDto.getUserType();
         User user = new User(userName, userType);
@@ -39,9 +39,9 @@ public class ParkingLotController {
         return parkingLotService.generateTicket(user, vehicle);
     }
 
-    @PostMapping("/out")
+    @PostMapping("/out/{vehiclePlateNumber}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ParkingResultDto leaveParkingLot(@RequestBody TicketOutputDto ticketOutputDto) throws TicketException, ServiceNotAvailable, ResourceNotFoundException {
-        return parkingLotService.leaveParkingLot(ticketOutputDto);
+    public ParkingResultDto leaveParkingLot(@PathVariable String vehiclePlateNumber) throws TicketException, ServiceNotAvailable, ResourceNotFoundException, TooManyRequestsException, SaveException {
+        return parkingLotService.leaveParkingLot(vehiclePlateNumber);
     }
 }

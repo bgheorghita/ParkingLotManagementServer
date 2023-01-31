@@ -1,31 +1,23 @@
 package com.basware.ParkingLotManagementCommon.models.tickets;
 
-import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpot;
-import com.basware.ParkingLotManagementCommon.models.users.User;
-import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
-import dev.morphia.annotations.Reference;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
 
 @Entity("tickets")
 public class Ticket {
-	public static final String PARKING_SPOT_FIELD = "parkingSpot";
-
+	public static final String VEHICLE_PLATE_NUMBER_FIELD = "vehiclePlateNumber";
 	@Id
 	private ObjectId objectId;
 
-	@Reference(ignoreMissing = true)
-	private User user;
+	private String userName;
 
-	@Reference(ignoreMissing = true)
-	private Vehicle vehicle;
-
-	@Reference(value = PARKING_SPOT_FIELD, ignoreMissing = true)
-	private ParkingSpot parkingSpot;
+	@Property(VEHICLE_PLATE_NUMBER_FIELD)
+	private String vehiclePlateNumber;
+	private long parkingSpotNumber;
 
 	@Property("startTime")
 	private LocalDateTime startTime;
@@ -33,10 +25,10 @@ public class Ticket {
 
 	public Ticket(){}
 
-	public Ticket(User user, Vehicle vehicle, ParkingSpot parkingSpot) {
-		this.user = user;
-		this.vehicle = vehicle;
-		this.parkingSpot = parkingSpot;
+	public Ticket(String userName, String vehiclePlateNumber, long parkingSpotNumber) {
+		this.userName = userName;
+		this.vehiclePlateNumber = vehiclePlateNumber;
+		this.parkingSpotNumber = parkingSpotNumber;
 		startTime = LocalDateTime.now();
 	}
 
@@ -44,32 +36,15 @@ public class Ticket {
 		return objectId;
 	}
 
-	public void setObjectId(ObjectId objectId) {
-		this.objectId = objectId;
+	public String getUserName() {
+		return userName;
 	}
 
-	public User getUser() {
-		return user;
+	public String getVehiclePlateNumber() {
+		return vehiclePlateNumber;
 	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Vehicle getVehicle() {
-		return vehicle;
-	}
-
-	public void setVehicle(Vehicle vehicle) {
-		this.vehicle = vehicle;
-	}
-
-	public ParkingSpot getParkingSpot() {
-		return parkingSpot;
-	}
-
-	public void setParkingSpot(ParkingSpot parkingSpot) {
-		this.parkingSpot = parkingSpot;
+	public long getParkingSpotNumber() {
+		return parkingSpotNumber;
 	}
 
 	public LocalDateTime getStartTime() {
@@ -80,9 +55,9 @@ public class Ticket {
 	public String toString() {
 		return "Ticket{" +
 				"objectId=" + objectId +
-				", user=" + user +
-				", vehicle=" + vehicle +
-				", parkingSpot=" + parkingSpot +
+				", userName='" + userName + '\'' +
+				", vehiclePlateNumber='" + vehiclePlateNumber + '\'' +
+				", parkingSpotNumber=" + parkingSpotNumber +
 				", startTime=" + startTime +
 				'}';
 	}

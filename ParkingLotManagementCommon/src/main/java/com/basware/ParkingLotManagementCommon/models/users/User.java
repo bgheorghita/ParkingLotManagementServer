@@ -8,13 +8,15 @@ import java.util.Objects;
 @Entity("users")
 public class User {
 	public static final String USER_TYPE_FIELD = "userType";
+	public static final String VEHICLE_PLATE_NUMBER_FIELD = "vehiclePlateNumber";
 
 	@Id
 	private ObjectId objectId;
 
 	private String name;
 
-	//private Vehicle vehicle;
+	@Property(VEHICLE_PLATE_NUMBER_FIELD)
+	private String vehiclePlateNumber;
 
 	@Property(USER_TYPE_FIELD)
 	private UserType userType;
@@ -22,8 +24,13 @@ public class User {
 	public User() {}
 
 	public User(String name, UserType userType) {
+		this(name, userType, "");
+	}
+
+	public User(String name, UserType userType, String vehiclePlateNumber) {
 		this.name = name;
 		this.userType = userType;
+		this.vehiclePlateNumber = vehiclePlateNumber;
 	}
 	
 	public String getName() {
@@ -36,6 +43,14 @@ public class User {
 
 	public ObjectId getObjectId(){
 		return objectId;
+	}
+
+	public String getVehiclePlateNumber() {
+		return vehiclePlateNumber;
+	}
+
+	public void setVehiclePlateNumber(String vehiclePlateNumber) {
+		this.vehiclePlateNumber = vehiclePlateNumber;
 	}
 
 	@Override
@@ -56,6 +71,7 @@ public class User {
 		return "User{" +
 				"objectId=" + objectId +
 				", name='" + name + '\'' +
+				", vehiclePlateNumber='" + vehiclePlateNumber + '\'' +
 				", userType=" + userType +
 				'}';
 	}

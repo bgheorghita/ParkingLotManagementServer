@@ -2,6 +2,7 @@ package com.basware.ParkingLotManagementWeb.services.users;
 
 import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
+import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.repositories.users.UserDao;
 import com.basware.ParkingLotManagementWeb.services.CrudServiceImpl;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,14 @@ public class UserServiceImpl extends CrudServiceImpl<User> implements UserServic
     @Override
     public List<User> findAllByUserType(UserType userType) {
         return userDao.findAllByUserType(userType);
+    }
+
+    @Override
+    public User findFirstByVehiclePlateNumber(String vehiclePlateNumber) throws ResourceNotFoundException {
+        List<User> users = userDao.findByVehiclePlateNumber(vehiclePlateNumber);
+        if(users.size() > 0){
+            return users.get(0);
+        }
+        throw new ResourceNotFoundException(String.format("User by vehicle plate number \"%s\" could not be found.", vehiclePlateNumber));
     }
 }

@@ -1,7 +1,6 @@
 package com.basware.ParkingLotManagementCommon.models.parking.spots;
 
 
-import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.morphia.annotations.*;
 import org.bson.types.ObjectId;
@@ -15,7 +14,7 @@ import org.bson.types.ObjectId;
 public class ParkingSpot {
 	public static final String PARKING_SPOT_TYPE_FIELD = "parkingSpotType";
 	public static final String HAS_ELECTRIC_CHARGER_FIELD = "hasElectricCharger";
-	public static final String VEHICLE_FIELD = "vehicle";
+	public static final String VEHICLE_PLATE_NUMBER = "vehiclePlateNumber";
 	public static final String IS_FREE_FIELD = "isFree";
 	public static final String SPOT_NUMBER = "spotNumber";
 
@@ -28,8 +27,8 @@ public class ParkingSpot {
 	@Property(ParkingSpot.SPOT_NUMBER)
 	private Long spotNumber;
 
-	@Reference(value = VEHICLE_FIELD, ignoreMissing = true, idOnly = true)
-	private Vehicle vehicle;
+	@Property(ParkingSpot.VEHICLE_PLATE_NUMBER)
+	private String vehiclePlateNumber;
 
 	@Property(ParkingSpot.PARKING_SPOT_TYPE_FIELD)
 	private ParkingSpotType parkingSpotType;
@@ -54,8 +53,8 @@ public class ParkingSpot {
 		return parkingSpotType;
 	}
 
-	public Vehicle getVehicle() {
-		return vehicle;
+	public String getVehiclePlateNumber() {
+		return vehiclePlateNumber;
 	}
 
 	public ObjectId getObjectId(){
@@ -66,29 +65,30 @@ public class ParkingSpot {
 		return spotNumber;
 	}
 
-	public void setVehicle(Vehicle vehicle) {
-		this.vehicle = vehicle;
+	public void setVehiclePlateNumber(String vehiclePlateNumber) {
+		this.vehiclePlateNumber = vehiclePlateNumber;
 		isFree = false;
 	}
 
-	public void removeVehicle(){
-		vehicle = null;
+	public void removeVehiclePlateNumber(){
+		vehiclePlateNumber = null;
 		isFree = true;
 	}
 
-	public boolean isFree(){return vehicle == null;}
+	public boolean isFree(){return vehiclePlateNumber != null;}
 
 	public boolean hasElectricCharger(){return hasElectricCharger;}
 
 	@Override
 	public String toString() {
 		return "ParkingSpot{" +
-				"objectId=" + objectId +
-				", vehicle=" + vehicle +
+				"version=" + version +
+				", objectId=" + objectId +
+				", spotNumber=" + spotNumber +
+				", vehiclePlateNumber='" + vehiclePlateNumber + '\'' +
 				", parkingSpotType=" + parkingSpotType +
 				", hasElectricCharger=" + hasElectricCharger +
 				", isFree=" + isFree +
-				", spotId='" + spotNumber + '\'' +
 				'}';
 	}
 }

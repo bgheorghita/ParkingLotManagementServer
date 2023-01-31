@@ -17,6 +17,6 @@ public class TypePriceServiceImpl implements TypePriceService {
 
     @Override
     public Price getPrice(TypeInfo typeInfo) throws ResourceNotFoundException {
-        return typePriceDao.getPriceByTypeInfo(typeInfo).orElseThrow(ResourceNotFoundException::new);
+        return typePriceDao.getPriceByTypeInfo(typeInfo).orElseThrow(() -> new ResourceNotFoundException("Price could not be found"));
     }
 }

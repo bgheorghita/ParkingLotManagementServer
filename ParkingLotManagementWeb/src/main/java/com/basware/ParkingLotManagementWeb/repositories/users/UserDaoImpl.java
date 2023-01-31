@@ -21,4 +21,9 @@ public class UserDaoImpl extends CrudRepositoryImpl<User> implements UserDao {
     public List<User> findAllByUserType(UserType userType) {
         return findAllByFieldValues(Map.of(User.USER_TYPE_FIELD, new BsonString(userType.name())));
     }
+
+    @Override
+    public List<User> findByVehiclePlateNumber(String vehiclePlateNumber) {
+        return findAllByFieldValues(Map.of(User.VEHICLE_PLATE_NUMBER_FIELD, new BsonString(vehiclePlateNumber)));
+    }
 }

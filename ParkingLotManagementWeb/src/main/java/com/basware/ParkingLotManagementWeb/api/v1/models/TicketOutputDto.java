@@ -7,7 +7,6 @@ import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
 import java.time.LocalDateTime;
 
 public class TicketOutputDto {
-    private String ticketObjectId;
     private String userName;
     private UserType userType;
     private String vehiclePlateNumber;
@@ -18,8 +17,7 @@ public class TicketOutputDto {
     private Long parkingSpotNumber;
     private LocalDateTime time;
 
-    public TicketOutputDto(String ticketObjectId, String userName, UserType userType, String vehiclePlateNumber, VehicleType vehicleType, boolean electricVehicle, ParkingSpotType parkingSpotType, boolean parkingSpotWithElectricCharger, Long parkingSpotNumber, LocalDateTime time) {
-        this.ticketObjectId = ticketObjectId;
+    private TicketOutputDto(String userName, UserType userType, String vehiclePlateNumber, VehicleType vehicleType, boolean electricVehicle, ParkingSpotType parkingSpotType, boolean parkingSpotWithElectricCharger, Long parkingSpotNumber, LocalDateTime time) {
         this.userName = userName;
         this.userType = userType;
         this.vehiclePlateNumber = vehiclePlateNumber;
@@ -32,8 +30,6 @@ public class TicketOutputDto {
     }
 
     public TicketOutputDto(){}
-
-    public String getTicketObjectId(){return ticketObjectId;}
 
     public String getUserName() {
         return userName;
@@ -71,57 +67,52 @@ public class TicketOutputDto {
         return time;
     }
 
-    public TicketOutputDto setUserName(String userName) {
+    public TicketOutputDto withUserName(String userName) {
         this.userName = userName;
         return this;
     }
 
-    public TicketOutputDto setUserType(UserType userType) {
+    public TicketOutputDto withUserType(UserType userType) {
         this.userType = userType;
         return this;
     }
 
-    public TicketOutputDto setVehiclePlateNumber(String vehiclePlateNumber) {
+    public TicketOutputDto withVehiclePlateNumber(String vehiclePlateNumber) {
         this.vehiclePlateNumber = vehiclePlateNumber;
         return this;
     }
 
-    public TicketOutputDto setVehicleType(VehicleType vehicleType) {
+    public TicketOutputDto withVehicleType(VehicleType vehicleType) {
         this.vehicleType = vehicleType;
         return this;
     }
 
-    public TicketOutputDto setElectricVehicle(boolean electricVehicle) {
+    public TicketOutputDto withElectricVehicle(boolean electricVehicle) {
         this.electricVehicle = electricVehicle;
         return this;
     }
 
-    public TicketOutputDto setParkingSpotType(ParkingSpotType parkingSpotType) {
+    public TicketOutputDto withParkingSpotType(ParkingSpotType parkingSpotType) {
         this.parkingSpotType = parkingSpotType;
         return this;
     }
 
-    public TicketOutputDto setParkingSpotWithElectricCharger(boolean parkingSpotWithElectricCharger) {
+    public TicketOutputDto withParkingSpotWithElectricCharger(boolean parkingSpotWithElectricCharger) {
         this.parkingSpotWithElectricCharger = parkingSpotWithElectricCharger;
         return this;
     }
 
-    public TicketOutputDto setParkingSpotNumber(Long parkingSpotNumber) {
+    public TicketOutputDto withParkingSpotNumber(Long parkingSpotNumber) {
         this.parkingSpotNumber = parkingSpotNumber;
         return this;
     }
 
-    public TicketOutputDto setTime(LocalDateTime time) {
+    public TicketOutputDto withTime(LocalDateTime time) {
         this.time = time;
         return this;
     }
 
-    public TicketOutputDto setTicketObjectId(String ticketObjectId) {
-        this.ticketObjectId = ticketObjectId;
-        return this;
-    }
-
     public TicketOutputDto build() {
-        return new TicketOutputDto(ticketObjectId, userName, userType, vehiclePlateNumber, vehicleType, electricVehicle, parkingSpotType, parkingSpotWithElectricCharger, parkingSpotNumber, time);
+        return new TicketOutputDto(userName, userType, vehiclePlateNumber, vehicleType, electricVehicle, parkingSpotType, parkingSpotWithElectricCharger, parkingSpotNumber, time);
     }
 }

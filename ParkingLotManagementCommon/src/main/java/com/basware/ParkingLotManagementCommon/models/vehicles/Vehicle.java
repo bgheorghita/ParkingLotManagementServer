@@ -5,12 +5,13 @@ import org.bson.types.ObjectId;
 
 import java.util.Objects;
 
-@Entity("vehicles")
+@Entity(Vehicle.VEHICLE_COLLECTION_NAME)
 @Indexes({
 		@Index(options = @IndexOptions(name = "unique_plate_number", unique = true),
 				fields = @Field(value = Vehicle.VEHICLE_PLATE_NUMBER_FIELD)),
 })
 public class Vehicle {
+	public static final String VEHICLE_COLLECTION_NAME = "vehicles";
 	public static final String VEHICLE_TYPE_FIELD = "vehicleType";
 	public static final String VEHICLE_PLATE_NUMBER_FIELD = "plateNumber";
 	@Id

@@ -6,5 +6,5 @@ import com.basware.ParkingLotManagementWeb.services.CrudService;
 
 
 public interface VehicleService extends CrudService<Vehicle> {
-    Vehicle findByPlateNumber(String plateNumber) throws ResourceNotFoundException;
+    Vehicle findFirstByPlateNumber(String plateNumber) throws ResourceNotFoundException;
 }

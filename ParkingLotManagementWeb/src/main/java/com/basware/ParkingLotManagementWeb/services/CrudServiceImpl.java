@@ -1,5 +1,7 @@
 package com.basware.ParkingLotManagementWeb.services;
 
+import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
+import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;
 import com.basware.ParkingLotManagementWeb.repositories.CrudRepository;
 import org.bson.BsonValue;
 import org.bson.types.ObjectId;
@@ -14,7 +16,7 @@ public class CrudServiceImpl<T> implements CrudService<T>{
     protected CrudRepository<T> crudRepository;
 
     @Override
-    public Optional<T> save(T t) {
+    public T save(T t) throws TooManyRequestsException, SaveException {
         return crudRepository.save(t);
     }
 
