@@ -7,6 +7,6 @@ import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
 
 public interface ParkingLotService {
-    TicketOutputDto generateTicket(User user, Vehicle vehicle) throws TicketException, SaveException, ServiceNotAvailable, TooManyRequestsException, ResourceNotFoundException;
+    TicketOutputDto generateTicket(User user, Vehicle vehicle) throws TicketException, SaveException, ServiceNotAvailable, TooManyRequestsException, FullParkingLotException;
     ParkingResultDto leaveParkingLot(String vehiclePlateNumber) throws ResourceNotFoundException, TicketException, ServiceNotAvailable, TooManyRequestsException, SaveException;
 }

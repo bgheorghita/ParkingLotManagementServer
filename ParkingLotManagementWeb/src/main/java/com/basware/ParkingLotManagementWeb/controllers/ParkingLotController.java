@@ -26,7 +26,7 @@ public class ParkingLotController {
 
     @PostMapping("/in")
     @ResponseStatus(HttpStatus.CREATED)
-    public TicketOutputDto generateTicket(@RequestBody TicketInputDto ticketInputDto) throws SaveException, TicketException, ServiceNotAvailable, TooManyRequestsException, ResourceNotFoundException {
+    public TicketOutputDto generateTicket(@RequestBody TicketInputDto ticketInputDto) throws SaveException, TicketException, ServiceNotAvailable, TooManyRequestsException, FullParkingLotException {
         String userName = ticketInputDto.getUserName();
         UserType userType = ticketInputDto.getUserType();
         User user = new User(userName, userType);

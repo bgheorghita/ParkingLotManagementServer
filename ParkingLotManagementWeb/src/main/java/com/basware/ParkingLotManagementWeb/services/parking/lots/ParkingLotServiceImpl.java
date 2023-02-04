@@ -36,12 +36,12 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         this.ticketService = ticketService;
     }
     @Override
-    public TicketOutputDto generateTicket(User user, Vehicle vehicle) throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException {
+    public TicketOutputDto generateTicket(User user, Vehicle vehicle) throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, FullParkingLotException {
         checkIfVehicleIsAlreadyParked(vehicle);
 
         ParkingSpot parkingSpot = findParkingSpotByUserTypeStrategy(user.getUserType(), vehicle);
         parkingSpot.setVehiclePlateNumber(vehicle.getPlateNumber());
-        ParkingSpot savedParkingSpot = parkingSpotService.save(parkingSpot);
+        parkingSpotService.save(parkingSpot);
 
         Ticket ticket = new Ticket(user.getName(), vehicle.getPlateNumber(), parkingSpot.getSpotNumber());
         Ticket savedTicket = ticketService.save(ticket);
@@ -65,7 +65,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     @Override
-    public ParkingResultDto leaveParkingLot(String vehiclePlateNumber) throws TooManyRequestsException, ResourceNotFoundException, SaveException {
+    public ParkingResultDto leaveParkingLot(String vehiclePlateNumber) throws TooManyRequestsException, SaveException, ResourceNotFoundException {
         Vehicle vehicle = vehicleService.findFirstByPlateNumber(vehiclePlateNumber);
         User user = userService.findFirstByVehiclePlateNumber(vehiclePlateNumber);
         ParkingSpot parkingSpot = parkingSpotService.findFirstByVehiclePlateNumber(vehiclePlateNumber);
@@ -82,11 +82,11 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         return new ParkingResultDto(parkingDuration);
     }
 
-    private ParkingSpot findParkingSpotByUserTypeStrategy(UserType userType, Vehicle vehicle) throws ResourceNotFoundException {
+    private ParkingSpot findParkingSpotByUserTypeStrategy(UserType userType, Vehicle vehicle) throws FullParkingLotException {
         return customParkingStrategyService
                 .getParkingStrategyByUserType(userType)
                 .findParkingSpot(vehicle)
-                .orElseThrow(() -> new ResourceNotFoundException("No parking spot was found."));
+                .orElseThrow(() -> new FullParkingLotException("No parking spot was found."));
     }
 
     private void checkIfVehicleIsAlreadyParked(Vehicle vehicle) throws VehicleAlreadyParkedException {
