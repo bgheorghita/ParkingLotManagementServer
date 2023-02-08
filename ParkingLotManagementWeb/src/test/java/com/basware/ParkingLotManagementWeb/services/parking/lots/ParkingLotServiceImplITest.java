@@ -9,10 +9,7 @@ import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
 import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
 import com.basware.ParkingLotManagementWeb.api.v1.models.ParkingResultDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
-import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
-import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
-import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;
-import com.basware.ParkingLotManagementWeb.exceptions.VehicleAlreadyParkedException;
+import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.parking.spots.ParkingSpotService;
 import com.basware.ParkingLotManagementWeb.services.tickets.TicketService;
 import com.basware.ParkingLotManagementWeb.services.users.UserService;
@@ -76,8 +73,8 @@ class ParkingLotServiceImplITest {
     }
 
     @Test
-    void generateTicket_ShouldThrowResourceNotFoundWhenDidNotFindAnyAvailableParkingSpot(){
-        assertThrowsExactly(ResourceNotFoundException.class, () -> parkingLotService.generateTicket(regularUser, electricCar));
+    void generateTicket_ShouldThrowFullParkingLotExceptionWhenDidNotFindAnyAvailableParkingSpot(){
+        assertThrowsExactly(FullParkingLotException.class, () -> parkingLotService.generateTicket(regularUser, electricCar));
     }
 
     @Test
