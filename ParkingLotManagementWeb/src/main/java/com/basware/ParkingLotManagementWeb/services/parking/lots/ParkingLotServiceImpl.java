@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Set;
 
 @Service
 public class ParkingLotServiceImpl implements ParkingLotService{
@@ -36,27 +37,29 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         this.ticketService = ticketService;
     }
     @Override
-    public TicketOutputDto generateTicket(User user, Vehicle vehicle) throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, FullParkingLotException {
+    public TicketOutputDto generateTicket(String username, String vehiclePlateNumber) throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException {
+        User user = userService.findFirstByUsername(username);
+        Vehicle vehicle = vehicleService.findFirstByPlateNumber(vehiclePlateNumber);
+
+        checkIfVehicleIsOwnedByUser(user, vehicle);
         checkIfVehicleIsAlreadyParked(vehicle);
 
         ParkingSpot parkingSpot = findParkingSpotByUserTypeStrategy(user.getUserType(), vehicle);
-        parkingSpot.setVehiclePlateNumber(vehicle.getPlateNumber());
+        parkingSpot.setVehiclePlateNumber(vehiclePlateNumber);
         parkingSpotService.save(parkingSpot);
 
-        Ticket ticket = new Ticket(user.getName(), vehicle.getPlateNumber(), parkingSpot.getSpotNumber());
+        vehicle.setVehicleIsParked(true);
+        vehicleService.save(vehicle);
+
+        Ticket ticket = new Ticket(user.getUsername(), vehicle.getPlateNumber(), parkingSpot.getSpotNumber());
         Ticket savedTicket = ticketService.save(ticket);
 
-        Vehicle savedVehicle = vehicleService.save(vehicle);
-
-        user.setVehiclePlateNumber(vehicle.getPlateNumber());
-        User savedUser = userService.save(user);
-
         return new TicketOutputDto()
-                .withUserName(savedUser.getName())
-                .withUserType(savedUser.getUserType())
-                .withVehiclePlateNumber(savedVehicle.getPlateNumber())
-                .withVehicleType(savedVehicle.getVehicleType())
-                .withElectricVehicle(savedVehicle.isElectric())
+                .withUserName(user.getUsername())
+                .withUserType(user.getUserType())
+                .withVehiclePlateNumber(vehicle.getPlateNumber())
+                .withVehicleType(vehicle.getVehicleType())
+                .withElectricVehicle(vehicle.isElectric())
                 .withParkingSpotType(parkingSpot.getParkingSpotType())
                 .withParkingSpotWithElectricCharger(parkingSpot.hasElectricCharger())
                 .withParkingSpotNumber(parkingSpot.getSpotNumber())
@@ -64,22 +67,43 @@ public class ParkingLotServiceImpl implements ParkingLotService{
                 .build();
     }
 
+    private void checkIfVehicleIsOwnedByUser(User user, Vehicle vehicle) throws ResourceNotFoundException {
+        String username = user.getUsername();
+        String plateNumber = vehicle.getPlateNumber();
+        Set<String> usersPlateNumbers = user.getVehiclePlateNumbers();
+
+        if(!usersPlateNumbers.contains(plateNumber)){
+            throw new ResourceNotFoundException("Vehicle " + plateNumber + " does not appear to be owned by " + username);
+        }
+    }
+
     @Override
-    public ParkingResultDto leaveParkingLot(String vehiclePlateNumber) throws TooManyRequestsException, SaveException, ResourceNotFoundException {
+    public ParkingResultDto leaveParkingLot(String username, String vehiclePlateNumber) throws TooManyRequestsException, SaveException, ResourceNotFoundException, VehicleNotParkedException {
         Vehicle vehicle = vehicleService.findFirstByPlateNumber(vehiclePlateNumber);
-        User user = userService.findFirstByVehiclePlateNumber(vehiclePlateNumber);
+        User user = userService.findFirstByUsername(username);
+
+        checkIfVehicleIsOwnedByUser(user, vehicle);
+        checkIfVehicleIsNotParked(vehicle);
+
         ParkingSpot parkingSpot = parkingSpotService.findFirstByVehiclePlateNumber(vehiclePlateNumber);
         Ticket ticket = ticketService.findFirstByVehiclePlateNumber(vehiclePlateNumber);
 
         parkingSpot.removeVehiclePlateNumber();
         parkingSpotService.save(parkingSpot);
 
-        vehicleService.deleteById(vehicle.getObjectId());
-        userService.deleteById(user.getObjectId());
+        vehicle.setVehicleIsParked(false);
+        vehicleService.save(vehicle);
+
         ticketService.deleteById(ticket.getObjectId());
 
         long parkingDuration = ChronoUnit.MINUTES.between(ticket.getStartTime(), LocalDateTime.now());
         return new ParkingResultDto(parkingDuration);
+    }
+
+    private void checkIfVehicleIsNotParked(Vehicle vehicle) throws VehicleNotParkedException {
+        if(!vehicle.isParked()){
+            throw new VehicleNotParkedException("Vehicle " + vehicle.getPlateNumber() + " does not seem to be parked.");
+        }
     }
 
     private ParkingSpot findParkingSpotByUserTypeStrategy(UserType userType, Vehicle vehicle) throws FullParkingLotException {
@@ -90,10 +114,9 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     private void checkIfVehicleIsAlreadyParked(Vehicle vehicle) throws VehicleAlreadyParkedException {
-        String vehiclePlateNumber = vehicle.getPlateNumber();
-        try {
-            vehicleService.findFirstByPlateNumber(vehiclePlateNumber);
-            throw new VehicleAlreadyParkedException(String.format("Vehicle with plate number \"%s\" is already parked.", vehiclePlateNumber));
-        } catch (ResourceNotFoundException ignored) {}
+        if(vehicle.isParked()){
+            throw new VehicleAlreadyParkedException(String.format("Vehicle with plate number \"%s\" is already parked.",
+                    vehicle.getPlateNumber()));
+        }
     }
 }

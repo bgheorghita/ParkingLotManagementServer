@@ -43,4 +43,9 @@ public class APIExceptionHandlerController {
     public ResponseEntity<Object> handlerTooManyRequestsException(Exception e, WebRequest request){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.TOO_MANY_REQUESTS);
     }
+
+    @ExceptionHandler(UserAlreadyRegisteredException.class)
+    public ResponseEntity<Object> handlerUserAlreadyRegisteredException(Exception e, WebRequest request){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
 }

@@ -3,8 +3,6 @@ package com.basware.ParkingLotManagementCommon.models.vehicles;
 import dev.morphia.annotations.*;
 import org.bson.types.ObjectId;
 
-import java.util.Objects;
-
 @Entity(Vehicle.VEHICLE_COLLECTION_NAME)
 @Indexes({
 		@Index(options = @IndexOptions(name = "unique_plate_number", unique = true),
@@ -14,6 +12,7 @@ public class Vehicle {
 	public static final String VEHICLE_COLLECTION_NAME = "vehicles";
 	public static final String VEHICLE_TYPE_FIELD = "vehicleType";
 	public static final String VEHICLE_PLATE_NUMBER_FIELD = "plateNumber";
+	public static final String VEHICLE_IS_PARKED = "vehicleIsParked";
 	@Id
 	private ObjectId objectId;
 
@@ -23,6 +22,9 @@ public class Vehicle {
 	@Property(VEHICLE_PLATE_NUMBER_FIELD)
 	private String plateNumber;
 	private boolean isElectric;
+
+	@Property(VEHICLE_IS_PARKED)
+	private boolean isParked = false;
 
 	public Vehicle(){}
 	public Vehicle(VehicleType vehicleType, String plateNumber, boolean isElectric) {
@@ -53,9 +55,12 @@ public class Vehicle {
 		return isElectric == vehicle.isElectric && vehicleType == vehicle.vehicleType && plateNumber.equals(vehicle.plateNumber);
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(vehicleType, plateNumber, isElectric);
+	public boolean isParked(){
+		return this.isParked;
+	}
+
+	public void setVehicleIsParked(boolean isParked){
+		this.isParked = isParked;
 	}
 
 	@Override
@@ -65,6 +70,7 @@ public class Vehicle {
 				", vehicleType=" + vehicleType +
 				", plateNumber='" + plateNumber + '\'' +
 				", isElectric=" + isElectric +
+				", isParked=" + isParked +
 				'}';
 	}
 }

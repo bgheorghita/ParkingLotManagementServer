@@ -1,47 +1,37 @@
 package com.basware.ParkingLotManagementWeb.controllers;
 
-import com.basware.ParkingLotManagementCommon.models.users.User;
-import com.basware.ParkingLotManagementCommon.models.users.UserType;
-import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
-import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
 import com.basware.ParkingLotManagementWeb.api.v1.models.ParkingResultDto;
-import com.basware.ParkingLotManagementWeb.api.v1.models.TicketInputDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.parking.lots.ParkingLotService;
+import com.basware.ParkingLotManagementWeb.services.users.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 @RestController
 @RequestMapping(ParkingLotController.URL_BASE)
 public class ParkingLotController {
     public static final String URL_BASE = "api/v1/lot";
 
     private final ParkingLotService parkingLotService;
+    private final UserService userService;
 
-    public ParkingLotController(ParkingLotService parkingLotService){
+    public ParkingLotController(ParkingLotService parkingLotService, UserService userService){
         this.parkingLotService = parkingLotService;
+        this.userService = userService;
     }
 
-    @PostMapping("/in")
+    @PostMapping("/in/{vehiclePlateNumber}")
     @ResponseStatus(HttpStatus.CREATED)
-    public TicketOutputDto generateTicket(@RequestBody TicketInputDto ticketInputDto) throws SaveException, TicketException, ServiceNotAvailable, TooManyRequestsException, FullParkingLotException {
-        String userName = ticketInputDto.getUserName();
-        UserType userType = ticketInputDto.getUserType();
-        User user = new User(userName, userType);
-
-        VehicleType vehicleType = ticketInputDto.getVehicleType();
-        String vehiclePlateNumber = ticketInputDto.getVehiclePlateNumber();
-        boolean vehicleIsElectric = ticketInputDto.vehicleIsElectric();
-        Vehicle vehicle =  new Vehicle(vehicleType, vehiclePlateNumber, vehicleIsElectric);
-
-        return parkingLotService.generateTicket(user, vehicle);
+    public TicketOutputDto generateTicket(@PathVariable String vehiclePlateNumber, Principal principal) throws SaveException, TicketException, ServiceNotAvailable, TooManyRequestsException, ResourceNotFoundException {
+        return parkingLotService.generateTicket(principal.getName(), vehiclePlateNumber);
     }
 
     @PostMapping("/out/{vehiclePlateNumber}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ParkingResultDto leaveParkingLot(@PathVariable String vehiclePlateNumber) throws TicketException, ServiceNotAvailable, ResourceNotFoundException, TooManyRequestsException, SaveException {
-        return parkingLotService.leaveParkingLot(vehiclePlateNumber);
+    public ParkingResultDto leaveParkingLot(@PathVariable String vehiclePlateNumber, Principal principal) throws TicketException, ServiceNotAvailable, ResourceNotFoundException, TooManyRequestsException, SaveException {
+        return parkingLotService.leaveParkingLot(principal.getName(), vehiclePlateNumber);
     }
 }

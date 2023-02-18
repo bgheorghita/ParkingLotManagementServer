@@ -5,6 +5,8 @@ import com.basware.ParkingLotManagementCommon.models.taxes.*;
 import com.basware.ParkingLotManagementCommon.models.taxes.discounts.UserDiscount;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.*;
+import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
+import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;
 import com.basware.ParkingLotManagementWeb.repositories.taxes.*;
 import com.basware.ParkingLotManagementWeb.services.parking.spots.ParkingSpotService;
 import com.basware.ParkingLotManagementWeb.services.parking.strategies.CustomParkingStrategyService;
@@ -44,24 +46,27 @@ public class DataLoader implements CommandLineRunner {
     private CustomParkingStrategyService customParkingStrategyService;
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) throws TooManyRequestsException {
         typePriceDao.deleteAll();
         userTypeDiscountPercentDao.deleteAll();
         loadPricesForParkingSpots();
         loadPricesForUsers();
         loadPricesForVehicles();
         loadUserDiscounts();
-        loadParkingSpotsWithElectricCharger();
-        loadParkingSpotsWithoutElectricCharger();
+//        loadParkingSpotsWithElectricCharger();
+//        loadParkingSpotsWithoutElectricCharger();
     }
 
-    private void loadParkingSpotsWithoutElectricCharger() {
+    private void loadParkingSpotsWithoutElectricCharger() throws TooManyRequestsException {
         try {
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.SMALL, 1L, false));
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.MEDIUM, 2L, false));
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, 3L, false));
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, 4L, false));
-        } catch (ConcurrentModificationException ignored) {System.out.println("Parking spots without electric charger NOT loaded");}
+        } catch (ConcurrentModificationException ignored) {System.out.println("Parking spots without electric charger NOT loaded");} catch (
+                SaveException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void loadParkingSpotsWithElectricCharger() {
@@ -69,7 +74,7 @@ public class DataLoader implements CommandLineRunner {
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.SMALL, 5L, true));
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.MEDIUM, 6L, true));
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, 7L, true));
-        } catch (ConcurrentModificationException ignored){System.out.println("Parking spots with electric charger NOT loaded");}
+        } catch (ConcurrentModificationException | TooManyRequestsException | SaveException ignored){System.out.println("Parking spots with electric charger NOT loaded");}
     }
 
     private void loadUserDiscounts() {

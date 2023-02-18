@@ -3,6 +3,7 @@ package com.basware.ParkingLotManagementWeb.services.parking.lots;
 import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpot;
 import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpotType;
 import com.basware.ParkingLotManagementCommon.models.tickets.Ticket;
+import com.basware.ParkingLotManagementCommon.models.users.Role;
 import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
@@ -24,7 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,9 +59,14 @@ class ParkingLotServiceImplITest {
 
     @BeforeEach
     void setUp() {
-        regularUser = new User("testRegularUser", UserType.REGULAR);
         electricCar = new Vehicle(VehicleType.CAR, "plateNumberTest", true);
+        regularUser = new User("testRegularUser", Set.of(Role.REGULAR), UserType.REGULAR, "");
+        Set<String> vehiclePlateNumbers = new HashSet<>();
+        vehiclePlateNumbers.add(electricCar.getPlateNumber());
+        regularUser.setVehiclePlateNumbers(vehiclePlateNumbers);
         mediumParkingSpotWithElectricCharger = new ParkingSpot(ParkingSpotType.MEDIUM, 1L, true);
+        datastore.save(regularUser);
+        datastore.save(electricCar);
     }
 
     @AfterEach
@@ -67,32 +75,26 @@ class ParkingLotServiceImplITest {
     }
 
     @Test
-    void generateTicket_ShouldThrowVehicleAlreadyParkedExceptionWhenItsPlateNumberExistsInDatabase(){
-        datastore.save(electricCar);
-        assertThrowsExactly(VehicleAlreadyParkedException.class, () -> parkingLotService.generateTicket(regularUser, electricCar));
+    void generateTicket_ShouldThrowVehicleAlreadyParkedExceptionWhenTheVehicleIsAlreadyParked() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException {
+        datastore.save(mediumParkingSpotWithElectricCharger);
+        parkingLotService.generateTicket(regularUser.getUsername(), electricCar.getPlateNumber());
+
+        assertThrowsExactly(VehicleAlreadyParkedException.class, () -> parkingLotService.generateTicket(regularUser.getUsername(), electricCar.getPlateNumber()));
     }
 
     @Test
     void generateTicket_ShouldThrowFullParkingLotExceptionWhenDidNotFindAnyAvailableParkingSpot(){
-        assertThrowsExactly(FullParkingLotException.class, () -> parkingLotService.generateTicket(regularUser, electricCar));
+        assertThrowsExactly(FullParkingLotException.class, () -> parkingLotService.generateTicket(regularUser.getUsername(), electricCar.getPlateNumber()));
     }
 
     @Test
     void generateTicket_ShouldReturnTicketWithRegularUserAndElectricCarDetailsAndSaveToDatabase() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException {
         datastore.save(mediumParkingSpotWithElectricCharger);
-        TicketOutputDto ticketOutputDto = parkingLotService.generateTicket(regularUser, electricCar);
+        TicketOutputDto ticketOutputDto = parkingLotService.generateTicket(regularUser.getUsername(), electricCar.getPlateNumber());
 
         // checks if ticket has been saved in database
         Ticket ticket = ticketService.findFirstByVehiclePlateNumber(electricCar.getPlateNumber());
         assertNotNull(ticket);
-
-        // checks if user has been saved in database
-        User user = userService.findFirstByVehiclePlateNumber(electricCar.getPlateNumber());
-        assertNotNull(user);
-
-        // checks if vehicle has been saved in database
-        Vehicle vehicle = vehicleService.findFirstByPlateNumber(electricCar.getPlateNumber());
-        assertNotNull(vehicle);
 
         // checks ticket output details
         assertEquals(mediumParkingSpotWithElectricCharger.getSpotNumber(), ticketOutputDto.getParkingSpotNumber());
@@ -100,35 +102,26 @@ class ParkingLotServiceImplITest {
         assertEquals(mediumParkingSpotWithElectricCharger.hasElectricCharger(), ticketOutputDto.isElectricVehicle());
         assertEquals(electricCar.getPlateNumber(), ticketOutputDto.getVehiclePlateNumber());
         assertEquals(regularUser.getUserType(), ticketOutputDto.getUserType());
-        assertEquals(regularUser.getName(), ticketOutputDto.getUserName());
-        assertEquals(regularUser.getVehiclePlateNumber(), ticketOutputDto.getVehiclePlateNumber());
+        assertEquals(regularUser.getUsername(), ticketOutputDto.getUserName());
+        assertEquals(regularUser.getVehiclePlateNumbers().toArray()[0], ticketOutputDto.getVehiclePlateNumber());
     }
 
     @Test
-    void leaveParkingLot_ShouldThrowResourceNotFoundWhenVehiclePlateNumberIsNotSavedInDatabase(){
-        String vehiclePlateNumber = "thisPlateNumberIsNotSavedInDatabase";
-        assertThrowsExactly(ResourceNotFoundException.class, () -> parkingLotService.leaveParkingLot(vehiclePlateNumber));
+    void leaveParkingLot_ShouldThrowVehicleNotParkedExceptionWhenVehicleIsNotParked(){
+        assertThrowsExactly(VehicleNotParkedException.class, () -> parkingLotService.leaveParkingLot(regularUser.getUsername(), electricCar.getPlateNumber()));
     }
 
     @Test
-    void leaveParkingLot_ShouldReturnParkingResultDtoWhenTheTicketIsGeneratedAndDeleteFromDatabase() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException {
+    void leaveParkingLot_ShouldReturnParkingResultDtoWhenTheTicketIsGeneratedAndDeleteTheTicketFromDatabase() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException, VehicleNotParkedException {
         datastore.save(mediumParkingSpotWithElectricCharger);
-        parkingLotService.generateTicket(regularUser, electricCar);
-        ParkingResultDto parkingResultDto = parkingLotService.leaveParkingLot(electricCar.getPlateNumber());
+        parkingLotService.generateTicket(regularUser.getUsername(), electricCar.getPlateNumber());
+        ParkingResultDto parkingResultDto = parkingLotService.leaveParkingLot(regularUser.getUsername(), electricCar.getPlateNumber());
 
         assertNotNull(parkingResultDto);
 
         // checks if ticket has been deleted from database
         assertThrowsExactly(ResourceNotFoundException.class, () ->
                 ticketService.findFirstByVehiclePlateNumber(electricCar.getPlateNumber()));
-
-        // checks if user has been deleted from database
-        assertThrowsExactly(ResourceNotFoundException.class, () ->
-                userService.findFirstByVehiclePlateNumber(electricCar.getPlateNumber()));
-
-        // checks if vehicle has been deleted from database
-        assertThrowsExactly(ResourceNotFoundException.class, () ->
-                vehicleService.findFirstByPlateNumber(electricCar.getPlateNumber()));
 
         // checks if parking spot from database has been freed
         ObjectId parkingSpotObjectId = mediumParkingSpotWithElectricCharger.getObjectId();
