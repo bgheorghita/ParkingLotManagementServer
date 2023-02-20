@@ -9,10 +9,12 @@ import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
 import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;
 import com.basware.ParkingLotManagementWeb.services.users.UserService;
 import com.basware.ParkingLotManagementWeb.services.vehicles.VehicleService;
+import org.bson.BsonString;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -41,6 +43,8 @@ public class UserDashboardImpl implements UserDashboard {
         User user = userService.findFirstByUsername(username);
         user.removeVehiclePlateNumber(vehiclePlateNumber);
         userService.save(user);
+
+        vehicleService.deleteByPlateNumber(vehiclePlateNumber);
     }
 
     @Override

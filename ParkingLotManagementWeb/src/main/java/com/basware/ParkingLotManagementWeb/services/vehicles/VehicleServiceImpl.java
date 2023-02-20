@@ -4,9 +4,11 @@ import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.repositories.vehicles.VehicleDao;
 import com.basware.ParkingLotManagementWeb.services.CrudServiceImpl;
+import org.bson.BsonString;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -24,5 +26,11 @@ public class VehicleServiceImpl extends CrudServiceImpl<Vehicle> implements Vehi
             return vehicles.get(0);
         }
         throw new ResourceNotFoundException(String.format("Vehicle by plate number \"%s\" could not be found", plateNumber));
+    }
+
+    @Override
+    public boolean deleteByPlateNumber(String plateNumber) {
+        long deletedCount = vehicleDao.deleteByFieldValues(Map.of(Vehicle.VEHICLE_PLATE_NUMBER_FIELD, new BsonString(plateNumber)), true);
+        return deletedCount > 0;
     }
 }
