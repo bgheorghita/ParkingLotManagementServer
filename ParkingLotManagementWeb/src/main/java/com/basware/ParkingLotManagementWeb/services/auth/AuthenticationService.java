@@ -5,7 +5,6 @@ import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementWeb.api.v1.auth.AuthenticationRequest;
 import com.basware.ParkingLotManagementWeb.api.v1.auth.AuthenticationResponse;
 import com.basware.ParkingLotManagementWeb.api.v1.auth.RegisterRequest;
-import com.basware.ParkingLotManagementWeb.configs.JwtService;
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
 import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;
