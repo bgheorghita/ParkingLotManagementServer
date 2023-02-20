@@ -7,7 +7,7 @@ import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
 import java.time.LocalDateTime;
 
 public class TicketOutputDto {
-    private String userName;
+    private String username;
     private UserType userType;
     private String vehiclePlateNumber;
     private VehicleType vehicleType;
@@ -17,8 +17,8 @@ public class TicketOutputDto {
     private Long parkingSpotNumber;
     private LocalDateTime time;
 
-    private TicketOutputDto(String userName, UserType userType, String vehiclePlateNumber, VehicleType vehicleType, boolean electricVehicle, ParkingSpotType parkingSpotType, boolean parkingSpotWithElectricCharger, Long parkingSpotNumber, LocalDateTime time) {
-        this.userName = userName;
+    private TicketOutputDto(String username, UserType userType, String vehiclePlateNumber, VehicleType vehicleType, boolean electricVehicle, ParkingSpotType parkingSpotType, boolean parkingSpotWithElectricCharger, Long parkingSpotNumber, LocalDateTime time) {
+        this.username = username;
         this.userType = userType;
         this.vehiclePlateNumber = vehiclePlateNumber;
         this.vehicleType = vehicleType;
@@ -31,8 +31,8 @@ public class TicketOutputDto {
 
     public TicketOutputDto(){}
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
     public UserType getUserType() {
@@ -47,7 +47,7 @@ public class TicketOutputDto {
         return vehicleType;
     }
 
-    public boolean isElectricVehicle() {
+    public boolean getIsElectricVehicle() {
         return electricVehicle;
     }
 
@@ -68,7 +68,7 @@ public class TicketOutputDto {
     }
 
     public TicketOutputDto withUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
         return this;
     }
 
@@ -113,6 +113,6 @@ public class TicketOutputDto {
     }
 
     public TicketOutputDto build() {
-        return new TicketOutputDto(userName, userType, vehiclePlateNumber, vehicleType, electricVehicle, parkingSpotType, parkingSpotWithElectricCharger, parkingSpotNumber, time);
+        return new TicketOutputDto(username, userType, vehiclePlateNumber, vehicleType, electricVehicle, parkingSpotType, parkingSpotWithElectricCharger, parkingSpotNumber, time);
     }
 }

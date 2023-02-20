@@ -66,6 +66,10 @@ public class User implements UserDetails {
 		return new HashSet<>(vehiclePlateNumbers);
 	}
 
+	public void removeVehiclePlateNumber(String vehiclePlateNumber){
+		this.vehiclePlateNumbers.remove(vehiclePlateNumber);
+	}
+
 	public UserType getUserType() {
 		return userType;
 	}

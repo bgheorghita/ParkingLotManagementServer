@@ -4,7 +4,6 @@ import com.basware.ParkingLotManagementWeb.api.v1.models.ParkingResultDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.parking.lots.ParkingLotService;
-import com.basware.ParkingLotManagementWeb.services.users.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
@@ -16,11 +15,9 @@ public class ParkingLotController {
     public static final String URL_BASE = "api/v1/lot";
 
     private final ParkingLotService parkingLotService;
-    private final UserService userService;
 
-    public ParkingLotController(ParkingLotService parkingLotService, UserService userService){
+    public ParkingLotController(ParkingLotService parkingLotService){
         this.parkingLotService = parkingLotService;
-        this.userService = userService;
     }
 
     @PostMapping("/in/{vehiclePlateNumber}")

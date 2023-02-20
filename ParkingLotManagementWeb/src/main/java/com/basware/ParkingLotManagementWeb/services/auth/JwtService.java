@@ -1,4 +1,4 @@
-package com.basware.ParkingLotManagementWeb.configs;
+package com.basware.ParkingLotManagementWeb.services.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

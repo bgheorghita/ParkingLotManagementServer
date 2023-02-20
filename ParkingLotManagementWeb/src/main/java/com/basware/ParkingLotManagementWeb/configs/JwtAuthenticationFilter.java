@@ -1,6 +1,7 @@
 package com.basware.ParkingLotManagementWeb.configs;
 
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
+import com.basware.ParkingLotManagementWeb.services.auth.JwtService;
 import com.basware.ParkingLotManagementWeb.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;

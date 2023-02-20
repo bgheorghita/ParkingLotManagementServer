@@ -99,10 +99,10 @@ class ParkingLotServiceImplITest {
         // checks ticket output details
         assertEquals(mediumParkingSpotWithElectricCharger.getSpotNumber(), ticketOutputDto.getParkingSpotNumber());
         assertEquals(mediumParkingSpotWithElectricCharger.getParkingSpotType(), ticketOutputDto.getParkingSpotType());
-        assertEquals(mediumParkingSpotWithElectricCharger.hasElectricCharger(), ticketOutputDto.isElectricVehicle());
+        assertEquals(mediumParkingSpotWithElectricCharger.hasElectricCharger(), ticketOutputDto.getIsElectricVehicle());
         assertEquals(electricCar.getPlateNumber(), ticketOutputDto.getVehiclePlateNumber());
         assertEquals(regularUser.getUserType(), ticketOutputDto.getUserType());
-        assertEquals(regularUser.getUsername(), ticketOutputDto.getUserName());
+        assertEquals(regularUser.getUsername(), ticketOutputDto.getUsername());
         assertEquals(regularUser.getVehiclePlateNumbers().toArray()[0], ticketOutputDto.getVehiclePlateNumber());
     }
 

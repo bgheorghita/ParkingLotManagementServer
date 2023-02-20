@@ -47,14 +47,6 @@ public class Vehicle {
 		return isElectric;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Vehicle vehicle = (Vehicle) o;
-		return isElectric == vehicle.isElectric && vehicleType == vehicle.vehicleType && plateNumber.equals(vehicle.plateNumber);
-	}
-
 	public boolean isParked(){
 		return this.isParked;
 	}
