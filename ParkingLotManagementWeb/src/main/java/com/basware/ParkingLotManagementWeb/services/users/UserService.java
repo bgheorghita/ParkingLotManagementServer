@@ -11,4 +11,6 @@ public interface UserService extends CrudService<User> {
     List<User> findAllByUserType(UserType userType);
     User findFirstByVehiclePlateNumber(String vehiclePlateNumber) throws ResourceNotFoundException;
     User findFirstByUsername(String username) throws ResourceNotFoundException;
+    List<User> findValidatedUsers();
+    List<User> findUnvalidatedUsers();
 }

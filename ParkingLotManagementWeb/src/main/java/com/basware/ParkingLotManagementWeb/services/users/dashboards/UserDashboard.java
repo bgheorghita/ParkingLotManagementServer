@@ -1,4 +1,4 @@
-package com.basware.ParkingLotManagementWeb.services.users.profile;
+package com.basware.ParkingLotManagementWeb.services.users.dashboards;
 
 import com.basware.ParkingLotManagementWeb.api.v1.models.VehicleDto;
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;

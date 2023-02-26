@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.Set;
 
-import static com.basware.ParkingLotManagementWeb.utils.Constants.DEFAULT_ROLE;
 import static com.basware.ParkingLotManagementWeb.utils.Constants.ONE_HOUR_IN_MILLIS;
 
 @Service
@@ -38,10 +37,11 @@ public class AuthenticationService {
     public String register(String username, UserType userType, String password) throws UserAlreadyRegisteredException, TooManyRequestsException, SaveException {
         checkIfAlreadyRegistered(username);
 
-        boolean validatedAccount = userType.equals(UserType.REGULAR);
-        Set<Role> userRoles = Set.of(DEFAULT_ROLE);
+        Role userRole = userType.equals(UserType.VIP) ? Role.VIP : Role.REGULAR;
+        boolean validatedAccount = userRole.equals(Role.REGULAR);
+
         String encryptedPassword = passwordEncoder.encode(password);
-        User user = new User(username, userRoles, userType, encryptedPassword, validatedAccount);
+        User user = new User(username, Set.of(userRole), userType, encryptedPassword, validatedAccount);
 
         userService.save(user);
         return generateToken(user);

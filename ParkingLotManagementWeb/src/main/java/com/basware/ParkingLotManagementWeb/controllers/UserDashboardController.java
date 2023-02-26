@@ -3,7 +3,7 @@ import com.basware.ParkingLotManagementWeb.api.v1.models.VehicleDto;
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
 import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;
-import com.basware.ParkingLotManagementWeb.services.users.profile.UserDashboard;
+import com.basware.ParkingLotManagementWeb.services.users.dashboards.UserDashboard;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

@@ -5,6 +5,7 @@ import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.repositories.users.UserDao;
 import com.basware.ParkingLotManagementWeb.services.CrudServiceImpl;
+import org.bson.BsonBoolean;
 import org.bson.BsonString;
 import org.springframework.stereotype.Service;
 
@@ -41,5 +42,15 @@ public class UserServiceImpl extends CrudServiceImpl<User> implements UserServic
             return users.get(0);
         }
         throw new ResourceNotFoundException(String.format("Username \"%s\" has not been found.", username));
+    }
+
+    @Override
+    public List<User> findUnvalidatedUsers() {
+        return userDao.findAllByFieldValues(Map.of(User.IS_VALIDATED_FIELD, new BsonBoolean(false)));
+    }
+
+    @Override
+    public List<User> findValidatedUsers() {
+        return userDao.findAllByFieldValues(Map.of(User.IS_VALIDATED_FIELD, new BsonBoolean(true)));
     }
 }
