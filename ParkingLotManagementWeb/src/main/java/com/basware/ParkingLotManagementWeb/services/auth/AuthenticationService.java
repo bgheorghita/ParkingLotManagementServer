@@ -38,9 +38,10 @@ public class AuthenticationService {
     public String register(String username, UserType userType, String password) throws UserAlreadyRegisteredException, TooManyRequestsException, SaveException {
         checkIfAlreadyRegistered(username);
 
+        boolean validatedAccount = userType.equals(UserType.REGULAR);
         Set<Role> userRoles = Set.of(DEFAULT_ROLE);
         String encryptedPassword = passwordEncoder.encode(password);
-        User user = new User(username, userRoles, userType, encryptedPassword);
+        User user = new User(username, userRoles, userType, encryptedPassword, validatedAccount);
 
         userService.save(user);
         return generateToken(user);

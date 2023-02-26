@@ -20,6 +20,7 @@ public class User implements UserDetails {
 	public static final String VEHICLE_PLATE_NUMBERS_FIELD = "vehiclePlateNumbers";
 	public static final String USER_ROLES_FIELD = "roles";
 	public static final String USERNAME_FIELD = "username";
+	public static final String IS_VALIDATED_FIELD = "validated";
 
 	@Id
 	private ObjectId objectId;
@@ -38,16 +39,20 @@ public class User implements UserDetails {
 
 	private String password;
 
-	public User(String username, Set<Role> roles, Set<String> vehiclePlateNumbers, UserType userType, String password) {
+	@Property(IS_VALIDATED_FIELD)
+	private boolean isValidated;
+
+	public User(String username, Set<Role> roles, Set<String> vehiclePlateNumbers, UserType userType, String password, boolean isValidated) {
 		this.username = username;
 		this.roles = roles;
 		this.vehiclePlateNumbers = vehiclePlateNumbers;
 		this.userType = userType;
 		this.password = password;
+		this.isValidated = isValidated;
 	}
 
-	public User(String username, Set<Role> roles, UserType userType, String password) {
-		this(username, roles, new HashSet<>(), userType, password);
+	public User(String username, Set<Role> roles, UserType userType, String password, boolean isValidated) {
+		this(username, roles, new HashSet<>(), userType, password, isValidated);
 	}
 
 	public User() {
@@ -80,6 +85,14 @@ public class User implements UserDetails {
 
 	public void addVehiclePlateNumber(String plateNumber){
 		this.vehiclePlateNumbers.add(plateNumber);
+	}
+
+	public boolean getIsValidated() {
+		return isValidated;
+	}
+
+	public void setValidated(boolean validated) {
+		isValidated = validated;
 	}
 
 	@Override

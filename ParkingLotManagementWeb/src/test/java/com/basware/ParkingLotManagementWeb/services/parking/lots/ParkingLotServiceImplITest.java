@@ -60,7 +60,7 @@ class ParkingLotServiceImplITest {
     @BeforeEach
     void setUp() {
         electricCar = new Vehicle(VehicleType.CAR, "plateNumberTest", true);
-        regularUser = new User("testRegularUser", Set.of(Role.REGULAR), UserType.REGULAR, "");
+        regularUser = new User("testRegularUser", Set.of(Role.REGULAR), UserType.REGULAR, "", true);
         Set<String> vehiclePlateNumbers = new HashSet<>();
         vehiclePlateNumbers.add(electricCar.getPlateNumber());
         regularUser.setVehiclePlateNumbers(vehiclePlateNumbers);

@@ -37,11 +37,18 @@ public class JwtService {
                 .builder()
                 .setClaims(getUserAuthorities(user.getAuthorities()))
                 .addClaims(getUserType(user.getUserType()))
+                .addClaims(getIsValidatedAccount(user.getIsValidated()))
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(tokenExpirationDate)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    private Map<String, Object> getIsValidatedAccount(boolean isValidatedAccount){
+        Map<String, Object> map = new HashMap<>();
+        map.put(User.IS_VALIDATED_FIELD, isValidatedAccount);
+        return map;
     }
 
     private Map<String, Object> getUserType(UserType userType){
