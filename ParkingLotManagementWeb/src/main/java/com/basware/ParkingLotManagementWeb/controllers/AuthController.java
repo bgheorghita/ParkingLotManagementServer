@@ -1,15 +1,16 @@
 package com.basware.ParkingLotManagementWeb.controllers;
 
-import com.basware.ParkingLotManagementWeb.api.v1.auth.AuthenticationRequest;
-import com.basware.ParkingLotManagementWeb.api.v1.auth.AuthenticationResponse;
-import com.basware.ParkingLotManagementWeb.api.v1.auth.RegisterRequest;
+import com.basware.ParkingLotManagementCommon.models.users.UserType;
+import com.basware.ParkingLotManagementWeb.api.v1.auth.LoginDto;
+import com.basware.ParkingLotManagementWeb.api.v1.auth.RegisterDto;
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
 import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;
 import com.basware.ParkingLotManagementWeb.exceptions.UserAlreadyRegisteredException;
 import com.basware.ParkingLotManagementWeb.services.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,15 +18,22 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthenticationService service;
+    @Autowired
+    private AuthenticationService authenticateService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) throws TooManyRequestsException, SaveException, UserAlreadyRegisteredException {
-        return ResponseEntity.ok(service.register(request));
+    @ResponseStatus(HttpStatus.OK)
+    public String register(@RequestBody RegisterDto registerDto) throws TooManyRequestsException, SaveException, UserAlreadyRegisteredException {
+        String username = registerDto.getUsername();
+        UserType userType = registerDto.getUserType();
+        String password = registerDto.getPassword();
+        return authenticateService.register(username, userType, password);
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) throws ResourceNotFoundException {
-        return ResponseEntity.ok(service.authenticate(request));
+    public String authenticate(@RequestBody LoginDto loginDto) throws ResourceNotFoundException {
+        String username = loginDto.getUsername();
+        String password = loginDto.getPassword();
+        return authenticateService.authenticate(username, password);
     }
 }

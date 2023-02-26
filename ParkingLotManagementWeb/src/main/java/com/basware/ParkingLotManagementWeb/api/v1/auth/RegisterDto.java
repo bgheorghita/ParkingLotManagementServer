@@ -1,12 +1,12 @@
 package com.basware.ParkingLotManagementWeb.api.v1.auth;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 
-public class RegisterRequest {
+public class RegisterDto {
     private String username;
     private UserType userType;
     private String password;
 
-    public RegisterRequest(String username, UserType userType, String password) {
+    public RegisterDto(String username, UserType userType, String password) {
         this.username = username;
         this.userType = userType;
         this.password = password;

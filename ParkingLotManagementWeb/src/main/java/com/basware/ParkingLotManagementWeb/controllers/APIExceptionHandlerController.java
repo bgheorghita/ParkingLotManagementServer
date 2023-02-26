@@ -3,6 +3,7 @@ package com.basware.ParkingLotManagementWeb.controllers;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -47,5 +48,10 @@ public class APIExceptionHandlerController {
     @ExceptionHandler(UserAlreadyRegisteredException.class)
     public ResponseEntity<Object> handlerUserAlreadyRegisteredException(Exception e, WebRequest request){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleAuthenticationException(Exception e, WebRequest request){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 }

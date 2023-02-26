@@ -18,7 +18,7 @@ import java.util.Set;
 public class User implements UserDetails {
 	public static final String USER_TYPE_FIELD = "userType";
 	public static final String VEHICLE_PLATE_NUMBERS_FIELD = "vehiclePlateNumbers";
-	public static final String USER_ROLE_FIELD = "role";
+	public static final String USER_ROLES_FIELD = "roles";
 	public static final String USERNAME_FIELD = "username";
 
 	@Id
@@ -27,7 +27,7 @@ public class User implements UserDetails {
 	@Property(USERNAME_FIELD)
 	private String username;
 
-	@Property(USER_ROLE_FIELD)
+	@Property(USER_ROLES_FIELD)
 	private Set<Role> roles;
 
 	@Property(VEHICLE_PLATE_NUMBERS_FIELD)
