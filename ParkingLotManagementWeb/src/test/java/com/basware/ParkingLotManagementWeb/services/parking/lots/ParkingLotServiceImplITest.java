@@ -2,13 +2,13 @@ package com.basware.ParkingLotManagementWeb.services.parking.lots;
 
 import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpot;
 import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpotType;
-import com.basware.ParkingLotManagementCommon.models.taxes.Price;
 import com.basware.ParkingLotManagementCommon.models.tickets.Ticket;
 import com.basware.ParkingLotManagementCommon.models.users.Role;
 import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
 import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
+import com.basware.ParkingLotManagementWeb.api.v1.models.ParkingResultDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.parking.spots.ParkingSpotService;
@@ -115,9 +115,9 @@ class ParkingLotServiceImplITest {
     void leaveParkingLot_ShouldReturnParkingPriceWhenTheTicketIsGeneratedAndShouldDeleteTheTicketFromDatabase() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException, VehicleNotParkedException, ServiceNotAvailable {
         datastore.save(mediumParkingSpotWithElectricCharger);
         parkingLotService.generateTicket(regularUser.getUsername(), electricCar.getPlateNumber());
-        Price parkingPrice = parkingLotService.leaveParkingLot(regularUser.getUsername(), electricCar.getPlateNumber());
+        ParkingResultDto parkingResultDto = parkingLotService.leaveParkingLot(regularUser.getUsername(), electricCar.getPlateNumber());
 
-        assertNotNull(parkingPrice);
+        assertNotNull(parkingResultDto);
 
         // checks if ticket has been deleted from database
         assertThrowsExactly(ResourceNotFoundException.class, () ->

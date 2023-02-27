@@ -7,6 +7,7 @@ import com.basware.ParkingLotManagementCommon.models.tickets.Ticket;
 import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
+import com.basware.ParkingLotManagementWeb.api.v1.models.ParkingResultDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.parking.spots.ParkingSpotService;
@@ -84,7 +85,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     @Override
-    public Price leaveParkingLot(String username, String vehiclePlateNumber) throws TooManyRequestsException, SaveException, ResourceNotFoundException, VehicleNotParkedException, ServiceNotAvailable {
+    public ParkingResultDto leaveParkingLot(String username, String vehiclePlateNumber) throws TooManyRequestsException, SaveException, ResourceNotFoundException, VehicleNotParkedException, ServiceNotAvailable {
         Vehicle vehicle = vehicleService.findFirstByPlateNumber(vehiclePlateNumber);
         User user = userService.findFirstByUsername(username);
 
@@ -103,7 +104,8 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         ticketService.deleteById(ticket.getObjectId());
 
         long parkingDuration = ChronoUnit.MINUTES.between(ticket.getStartTime(), LocalDateTime.now());
-        return parkingPriceService.getParkingPrice(parkingDuration, user.getUserType(), vehicle.getVehicleType(), parkingSpot.getParkingSpotType(), Currency.EUR);
+        Price price = parkingPriceService.getParkingPrice(parkingDuration, user.getUserType(), vehicle.getVehicleType(), parkingSpot.getParkingSpotType(), Currency.EUR);
+        return new ParkingResultDto(parkingDuration, price);
     }
 
     private void checkIfVehicleIsNotParked(Vehicle vehicle) throws VehicleNotParkedException {
