@@ -3,9 +3,11 @@ package com.basware.ParkingLotManagementWeb.api.v1.models;
 import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpotType;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 
+@Builder
 public class TicketOutputDto {
     private String username;
     private UserType userType;

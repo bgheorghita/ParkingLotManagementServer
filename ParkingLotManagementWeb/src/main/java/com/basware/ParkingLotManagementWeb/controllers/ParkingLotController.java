@@ -1,6 +1,6 @@
 package com.basware.ParkingLotManagementWeb.controllers;
 
-import com.basware.ParkingLotManagementWeb.api.v1.models.ParkingResultDto;
+import com.basware.ParkingLotManagementCommon.models.taxes.Price;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.parking.lots.ParkingLotService;
@@ -28,7 +28,7 @@ public class ParkingLotController {
 
     @PostMapping("/out/{vehiclePlateNumber}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ParkingResultDto leaveParkingLot(@PathVariable String vehiclePlateNumber, Principal principal) throws TicketException, ServiceNotAvailable, ResourceNotFoundException, TooManyRequestsException, SaveException {
+    public Price leaveParkingLot(@PathVariable String vehiclePlateNumber, Principal principal) throws TicketException, ServiceNotAvailable, ResourceNotFoundException, TooManyRequestsException, SaveException {
         return parkingLotService.leaveParkingLot(principal.getName(), vehiclePlateNumber);
     }
 }

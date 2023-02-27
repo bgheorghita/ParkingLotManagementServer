@@ -24,9 +24,9 @@ public class ParkingPriceCalculatorImpl implements ParkingPriceCalculator {
     }
 
     @Override
-    public Price getTotalPrice(int parkingTimeInMinutes, UserType userType, VehicleType vehicleType, ParkingSpotType parkingSpotType, Currency toCurrency) throws ResourceNotFoundException, ServiceNotAvailable {
-        int hours = parkingTimeInMinutes / 60;
-        int minutes = parkingTimeInMinutes % 60;
+    public Price getTotalPrice(long parkingTimeInMinutes, UserType userType, VehicleType vehicleType, ParkingSpotType parkingSpotType, Currency toCurrency) throws ResourceNotFoundException, ServiceNotAvailable {
+        long hours = parkingTimeInMinutes / 60;
+        long minutes = parkingTimeInMinutes % 60;
         if(minutes >= 30 || (hours == 0 && minutes > 0)){
             hours++;
         } else {

@@ -25,6 +25,11 @@ public class APIExceptionHandlerController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InvalidUserAction.class)
+    public ResponseEntity<Object> handlerInvalidUserActionException(Exception e, WebRequest request){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(SaveException.class)
     public ResponseEntity<Object> handlerSaveException(Exception e, WebRequest request){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

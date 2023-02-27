@@ -7,11 +7,14 @@ public class VehicleDto {
     private final String plateNumber;
     private final boolean isElectric;
 
+    private final boolean isParked;
 
-    public VehicleDto(VehicleType vehicleType, String plateNumber, boolean isElectric) {
+
+    public VehicleDto(VehicleType vehicleType, String plateNumber, boolean isElectric, boolean isParked) {
         this.vehicleType = vehicleType;
         this.plateNumber = plateNumber;
         this.isElectric = isElectric;
+        this.isParked = isParked;
     }
 
     public VehicleType getVehicleType() {
@@ -26,12 +29,17 @@ public class VehicleDto {
         return isElectric;
     }
 
+    public boolean getIsParked() {
+        return isParked;
+    }
+
     @Override
     public String toString() {
         return "VehicleDto{" +
                 "vehicleType=" + vehicleType +
                 ", plateNumber='" + plateNumber + '\'' +
                 ", isElectric=" + isElectric +
+                ", isParked=" + isParked +
                 '}';
     }
 }

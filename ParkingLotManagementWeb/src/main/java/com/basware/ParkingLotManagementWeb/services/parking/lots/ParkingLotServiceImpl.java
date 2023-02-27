@@ -1,15 +1,17 @@
 package com.basware.ParkingLotManagementWeb.services.parking.lots;
 
 import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpot;
+import com.basware.ParkingLotManagementCommon.models.taxes.Currency;
+import com.basware.ParkingLotManagementCommon.models.taxes.Price;
 import com.basware.ParkingLotManagementCommon.models.tickets.Ticket;
 import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
-import com.basware.ParkingLotManagementWeb.api.v1.models.ParkingResultDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.parking.spots.ParkingSpotService;
 import com.basware.ParkingLotManagementWeb.services.parking.strategies.CustomParkingStrategyService;
+import com.basware.ParkingLotManagementWeb.services.taxes.calculators.ParkingPriceService;
 import com.basware.ParkingLotManagementWeb.services.tickets.TicketService;
 import com.basware.ParkingLotManagementWeb.services.users.UserService;
 import com.basware.ParkingLotManagementWeb.services.vehicles.VehicleService;
@@ -27,15 +29,19 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     private final VehicleService vehicleService;
     private final UserService userService;
     private final TicketService ticketService;
+    private final ParkingPriceService parkingPriceService;
 
     public ParkingLotServiceImpl(CustomParkingStrategyService customParkingStrategyService, ParkingSpotService parkingSpotService,
-                                 VehicleService vehicleService, UserService userService, TicketService ticketService){
+                                 VehicleService vehicleService, UserService userService, TicketService ticketService,
+                                 ParkingPriceService parkingPriceService){
         this.customParkingStrategyService = customParkingStrategyService;
         this.parkingSpotService = parkingSpotService;
         this.vehicleService = vehicleService;
         this.userService = userService;
         this.ticketService = ticketService;
+        this.parkingPriceService = parkingPriceService;
     }
+
     @Override
     public TicketOutputDto generateTicket(String username, String vehiclePlateNumber) throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException {
         User user = userService.findFirstByUsername(username);
@@ -51,7 +57,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         vehicle.setVehicleIsParked(true);
         vehicleService.save(vehicle);
 
-        Ticket ticket = new Ticket(user.getUsername(), vehicle.getPlateNumber(), parkingSpot.getSpotNumber());
+        Ticket ticket = new Ticket(user.getUsername(), vehicle.getPlateNumber(), parkingSpot.getSpotNumber(), parkingSpot.getParkingSpotType());
         Ticket savedTicket = ticketService.save(ticket);
 
         return new TicketOutputDto()
@@ -78,7 +84,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     @Override
-    public ParkingResultDto leaveParkingLot(String username, String vehiclePlateNumber) throws TooManyRequestsException, SaveException, ResourceNotFoundException, VehicleNotParkedException {
+    public Price leaveParkingLot(String username, String vehiclePlateNumber) throws TooManyRequestsException, SaveException, ResourceNotFoundException, VehicleNotParkedException, ServiceNotAvailable {
         Vehicle vehicle = vehicleService.findFirstByPlateNumber(vehiclePlateNumber);
         User user = userService.findFirstByUsername(username);
 
@@ -97,7 +103,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         ticketService.deleteById(ticket.getObjectId());
 
         long parkingDuration = ChronoUnit.MINUTES.between(ticket.getStartTime(), LocalDateTime.now());
-        return new ParkingResultDto(parkingDuration);
+        return parkingPriceService.getParkingPrice(parkingDuration, user.getUserType(), vehicle.getVehicleType(), parkingSpot.getParkingSpotType(), Currency.EUR);
     }
 
     private void checkIfVehicleIsNotParked(Vehicle vehicle) throws VehicleNotParkedException {

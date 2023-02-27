@@ -49,8 +49,8 @@ class ParkingPriceServiceImplTest {
                 .thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class,
-                () -> parkingPriceService.getParkingPrice(String.valueOf(parkingTime), userType.name(), vehicleType.name(),
-                        parkingSpotType.name(), Currency.EUR.name()));
+                () -> parkingPriceService.getParkingPrice(parkingTime, userType, vehicleType,
+                        parkingSpotType, Currency.EUR));
 
         verify(parkingPriceCalculator, times(1))
                 .getTotalPrice(parkingTime, userType, vehicleType, parkingSpotType, Currency.EUR);
@@ -73,8 +73,8 @@ class ParkingPriceServiceImplTest {
         when(parkingDiscountCalculator.getDiscount(returnPrice, userType, wantedCurrency))
                 .thenThrow(ServiceNotAvailable.class);
 
-        assertThrows(ServiceNotAvailable.class, () -> parkingPriceService.getParkingPrice(String.valueOf(parkingTime), userType.name(), vehicleType.name(),
-                parkingSpotType.name(), Currency.EUR.name()));
+        assertThrows(ServiceNotAvailable.class, () -> parkingPriceService.getParkingPrice(parkingTime, userType, vehicleType,
+                parkingSpotType, Currency.EUR));
 
         verify(parkingPriceCalculator, times(1))
                 .getTotalPrice(parkingTime, userType, vehicleType, parkingSpotType, wantedCurrency);
@@ -94,8 +94,8 @@ class ParkingPriceServiceImplTest {
         when(parkingPriceCalculator.getTotalPrice(parkingTime, userType, vehicleType, parkingSpotType, wantedCurrency))
                 .thenReturn(returnPrice);
 
-        Price resultPrice = parkingPriceService.getParkingPrice(String.valueOf(parkingTime), userType.name(), vehicleType.name(),
-                parkingSpotType.name(), Currency.EUR.name());
+        Price resultPrice = parkingPriceService.getParkingPrice(parkingTime, userType, vehicleType,
+                parkingSpotType, Currency.EUR);
 
         assertEquals(returnPrice.toString(), resultPrice.toString());
 
@@ -123,8 +123,8 @@ class ParkingPriceServiceImplTest {
         when(parkingDiscountCalculator.getDiscount(returnPrice, userType, wantedCurrency))
                 .thenReturn(returnDiscount);
 
-        Price resultPrice = parkingPriceService.getParkingPrice(String.valueOf(parkingTime), userType.name(), vehicleType.name(),
-                parkingSpotType.name(), Currency.EUR.name());
+        Price resultPrice = parkingPriceService.getParkingPrice(parkingTime, userType, vehicleType,
+                parkingSpotType, Currency.EUR);
 
         assertEquals(returnPriceAfterDiscount.toString(), resultPrice.toString());
 

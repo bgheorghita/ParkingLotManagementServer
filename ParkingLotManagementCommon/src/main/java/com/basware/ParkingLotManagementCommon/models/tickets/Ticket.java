@@ -1,5 +1,6 @@
 package com.basware.ParkingLotManagementCommon.models.tickets;
 
+import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpotType;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
@@ -19,16 +20,19 @@ public class Ticket {
 	private String vehiclePlateNumber;
 	private long parkingSpotNumber;
 
+	private ParkingSpotType parkingSpotType;
+
 	@Property("startTime")
 	private LocalDateTime startTime;
 
 
 	public Ticket(){}
 
-	public Ticket(String userName, String vehiclePlateNumber, long parkingSpotNumber) {
+	public Ticket(String userName, String vehiclePlateNumber, long parkingSpotNumber, ParkingSpotType parkingSpotType) {
 		this.userName = userName;
 		this.vehiclePlateNumber = vehiclePlateNumber;
 		this.parkingSpotNumber = parkingSpotNumber;
+		this.parkingSpotType = parkingSpotType;
 		startTime = LocalDateTime.now();
 	}
 
@@ -47,18 +51,11 @@ public class Ticket {
 		return parkingSpotNumber;
 	}
 
-	public LocalDateTime getStartTime() {
-		return startTime;
+	public ParkingSpotType getParkingSpotType() {
+		return parkingSpotType;
 	}
 
-	@Override
-	public String toString() {
-		return "Ticket{" +
-				"objectId=" + objectId +
-				", userName='" + userName + '\'' +
-				", vehiclePlateNumber='" + vehiclePlateNumber + '\'' +
-				", parkingSpotNumber=" + parkingSpotNumber +
-				", startTime=" + startTime +
-				'}';
+	public LocalDateTime getStartTime() {
+		return startTime;
 	}
 }

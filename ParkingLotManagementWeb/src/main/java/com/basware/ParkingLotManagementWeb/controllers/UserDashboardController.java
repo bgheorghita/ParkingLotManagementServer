@@ -1,8 +1,8 @@
 package com.basware.ParkingLotManagementWeb.controllers;
+import com.basware.ParkingLotManagementWeb.api.v1.models.TicketDto;
+import com.basware.ParkingLotManagementWeb.api.v1.models.UserDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.VehicleDto;
-import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
-import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
-import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;
+import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.users.dashboards.UserDashboard;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class UserDashboardController {
 
     @DeleteMapping("/vehicle/{vehiclePlateNumber}")
     @ResponseStatus(HttpStatus.OK)
-    public void removeVehicle(@PathVariable String vehiclePlateNumber, Principal principal) throws TooManyRequestsException, SaveException, ResourceNotFoundException {
+    public void removeVehicle(@PathVariable String vehiclePlateNumber, Principal principal) throws TooManyRequestsException, SaveException, ResourceNotFoundException, InvalidUserAction {
         String username = principal.getName();
         userDashboard.removeVehicle(username, vehiclePlateNumber);
     }
@@ -40,5 +40,17 @@ public class UserDashboardController {
     @ResponseStatus(HttpStatus.OK)
     public List<VehicleDto> findAllVehicles(Principal principal) throws ResourceNotFoundException {
         return userDashboard.findAllVehicles(principal.getName());
+    }
+
+    @GetMapping("/tickets")
+    @ResponseStatus(HttpStatus.OK)
+    public List<TicketDto> findAllTickets(Principal principal) throws ResourceNotFoundException {
+        return userDashboard.findAllTickets(principal.getName());
+    }
+
+    @GetMapping("/account")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto getAccountDetails(Principal principal) throws ResourceNotFoundException {
+        return userDashboard.getAccountDetails(principal.getName());
     }
 }

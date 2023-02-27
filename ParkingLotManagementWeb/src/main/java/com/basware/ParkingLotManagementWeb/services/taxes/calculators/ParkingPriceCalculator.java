@@ -9,6 +9,6 @@ import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.exceptions.ServiceNotAvailable;
 
 public interface ParkingPriceCalculator {
-    Price getTotalPrice(int parkingTimeInMinutes, UserType userType, VehicleType vehicleType,
+    Price getTotalPrice(long parkingTimeInMinutes, UserType userType, VehicleType vehicleType,
                         ParkingSpotType parkingSpotType, Currency toCurrency) throws ResourceNotFoundException, ServiceNotAvailable;
 }
