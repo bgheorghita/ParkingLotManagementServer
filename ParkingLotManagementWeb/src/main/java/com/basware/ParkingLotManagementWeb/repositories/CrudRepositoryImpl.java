@@ -2,6 +2,7 @@ package com.basware.ParkingLotManagementWeb.repositories;
 
 import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
 import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;
+import com.mongodb.MongoWriteException;
 import dev.morphia.Datastore;
 import dev.morphia.DeleteOptions;
 import dev.morphia.query.Query;
@@ -34,8 +35,13 @@ public class CrudRepositoryImpl<T> implements CrudRepository<T> {
             return datastore.save(t);
         } catch (ConcurrentModificationException e){
             throw new TooManyRequestsException("Too many requests. Please try again later.");
-        } catch (Exception e){
-            throw new SaveException("Not saved due to an internal server error.");
+        } catch (MongoWriteException e){
+            String exceptionMessage = "Not saved due to an internal server error.";
+            if(e.getError().getCode() == 11000){
+                // duplicate key exception
+                exceptionMessage = "You tried to save a unique resource that already exists in our system.";
+            }
+            throw new SaveException(exceptionMessage);
         }
     }
 

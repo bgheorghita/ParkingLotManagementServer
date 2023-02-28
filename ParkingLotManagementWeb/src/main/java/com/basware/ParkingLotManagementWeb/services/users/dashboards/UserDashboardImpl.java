@@ -33,12 +33,12 @@ public class UserDashboardImpl implements UserDashboard {
 
     @Override
     public void addVehicle(String username, VehicleDto vehicleDto) throws ResourceNotFoundException, TooManyRequestsException, SaveException {
+        Vehicle vehicle = new Vehicle(vehicleDto.getVehicleType(), vehicleDto.getPlateNumber(), vehicleDto.getIsElectric());
+        vehicleService.save(vehicle);
+
         User user = userService.findFirstByUsername(username);
         user.addVehiclePlateNumber(vehicleDto.getPlateNumber());
         userService.save(user);
-
-        Vehicle vehicle = new Vehicle(vehicleDto.getVehicleType(), vehicleDto.getPlateNumber(), vehicleDto.getIsElectric());
-        vehicleService.save(vehicle);
     }
 
     @Override
