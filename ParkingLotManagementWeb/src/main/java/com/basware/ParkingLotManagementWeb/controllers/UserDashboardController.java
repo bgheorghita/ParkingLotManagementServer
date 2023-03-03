@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping(UserDashboardController.URL_BASE)
 public class UserDashboardController {
-    public static final String URL_BASE = "api/v1/profile";
+    public static final String URL_BASE = "api/v1/dashboard/user";
 
     private final UserDashboard userDashboard;
 
