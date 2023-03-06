@@ -1,5 +1,6 @@
 package com.basware.ParkingLotManagementWeb.services.users.dashboards;
 
+import com.basware.ParkingLotManagementCommon.models.users.Role;
 import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
 import com.basware.ParkingLotManagementWeb.api.v1.models.UserDto;
@@ -56,10 +57,19 @@ public class AdminDashboardImpl implements AdminDashboard{
     }
 
     @Override
-    public void unvalidateUserAccount(String username) throws ResourceNotFoundException, TooManyRequestsException, SaveException {
+    public void invalidateUserAccount(String username) throws ResourceNotFoundException, TooManyRequestsException, SaveException {
         User user = userService.findFirstByUsername(username);
         user.setValidated(false);
         userService.save(user);
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        return userService.findAll()
+            .stream()
+            .filter(user -> !user.getRoles().contains(Role.ADMIN))
+            .map(this::getUserDtoFromUser)
+            .collect(Collectors.toUnmodifiableList());
     }
 
     private UserDto getUserDtoFromUser(User user){

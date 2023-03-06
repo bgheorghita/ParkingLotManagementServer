@@ -44,8 +44,9 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     @Override
-    public TicketOutputDto generateTicket(String username, String vehiclePlateNumber) throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException {
+    public TicketOutputDto generateTicket(String username, String vehiclePlateNumber) throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException, UnauthorizedException {
         User user = userService.findFirstByUsername(username);
+        checkIfUserIsValidated(user);
         Vehicle vehicle = vehicleService.findFirstByPlateNumber(vehiclePlateNumber);
 
         checkIfVehicleIsOwnedByUser(user, vehicle);
@@ -58,7 +59,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         vehicle.setVehicleIsParked(true);
         vehicleService.save(vehicle);
 
-        Ticket ticket = new Ticket(user.getUsername(), vehicle.getPlateNumber(), parkingSpot.getSpotNumber(), parkingSpot.getParkingSpotType());
+        Ticket ticket = new Ticket(user.getUsername(), vehicle.getPlateNumber(), parkingSpot.getSpotNumber(), parkingSpot.getParkingSpotType(), parkingSpot.hasElectricCharger());
         Ticket savedTicket = ticketService.save(ticket);
 
         return new TicketOutputDto()
@@ -72,6 +73,12 @@ public class ParkingLotServiceImpl implements ParkingLotService{
                 .withParkingSpotNumber(parkingSpot.getSpotNumber())
                 .withTime(savedTicket.getStartTime())
                 .build();
+    }
+
+    private void checkIfUserIsValidated(User user) throws UnauthorizedException {
+        if(!user.getIsValidated()){
+            throw new UnauthorizedException("You can not park while your account is not validated.");
+        }
     }
 
     private void checkIfVehicleIsOwnedByUser(User user, Vehicle vehicle) throws ResourceNotFoundException {

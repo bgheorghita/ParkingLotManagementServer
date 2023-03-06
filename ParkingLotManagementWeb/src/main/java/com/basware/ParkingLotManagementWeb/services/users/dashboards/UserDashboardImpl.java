@@ -80,8 +80,10 @@ public class UserDashboardImpl implements UserDashboard {
                 Ticket ticket = ticketService.findFirstByVehiclePlateNumber(vehicle.getPlateNumber());
                 TicketDto ticketDto = TicketDto.builder()
                                 .vehiclePlateNumber(plateNumber)
+                                .electricVehicle(vehicle.isElectric())
                                 .parkingSpotNumber(ticket.getParkingSpotNumber())
                                 .parkingSpotType(ticket.getParkingSpotType())
+                                .parkingSpotWithElectricCharger(ticket.getIsParkingSpotWithElectricCharger())
                                 .timestampParkAt(Timestamp.valueOf(ticket.getStartTime()).getTime())
                                 .build();
                 tickets.add(ticketDto);

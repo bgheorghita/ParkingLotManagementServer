@@ -22,7 +22,7 @@ public class ParkingLotController {
 
     @PostMapping("/in/{vehiclePlateNumber}")
     @ResponseStatus(HttpStatus.CREATED)
-    public TicketOutputDto generateTicket(@PathVariable String vehiclePlateNumber, Principal principal) throws SaveException, TicketException, ServiceNotAvailable, TooManyRequestsException, ResourceNotFoundException {
+    public TicketOutputDto generateTicket(@PathVariable String vehiclePlateNumber, Principal principal) throws SaveException, TicketException, ServiceNotAvailable, TooManyRequestsException, ResourceNotFoundException, UnauthorizedException {
         return parkingLotService.generateTicket(principal.getName(), vehiclePlateNumber);
     }
 

@@ -22,17 +22,20 @@ public class Ticket {
 
 	private ParkingSpotType parkingSpotType;
 
+	private boolean parkingSpotWithElectricCharger;
+
 	@Property("startTime")
 	private LocalDateTime startTime;
 
 
 	public Ticket(){}
 
-	public Ticket(String userName, String vehiclePlateNumber, long parkingSpotNumber, ParkingSpotType parkingSpotType) {
+	public Ticket(String userName, String vehiclePlateNumber, long parkingSpotNumber, ParkingSpotType parkingSpotType, boolean parkingSpotWithElectricCharger) {
 		this.userName = userName;
 		this.vehiclePlateNumber = vehiclePlateNumber;
 		this.parkingSpotNumber = parkingSpotNumber;
 		this.parkingSpotType = parkingSpotType;
+		this.parkingSpotWithElectricCharger = parkingSpotWithElectricCharger;
 		startTime = LocalDateTime.now();
 	}
 
@@ -53,6 +56,10 @@ public class Ticket {
 
 	public ParkingSpotType getParkingSpotType() {
 		return parkingSpotType;
+	}
+
+	public boolean getIsParkingSpotWithElectricCharger() {
+		return parkingSpotWithElectricCharger;
 	}
 
 	public LocalDateTime getStartTime() {

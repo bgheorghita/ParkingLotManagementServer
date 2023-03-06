@@ -92,6 +92,9 @@ public class CrudRepositoryImpl<T> implements CrudRepository<T> {
     }
 
     private void applyFilters(Query<T> query, Map<String, BsonValue> fieldValueMap){
+        if(fieldValueMap.size() == 0) {
+            return;
+        }
         Filter[] filters = new Filter[fieldValueMap.size()];
         AtomicInteger i = new AtomicInteger(0);
 

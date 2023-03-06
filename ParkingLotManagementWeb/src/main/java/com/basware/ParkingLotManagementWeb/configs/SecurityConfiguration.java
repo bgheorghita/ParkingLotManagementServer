@@ -1,5 +1,6 @@
 package com.basware.ParkingLotManagementWeb.configs;
 
+import com.basware.ParkingLotManagementCommon.models.users.Role;
 import com.basware.ParkingLotManagementWeb.services.auth.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +28,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
             .authorizeHttpRequests()
             .antMatchers("/api/v1/auth/**")
             .permitAll()
-            //.antMatchers("/api/v1/profile/vehicle").hasRole(Role.REGULAR.name())
+            .antMatchers("/api/v1/dashboard/admin/**").hasRole(Role.ADMIN.name())
             .anyRequest()
             .authenticated()
             .and()

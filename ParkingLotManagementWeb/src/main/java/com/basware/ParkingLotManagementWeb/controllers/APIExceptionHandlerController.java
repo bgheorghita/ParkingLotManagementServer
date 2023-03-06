@@ -59,4 +59,9 @@ public class APIExceptionHandlerController {
     public ResponseEntity<Object> handleAuthenticationException(Exception e, WebRequest request){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Object> handleUnauthorizedException(Exception e, WebRequest request){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 }

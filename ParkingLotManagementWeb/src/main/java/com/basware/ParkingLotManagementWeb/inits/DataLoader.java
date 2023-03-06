@@ -18,8 +18,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.ConcurrentModificationException;
-
 
 @Component
 @Profile("dev")
@@ -53,29 +51,30 @@ public class DataLoader implements CommandLineRunner {
         loadPricesForUsers();
         loadPricesForVehicles();
         loadUserDiscounts();
-//        loadParkingSpotsWithElectricCharger();
-//        loadParkingSpotsWithoutElectricCharger();
+        loadParkingSpotsWithElectricCharger();
+        loadParkingSpotsWithoutElectricCharger();
     }
 
-    private void loadParkingSpotsWithoutElectricCharger() throws TooManyRequestsException {
+    private void loadParkingSpotsWithoutElectricCharger() {
         try {
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.SMALL, 1L, false));
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.MEDIUM, 2L, false));
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, 3L, false));
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, 4L, false));
-        } catch (ConcurrentModificationException ignored) {System.out.println("Parking spots without electric charger NOT loaded");} catch (
-                SaveException e) {
-            throw new RuntimeException(e);
+        } catch (TooManyRequestsException | SaveException ignored) {
+            System.out.println("Parking spots without electric charger not loaded");
         }
     }
 
     private void loadParkingSpotsWithElectricCharger() {
-        try{
+        try {
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.SMALL, 5L, true));
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.MEDIUM, 6L, true));
             parkingSpotService.save(new ParkingSpot(ParkingSpotType.LARGE, 7L, true));
-        } catch (ConcurrentModificationException | TooManyRequestsException | SaveException ignored){System.out.println("Parking spots with electric charger NOT loaded");}
-    }
+        } catch (TooManyRequestsException | SaveException ignored) {
+            System.out.println("Parking spots with electric charger not loaded");
+        }
+   }
 
     private void loadUserDiscounts() {
         userTypeDiscountPercentDao.save(new UserDiscount(UserType.REGULAR, 0.25));

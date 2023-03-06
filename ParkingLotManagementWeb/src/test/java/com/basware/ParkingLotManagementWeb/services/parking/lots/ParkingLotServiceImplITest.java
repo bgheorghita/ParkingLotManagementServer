@@ -75,7 +75,7 @@ class ParkingLotServiceImplITest {
     }
 
     @Test
-    void generateTicket_ShouldThrowVehicleAlreadyParkedExceptionWhenTheVehicleIsAlreadyParked() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException {
+    void generateTicket_ShouldThrowVehicleAlreadyParkedExceptionWhenTheVehicleIsAlreadyParked() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException, UnauthorizedException {
         datastore.save(mediumParkingSpotWithElectricCharger);
         parkingLotService.generateTicket(regularUser.getUsername(), electricCar.getPlateNumber());
 
@@ -88,7 +88,7 @@ class ParkingLotServiceImplITest {
     }
 
     @Test
-    void generateTicket_ShouldReturnTicketWithRegularUserAndElectricCarDetailsAndSaveToDatabase() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException {
+    void generateTicket_ShouldReturnTicketWithRegularUserAndElectricCarDetailsAndSaveToDatabase() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException, UnauthorizedException {
         datastore.save(mediumParkingSpotWithElectricCharger);
         TicketOutputDto ticketOutputDto = parkingLotService.generateTicket(regularUser.getUsername(), electricCar.getPlateNumber());
 
@@ -112,7 +112,7 @@ class ParkingLotServiceImplITest {
     }
 
     @Test
-    void leaveParkingLot_ShouldReturnParkingPriceWhenTheTicketIsGeneratedAndShouldDeleteTheTicketFromDatabase() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException, VehicleNotParkedException, ServiceNotAvailable {
+    void leaveParkingLot_ShouldReturnParkingPriceWhenTheTicketIsGeneratedAndShouldDeleteTheTicketFromDatabase() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException, VehicleNotParkedException, ServiceNotAvailable, UnauthorizedException {
         datastore.save(mediumParkingSpotWithElectricCharger);
         parkingLotService.generateTicket(regularUser.getUsername(), electricCar.getPlateNumber());
         ParkingResultDto parkingResultDto = parkingLotService.leaveParkingLot(regularUser.getUsername(), electricCar.getPlateNumber());

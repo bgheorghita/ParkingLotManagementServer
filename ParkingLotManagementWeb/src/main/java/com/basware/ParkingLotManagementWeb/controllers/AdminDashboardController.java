@@ -21,6 +21,12 @@ public class AdminDashboardController {
         this.adminDashboard = adminDashboard;
     }
 
+    @GetMapping("/users")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> findAll(){
+        return adminDashboard.getAllUsers();
+    }
+
     @GetMapping("/users/unvalidated")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getUnvalidatedAccounts(){
@@ -45,9 +51,9 @@ public class AdminDashboardController {
         adminDashboard.validateUserAccount(username);
     }
 
-    @PostMapping("users/unvalidate/{username}")
+    @PostMapping("users/invalidate/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public void unvalidateAccount(@PathVariable String username) throws TooManyRequestsException, SaveException, ResourceNotFoundException {
-        adminDashboard.unvalidateUserAccount(username);
+    public void invalidateAccount(@PathVariable String username) throws TooManyRequestsException, SaveException, ResourceNotFoundException {
+        adminDashboard.invalidateUserAccount(username);
     }
 }

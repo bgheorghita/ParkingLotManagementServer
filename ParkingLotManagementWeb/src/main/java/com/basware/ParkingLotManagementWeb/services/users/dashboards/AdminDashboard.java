@@ -13,5 +13,6 @@ public interface AdminDashboard {
     List<UserDto> getValidatedAccounts();
     List<VehicleDto> getParkedVehicles();
     void validateUserAccount(String username) throws TooManyRequestsException, SaveException, ResourceNotFoundException;
-    void unvalidateUserAccount(String username) throws ResourceNotFoundException, TooManyRequestsException, SaveException;
+    void invalidateUserAccount(String username) throws ResourceNotFoundException, TooManyRequestsException, SaveException;
+    List<UserDto> getAllUsers();
 }
