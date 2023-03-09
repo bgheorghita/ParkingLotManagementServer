@@ -3,8 +3,6 @@ package com.basware.ParkingLotManagementWeb.services.users;
 import com.basware.ParkingLotManagementCommon.models.tickets.Ticket;
 import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.vehicles.Vehicle;
-import com.basware.ParkingLotManagementWeb.api.v1.mappers.TicketMapper;
-import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutput;
 import com.basware.ParkingLotManagementWeb.api.v1.models.VehicleDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
 import com.basware.ParkingLotManagementWeb.services.tickets.TicketService;
@@ -38,25 +36,24 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public List<TicketOutput> findTicketsFromUserAccount(String username) throws ResourceNotFoundException {
-        List<TicketOutput> tickets = new ArrayList<>();
+    public List<Ticket> findTicketsFromUserAccount(String username) throws ResourceNotFoundException {
+        List<Ticket> tickets = new ArrayList<>();
         User user = userService.findFirstByUsername(username);
         Set<String> vehiclePlateNumbers = user.getVehiclePlateNumbers();
         for(String plateNumber : vehiclePlateNumbers){
-            Optional<TicketOutput> ticketDto = findTicket(plateNumber);
+            Optional<Ticket> ticketDto = findTicket(plateNumber);
             ticketDto.ifPresent(tickets::add);
         }
         return tickets;
     }
 
-    private Optional<TicketOutput> findTicket(String plateNumber) throws ResourceNotFoundException {
-        Vehicle vehicle = vehicleService.findFirstByPlateNumber(plateNumber);
-        if(vehicle.getIsParked()) {
-            Ticket ticket = ticketService.findFirstByVehiclePlateNumber(vehicle.getPlateNumber());
-            TicketOutput ticketOutput = TicketMapper.fromTicketAndVehicleToTicketOutput(ticket, vehicle);
-            return Optional.of(ticketOutput);
+    private Optional<Ticket> findTicket(String plateNumber) {
+        try{
+            Ticket ticket = ticketService.findFirstByVehiclePlateNumber(plateNumber);
+            return Optional.of(ticket);
+        } catch (ResourceNotFoundException e){
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
@@ -75,11 +72,10 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public void removeUnparkedVehicleFromUserAccount(String username, String vehiclePlateNumber) throws ResourceNotFoundException, TooManyRequestsException, SaveException, ConflictException {
-        Vehicle vehicle = vehicleService.findFirstByPlateNumber(vehiclePlateNumber);
-
-        if(vehicle.getIsParked()){
+        try{
+            ticketService.findFirstByVehiclePlateNumber(vehiclePlateNumber);
             throw new ConflictException("Vehicle " + vehiclePlateNumber + " can not be removed because it is parked.");
-        }
+        } catch (ResourceNotFoundException ignored){}
 
         User user = userService.findFirstByUsername(username);
         user.removeVehiclePlateNumber(vehiclePlateNumber);

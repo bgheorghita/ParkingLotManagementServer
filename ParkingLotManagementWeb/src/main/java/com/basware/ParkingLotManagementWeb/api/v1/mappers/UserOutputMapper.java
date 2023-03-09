@@ -3,11 +3,13 @@ package com.basware.ParkingLotManagementWeb.api.v1.mappers;
 import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementWeb.api.v1.models.UserDto;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-public class UserMapper {
-    public static UserDto fromUserToUserDto(User user){
+@Component
+public class UserOutputMapper {
+    public UserDto fromUserToUserDto(User user){
         UserType userType = user.getUserType();
         Set<String> vehiclePlateNumbers = user.getVehiclePlateNumbers();
         String username = user.getUsername();

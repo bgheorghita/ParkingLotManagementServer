@@ -1,6 +1,6 @@
 package com.basware.ParkingLotManagementWeb.controllers;
 
-import com.basware.ParkingLotManagementWeb.api.v1.mappers.UserMapper;
+import com.basware.ParkingLotManagementWeb.api.v1.mappers.UserOutputMapper;
 import com.basware.ParkingLotManagementWeb.api.v1.models.UserDto;
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
@@ -21,12 +21,15 @@ public class AdminDashboardController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserOutputMapper userOutputMapper;
+
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> findAll(){
         return userService.getNonAdminUsers()
                 .stream()
-                .map(UserMapper::fromUserToUserDto)
+                .map(userOutputMapper::fromUserToUserDto)
                 .collect(Collectors.toUnmodifiableList());
     }
 

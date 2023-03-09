@@ -56,7 +56,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         parkingSpot.setVehiclePlateNumber(vehiclePlateNumber);
         parkingSpotService.save(parkingSpot);
 
-        vehicle.setVehicleIsParked(true);
+        //vehicle.setVehicleIsParked(true);
         vehicleService.save(vehicle);
 
         Ticket ticket = new Ticket(user.getUsername(), vehicle.getPlateNumber(), parkingSpot.getSpotNumber(), parkingSpot.getParkingSpotType(), parkingSpot.hasElectricCharger());
@@ -105,7 +105,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         parkingSpot.removeVehiclePlateNumber();
         parkingSpotService.save(parkingSpot);
 
-        vehicle.setVehicleIsParked(false);
+        //vehicle.setVehicleIsParked(false);
         vehicleService.save(vehicle);
 
         ticketService.deleteById(ticket.getObjectId());
@@ -116,7 +116,9 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     private void checkIfVehicleIsNotParked(Vehicle vehicle) throws VehicleNotParkedException {
-        if(!vehicle.getIsParked()){
+        try {
+            parkingSpotService.findFirstByVehiclePlateNumber(vehicle.getPlateNumber());
+        } catch (ResourceNotFoundException e) {
             throw new VehicleNotParkedException("Vehicle " + vehicle.getPlateNumber() + " does not seem to be parked.");
         }
     }
@@ -129,9 +131,10 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     private void checkIfVehicleIsAlreadyParked(Vehicle vehicle) throws VehicleAlreadyParkedException {
-        if(vehicle.getIsParked()){
+        try {
+            parkingSpotService.findFirstByVehiclePlateNumber(vehicle.getPlateNumber());
             throw new VehicleAlreadyParkedException(String.format("Vehicle with plate number \"%s\" is already parked.",
                     vehicle.getPlateNumber()));
-        }
+        } catch (ResourceNotFoundException ignored) {}
     }
 }

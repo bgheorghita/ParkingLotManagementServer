@@ -1,7 +1,8 @@
 package com.basware.ParkingLotManagementWeb.controllers;
 import com.basware.ParkingLotManagementCommon.models.users.User;
-import com.basware.ParkingLotManagementWeb.api.v1.mappers.UserMapper;
-import com.basware.ParkingLotManagementWeb.api.v1.mappers.VehicleMapper;
+import com.basware.ParkingLotManagementWeb.api.v1.mappers.TicketOutputMapper;
+import com.basware.ParkingLotManagementWeb.api.v1.mappers.UserOutputMapper;
+import com.basware.ParkingLotManagementWeb.api.v1.mappers.VehicleOutputMapper;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutput;
 import com.basware.ParkingLotManagementWeb.api.v1.models.UserDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.VehicleDto;
@@ -27,6 +28,15 @@ public class UserDashboardController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private VehicleOutputMapper vehicleOutputMapper;
+
+    @Autowired
+    private TicketOutputMapper ticketOutputMapper;
+
+    @Autowired
+    private UserOutputMapper userOutputMapper;
+
     @PostMapping("/vehicle")
     @ResponseStatus(HttpStatus.CREATED)
     public void saveVehicle(@RequestBody VehicleDto vehicleDto, Principal principal) throws TooManyRequestsException, SaveException, ResourceNotFoundException {
@@ -47,20 +57,29 @@ public class UserDashboardController {
     public List<VehicleDto> findAllVehicles(Principal principal) throws ResourceNotFoundException {
         return userAccountService.findVehiclesFromUserAccount(principal.getName())
                 .stream()
-                .map(VehicleMapper::fromVehicleToVehicleDto)
+                .map(vehicle -> vehicleOutputMapper.fromVehicleToVehicleDto(vehicle))
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @GetMapping("/tickets")
     @ResponseStatus(HttpStatus.OK)
     public List<TicketOutput> findAllTickets(Principal principal) throws ResourceNotFoundException {
-        return userAccountService.findTicketsFromUserAccount(principal.getName());
+        return userAccountService.findTicketsFromUserAccount(principal.getName())
+                .stream()
+                .map(ticket -> {
+                    try {
+                        return ticketOutputMapper.fromTicketToTicketOutput(ticket);
+                    } catch (ResourceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @GetMapping("/account")
     @ResponseStatus(HttpStatus.OK)
     public UserDto getAccountDetails(Principal principal) throws ResourceNotFoundException {
         User user = userService.findFirstByUsername(principal.getName());
-        return UserMapper.fromUserToUserDto(user);
+        return userOutputMapper.fromUserToUserDto(user);
     }
 }

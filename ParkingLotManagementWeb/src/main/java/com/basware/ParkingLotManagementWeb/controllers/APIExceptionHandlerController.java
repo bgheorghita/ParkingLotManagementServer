@@ -52,6 +52,7 @@ public class APIExceptionHandlerController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception e, WebRequest request){
+        e.printStackTrace();
         return new ResponseEntity<>("Unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
