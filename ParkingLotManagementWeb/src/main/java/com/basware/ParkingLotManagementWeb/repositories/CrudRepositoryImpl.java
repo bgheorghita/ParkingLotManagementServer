@@ -81,6 +81,21 @@ public class CrudRepositoryImpl<T> implements CrudRepository<T> {
     }
 
     @Override
+    public List<T> findAllByNotMatchValue(String field, String value) {
+        Query<T> query = datastore.find(classType);
+
+        query.filter(Filters.ne(field, value));
+
+        List<T> resultList;
+
+        try(MorphiaCursor<T> iterator = query.iterator()){
+            resultList = iterator.toList();
+        }
+
+        return resultList;
+    }
+
+    @Override
     public List<T> findAll() {
         return findAllByFieldValues(Map.of());
     }

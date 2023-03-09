@@ -20,39 +20,24 @@ public class APIExceptionHandlerController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    @ExceptionHandler(InvalidInput.class)
-    public ResponseEntity<Object> handlerInvalidInputException(Exception e, WebRequest request){
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Object> handlerBadRequestException(Exception e, WebRequest request){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InvalidUserAction.class)
-    public ResponseEntity<Object> handlerInvalidUserActionException(Exception e, WebRequest request){
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(SaveException.class)
-    public ResponseEntity<Object> handlerSaveException(Exception e, WebRequest request){
+    @ExceptionHandler(InternalServerErrorException.class)
+    public ResponseEntity<Object> handlerInternalServerErrorException(Exception e, WebRequest request){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(TicketException.class)
-    public ResponseEntity<Object> handlerTicketException(Exception e, WebRequest request){
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(VehicleAlreadyParkedException.class)
-    public ResponseEntity<Object> handlerVehicleAlreadyParkedException(Exception e, WebRequest request){
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Object> handlerConflictException(Exception e, WebRequest request){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(TooManyRequestsException.class)
     public ResponseEntity<Object> handlerTooManyRequestsException(Exception e, WebRequest request){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.TOO_MANY_REQUESTS);
-    }
-
-    @ExceptionHandler(UserAlreadyRegisteredException.class)
-    public ResponseEntity<Object> handlerUserAlreadyRegisteredException(Exception e, WebRequest request){
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -63,5 +48,10 @@ public class APIExceptionHandlerController {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<Object> handleUnauthorizedException(Exception e, WebRequest request){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleException(Exception e, WebRequest request){
+        return new ResponseEntity<>("Unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

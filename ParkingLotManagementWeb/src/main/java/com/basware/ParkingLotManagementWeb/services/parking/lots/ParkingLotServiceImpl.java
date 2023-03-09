@@ -44,7 +44,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     @Override
-    public TicketOutputDto generateTicket(String username, String vehiclePlateNumber) throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException, UnauthorizedException {
+    public TicketOutputDto generateTicket(String username, String vehiclePlateNumber) throws UnauthorizedException, ResourceNotFoundException, VehicleAlreadyParkedException, TooManyRequestsException, SaveException {
         User user = userService.findFirstByUsername(username);
         checkIfUserIsValidated(user);
         Vehicle vehicle = vehicleService.findFirstByPlateNumber(vehiclePlateNumber);
@@ -67,7 +67,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
                 .withUserType(user.getUserType())
                 .withVehiclePlateNumber(vehicle.getPlateNumber())
                 .withVehicleType(vehicle.getVehicleType())
-                .withElectricVehicle(vehicle.isElectric())
+                .withElectricVehicle(vehicle.getIsElectric())
                 .withParkingSpotType(parkingSpot.getParkingSpotType())
                 .withParkingSpotWithElectricCharger(parkingSpot.hasElectricCharger())
                 .withParkingSpotNumber(parkingSpot.getSpotNumber())
@@ -92,7 +92,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     @Override
-    public ParkingResultDto leaveParkingLot(String username, String vehiclePlateNumber) throws TooManyRequestsException, SaveException, ResourceNotFoundException, VehicleNotParkedException, ServiceNotAvailable {
+    public ParkingResultDto leaveParkingLot(String username, String vehiclePlateNumber) throws ResourceNotFoundException, VehicleNotParkedException, TooManyRequestsException, SaveException, ServiceNotAvailable {
         Vehicle vehicle = vehicleService.findFirstByPlateNumber(vehiclePlateNumber);
         User user = userService.findFirstByUsername(username);
 
@@ -116,7 +116,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     private void checkIfVehicleIsNotParked(Vehicle vehicle) throws VehicleNotParkedException {
-        if(!vehicle.isParked()){
+        if(!vehicle.getIsParked()){
             throw new VehicleNotParkedException("Vehicle " + vehicle.getPlateNumber() + " does not seem to be parked.");
         }
     }
@@ -129,7 +129,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     }
 
     private void checkIfVehicleIsAlreadyParked(Vehicle vehicle) throws VehicleAlreadyParkedException {
-        if(vehicle.isParked()){
+        if(vehicle.getIsParked()){
             throw new VehicleAlreadyParkedException(String.format("Vehicle with plate number \"%s\" is already parked.",
                     vehicle.getPlateNumber()));
         }

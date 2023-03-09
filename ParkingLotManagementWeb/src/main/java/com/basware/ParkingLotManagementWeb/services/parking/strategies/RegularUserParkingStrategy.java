@@ -29,9 +29,9 @@ public class RegularUserParkingStrategy implements ParkingStrategyByUserType {
     public Optional<ParkingSpot> findParkingSpot(Vehicle vehicle) {
         List<ParkingSpot> availableSpots = parkingSpotService.findAllFreeByParkingSpotType(map.get(vehicle.getVehicleType()));
 
-        Optional<ParkingSpot> parkingSpot = getParkingSpotFromList(availableSpots, vehicle.isElectric());
+        Optional<ParkingSpot> parkingSpot = getParkingSpotFromList(availableSpots, vehicle.getIsElectric());
         if(parkingSpot.isEmpty()){
-            parkingSpot = getParkingSpotFromList(availableSpots, !vehicle.isElectric());
+            parkingSpot = getParkingSpotFromList(availableSpots, !vehicle.getIsElectric());
         }
 
         return parkingSpot;

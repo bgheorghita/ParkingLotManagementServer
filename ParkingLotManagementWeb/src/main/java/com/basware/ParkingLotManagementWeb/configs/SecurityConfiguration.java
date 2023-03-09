@@ -45,7 +45,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:4200")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
-                .allowCredentials(true)
+                .allowCredentials(false)
                 .maxAge(3600);
     }
 }

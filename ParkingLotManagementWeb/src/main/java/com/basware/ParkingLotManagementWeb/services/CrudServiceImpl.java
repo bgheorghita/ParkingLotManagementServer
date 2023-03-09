@@ -41,6 +41,11 @@ public class CrudServiceImpl<T> implements CrudService<T>{
     }
 
     @Override
+    public List<T> findAllByNotMatchValue(String field, String value) {
+        return crudRepository.findAllByNotMatchValue(field, value);
+    }
+
+    @Override
     public List<T> findAll() {
         return crudRepository.findAll();
     }

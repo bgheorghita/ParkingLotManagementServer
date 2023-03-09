@@ -16,6 +16,7 @@ public interface CrudRepository<T> {
     long deleteByFieldValues(Map<String, BsonValue> fieldValueMap, boolean multi);
     boolean deleteById(ObjectId objectId);
     List<T> findAllByFieldValues(Map<String, BsonValue> fieldValueMap);
+    List<T> findAllByNotMatchValue(String field, String value);
     List<T> findAll();
     Optional<T> findById(ObjectId objectId);
 }

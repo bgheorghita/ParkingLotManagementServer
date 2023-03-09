@@ -1,8 +1,8 @@
 package com.basware.ParkingLotManagementWeb.controllers;
 
 import com.basware.ParkingLotManagementCommon.models.users.UserType;
-import com.basware.ParkingLotManagementWeb.api.v1.auth.LoginDto;
-import com.basware.ParkingLotManagementWeb.api.v1.auth.RegisterDto;
+import com.basware.ParkingLotManagementWeb.api.v1.models.auth.LoginDto;
+import com.basware.ParkingLotManagementWeb.api.v1.models.auth.RegisterDto;
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
 import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
 import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;

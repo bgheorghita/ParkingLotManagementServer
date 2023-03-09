@@ -33,6 +33,13 @@ public class Vehicle {
 		this.isElectric = isElectric;
 	}
 
+	public Vehicle(VehicleType vehicleType, String plateNumber, boolean isElectric, boolean isParked) {
+		this.vehicleType = vehicleType;
+		this.plateNumber = plateNumber;
+		this.isElectric = isElectric;
+		this.isParked = isParked;
+	}
+
 	public ObjectId getObjectId(){
 		return objectId;
 	}
@@ -43,11 +50,11 @@ public class Vehicle {
 	public String getPlateNumber(){
 		return plateNumber;
 	}
-	public boolean isElectric(){
+	public boolean getIsElectric(){
 		return isElectric;
 	}
 
-	public boolean isParked(){
+	public boolean getIsParked(){
 		return this.isParked;
 	}
 

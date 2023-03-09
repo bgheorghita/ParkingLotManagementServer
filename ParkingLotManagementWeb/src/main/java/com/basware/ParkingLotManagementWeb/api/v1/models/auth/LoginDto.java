@@ -1,4 +1,4 @@
-package com.basware.ParkingLotManagementWeb.api.v1.auth;
+package com.basware.ParkingLotManagementWeb.api.v1.models.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

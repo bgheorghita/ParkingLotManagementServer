@@ -33,8 +33,8 @@ public class VipUserParkingStrategy implements ParkingStrategyByUserType {
                 .sorted(Enum::compareTo)
                 .collect(Collectors.toUnmodifiableList());
 
-        return getParkingSpotFromList(availableParkingSpots, fittingParkingSpotTypes, vehicle.isElectric())
-                .or(() -> getParkingSpotFromList(availableParkingSpots, fittingParkingSpotTypes, !vehicle.isElectric()));
+        return getParkingSpotFromList(availableParkingSpots, fittingParkingSpotTypes, vehicle.getIsElectric())
+                .or(() -> getParkingSpotFromList(availableParkingSpots, fittingParkingSpotTypes, !vehicle.getIsElectric()));
     }
 
     private Optional<ParkingSpot> getParkingSpotFromList(List<ParkingSpot> availableParkingSpots, List<ParkingSpotType> fittingParkingSpotTypes, boolean hasElectricCharger) {
@@ -51,13 +51,5 @@ public class VipUserParkingStrategy implements ParkingStrategyByUserType {
     @Override
     public UserType getUserTypeForThisParkingStrategy() {
         return UserType.VIP;
-    }
-
-    Optional<ParkingSpot> findFirstFittingParkingSpotFromList(List<ParkingSpot> parkingSpotList, ParkingSpotType searchedParkingSpotType, boolean electricCharger){
-        return parkingSpotList
-                .stream()
-                .filter(parkingSpot -> parkingSpot.getParkingSpotType().equals(searchedParkingSpotType))
-                .filter(parkingSpot -> parkingSpot.hasElectricCharger() == electricCharger)
-                .findFirst();
     }
 }

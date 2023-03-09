@@ -6,7 +6,6 @@ public class VehicleDto {
     private final VehicleType vehicleType;
     private final String plateNumber;
     private final boolean isElectric;
-
     private final boolean isParked;
 
 

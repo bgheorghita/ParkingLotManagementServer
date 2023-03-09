@@ -1,12 +1,14 @@
 package com.basware.ParkingLotManagementWeb.services.users;
 
+import com.basware.ParkingLotManagementCommon.models.users.Role;
 import com.basware.ParkingLotManagementCommon.models.users.User;
-import com.basware.ParkingLotManagementCommon.models.users.UserType;
 import com.basware.ParkingLotManagementWeb.exceptions.ResourceNotFoundException;
+import com.basware.ParkingLotManagementWeb.exceptions.SaveException;
+import com.basware.ParkingLotManagementWeb.exceptions.TooManyRequestsException;
 import com.basware.ParkingLotManagementWeb.repositories.users.UserDao;
 import com.basware.ParkingLotManagementWeb.services.CrudServiceImpl;
-import org.bson.BsonBoolean;
 import org.bson.BsonString;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,25 +17,8 @@ import java.util.Map;
 @Service
 public class UserServiceImpl extends CrudServiceImpl<User> implements UserService{
 
-    private final UserDao userDao;
-
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-    @Override
-    public List<User> findAllByUserType(UserType userType) {
-        return userDao.findAllByUserType(userType);
-    }
-
-    @Override
-    public User findFirstByVehiclePlateNumber(String vehiclePlateNumber) throws ResourceNotFoundException {
-        List<User> users = userDao.findByVehiclePlateNumber(vehiclePlateNumber);
-        if(users.size() > 0){
-            return users.get(0);
-        }
-        throw new ResourceNotFoundException(String.format("User by vehicle plate number \"%s\" could not be found.", vehiclePlateNumber));
-    }
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public User findFirstByUsername(String username) throws ResourceNotFoundException {
@@ -45,12 +30,21 @@ public class UserServiceImpl extends CrudServiceImpl<User> implements UserServic
     }
 
     @Override
-    public List<User> findUnvalidatedUsers() {
-        return userDao.findAllByFieldValues(Map.of(User.IS_VALIDATED_FIELD, new BsonBoolean(false)));
+    public List<User> getNonAdminUsers() {
+        return this.findAllByNotMatchValue(User.USER_ROLES_FIELD, Role.ADMIN.name());
     }
 
     @Override
-    public List<User> findValidatedUsers() {
-        return userDao.findAllByFieldValues(Map.of(User.IS_VALIDATED_FIELD, new BsonBoolean(true)));
+    public void validateUser(String username) throws TooManyRequestsException, SaveException, ResourceNotFoundException {
+        User user = this.findFirstByUsername(username);
+        user.setValidated(true);
+        this.save(user);
+    }
+
+    @Override
+    public void invalidateUser(String username) throws ResourceNotFoundException, TooManyRequestsException, SaveException {
+        User user = this.findFirstByUsername(username);
+        user.setValidated(false);
+        this.save(user);
     }
 }

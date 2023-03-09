@@ -4,7 +4,7 @@ import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpotTy
 import lombok.Builder;
 
 @Builder
-public class TicketDto {
+public class TicketOutput {
     private final String vehiclePlateNumber;
     private final boolean electricVehicle;
     private final long parkingSpotNumber;
@@ -12,8 +12,8 @@ public class TicketDto {
     private final boolean parkingSpotWithElectricCharger;
     private final long timestampParkAt;
 
-    public TicketDto(String vehiclePlateNumber, boolean electricVehicle, long parkingSpotNumber,
-                     ParkingSpotType parkingSpotType, boolean parkingSpotWithElectricCharger, long timestampParkAt) {
+    public TicketOutput(String vehiclePlateNumber, boolean electricVehicle, long parkingSpotNumber,
+                        ParkingSpotType parkingSpotType, boolean parkingSpotWithElectricCharger, long timestampParkAt) {
         this.vehiclePlateNumber = vehiclePlateNumber;
         this.electricVehicle = electricVehicle;
         this.parkingSpotNumber = parkingSpotNumber;
