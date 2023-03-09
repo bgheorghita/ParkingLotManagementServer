@@ -2,6 +2,10 @@ package com.basware.ParkingLotManagementWeb.services.parking.lots;
 
 import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpot;
 import com.basware.ParkingLotManagementCommon.models.parking.spots.ParkingSpotType;
+import com.basware.ParkingLotManagementCommon.models.taxes.Currency;
+import com.basware.ParkingLotManagementCommon.models.taxes.Price;
+import com.basware.ParkingLotManagementCommon.models.taxes.TypeInfo;
+import com.basware.ParkingLotManagementCommon.models.taxes.TypePrice;
 import com.basware.ParkingLotManagementCommon.models.tickets.Ticket;
 import com.basware.ParkingLotManagementCommon.models.users.Role;
 import com.basware.ParkingLotManagementCommon.models.users.User;
@@ -11,6 +15,7 @@ import com.basware.ParkingLotManagementCommon.models.vehicles.VehicleType;
 import com.basware.ParkingLotManagementWeb.api.v1.models.ParkingResultDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutputDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
+import com.basware.ParkingLotManagementWeb.repositories.taxes.TypePriceDao;
 import com.basware.ParkingLotManagementWeb.services.parking.spots.ParkingSpotService;
 import com.basware.ParkingLotManagementWeb.services.tickets.TicketService;
 import com.basware.ParkingLotManagementWeb.services.users.UserService;
@@ -20,7 +25,6 @@ import org.bson.BsonDocument;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,6 +57,9 @@ class ParkingLotServiceImplITest {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private TypePriceDao typePriceDao;
 
     private User regularUser;
     private Vehicle electricCar;
@@ -112,10 +119,27 @@ class ParkingLotServiceImplITest {
         assertThrowsExactly(VehicleNotParkedException.class, () -> parkingLotService.leaveParkingLot(regularUser.getUsername(), electricCar.getPlateNumber()));
     }
 
-    @Disabled
+    @Test
     void leaveParkingLot_ShouldReturnParkingPriceWhenTheTicketIsGeneratedAndShouldDeleteTheTicketFromDatabase() throws SaveException, TooManyRequestsException, VehicleAlreadyParkedException, ResourceNotFoundException, VehicleNotParkedException, ServiceNotAvailable, UnauthorizedException {
         datastore.save(mediumParkingSpotWithElectricCharger);
         parkingLotService.generateTicket(regularUser.getUsername(), electricCar.getPlateNumber());
+
+        // set up the needed prices for this case
+        Price price = new Price(1, Currency.EUR);
+        TypeInfo typeInfo = new TypeInfo("user", "REGULAR");
+        TypePrice typePrice = new TypePrice(typeInfo, price);
+        typePriceDao.save(typePrice);
+
+        Price price1 = new Price(2, Currency.EUR);
+        TypeInfo typeInfo1 = new TypeInfo("vehicle", "CAR");
+        TypePrice typePrice1 = new TypePrice(typeInfo1, price1);
+        typePriceDao.save(typePrice1);
+
+        Price price2 = new Price(3, Currency.EUR);
+        TypeInfo typeInfo2 = new TypeInfo("parkingSpot", "MEDIUM");
+        TypePrice typePrice2 = new TypePrice(typeInfo2, price2);
+        typePriceDao.save(typePrice2);
+
         ParkingResultDto parkingResultDto = parkingLotService.leaveParkingLot(regularUser.getUsername(), electricCar.getPlateNumber());
 
         assertNotNull(parkingResultDto);
@@ -133,10 +157,11 @@ class ParkingLotServiceImplITest {
 
     private void clearCollections(){
         datastore.getDatabase()
-                .listCollectionNames()
-                .forEach(a -> datastore
+        .listCollectionNames()
+        .forEach(a ->  datastore
                         .getDatabase()
                         .getCollection(a)
-                        .deleteMany(new BsonDocument()));
+                        .deleteMany(new BsonDocument())
+        );
     }
 }
