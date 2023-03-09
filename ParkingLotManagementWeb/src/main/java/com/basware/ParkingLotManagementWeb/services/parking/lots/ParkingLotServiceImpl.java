@@ -56,7 +56,6 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         parkingSpot.setVehiclePlateNumber(vehiclePlateNumber);
         parkingSpotService.save(parkingSpot);
 
-        //vehicle.setVehicleIsParked(true);
         vehicleService.save(vehicle);
 
         Ticket ticket = new Ticket(user.getUsername(), vehicle.getPlateNumber(), parkingSpot.getSpotNumber(), parkingSpot.getParkingSpotType(), parkingSpot.hasElectricCharger());
@@ -105,7 +104,6 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         parkingSpot.removeVehiclePlateNumber();
         parkingSpotService.save(parkingSpot);
 
-        //vehicle.setVehicleIsParked(false);
         vehicleService.save(vehicle);
 
         ticketService.deleteById(ticket.getObjectId());
