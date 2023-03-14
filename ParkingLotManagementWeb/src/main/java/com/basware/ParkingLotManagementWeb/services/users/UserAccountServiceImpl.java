@@ -71,15 +71,24 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public void removeUnparkedVehicleFromUserAccount(String username, String vehiclePlateNumber) throws ResourceNotFoundException, TooManyRequestsException, SaveException, ConflictException {
-        try{
-            ticketService.findFirstByVehiclePlateNumber(vehiclePlateNumber);
+    public void removeUnparkedVehicleFromUserAccount(String username, String vehiclePlateNumber) throws TooManyRequestsException, SaveException, ConflictException, ResourceNotFoundException {
+        if(isParked(vehiclePlateNumber)){
             throw new ConflictException("Vehicle " + vehiclePlateNumber + " can not be removed because it is parked.");
-        } catch (ResourceNotFoundException ignored){}
+        }
 
         User user = userService.findFirstByUsername(username);
         user.removeVehiclePlateNumber(vehiclePlateNumber);
         userService.save(user);
         vehicleService.deleteByPlateNumber(vehiclePlateNumber);
     }
+
+    private boolean isParked(String vehiclePlateNumber){
+        try{
+            ticketService.findFirstByVehiclePlateNumber(vehiclePlateNumber);
+            return true;
+        } catch (ResourceNotFoundException ignored){
+            return false;
+        }
+    }
+
 }

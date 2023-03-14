@@ -3,6 +3,7 @@ package com.basware.ParkingLotManagementWeb.configs;
 import com.basware.ParkingLotManagementCommon.models.users.Role;
 import com.basware.ParkingLotManagementWeb.services.auth.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfiguration implements WebMvcConfigurer {
     @Autowired
     private JwtTokenFilter jwtAuthFilter;
+
+    @Value("${CLIENT_ORIGIN}")
+    private String clientOrigin;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,7 +46,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200")
+                .allowedOrigins(clientOrigin)
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(false)

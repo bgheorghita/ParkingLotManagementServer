@@ -3,7 +3,7 @@ import com.basware.ParkingLotManagementCommon.models.users.User;
 import com.basware.ParkingLotManagementWeb.api.v1.mappers.TicketOutputMapper;
 import com.basware.ParkingLotManagementWeb.api.v1.mappers.UserOutputMapper;
 import com.basware.ParkingLotManagementWeb.api.v1.mappers.VehicleOutputMapper;
-import com.basware.ParkingLotManagementWeb.api.v1.models.TicketOutput;
+import com.basware.ParkingLotManagementWeb.api.v1.models.TicketHO;
 import com.basware.ParkingLotManagementWeb.api.v1.models.UserDto;
 import com.basware.ParkingLotManagementWeb.api.v1.models.VehicleDto;
 import com.basware.ParkingLotManagementWeb.exceptions.*;
@@ -63,7 +63,7 @@ public class UserDashboardController {
 
     @GetMapping("/tickets")
     @ResponseStatus(HttpStatus.OK)
-    public List<TicketOutput> findAllTickets(Principal principal) throws ResourceNotFoundException {
+    public List<TicketHO> findAllTickets(Principal principal) throws ResourceNotFoundException {
         return userAccountService.findTicketsFromUserAccount(principal.getName())
                 .stream()
                 .map(ticket -> {
