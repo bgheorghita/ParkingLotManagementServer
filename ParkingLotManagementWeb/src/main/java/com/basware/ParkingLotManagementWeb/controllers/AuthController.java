@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.OK)
-    public String register(@RequestBody RegisterDto registerDto) throws TooManyRequestsException, SaveException, UserAlreadyRegisteredException {
+    public String register(@Valid @RequestBody RegisterDto registerDto) throws TooManyRequestsException, SaveException, UserAlreadyRegisteredException {
         String username = registerDto.getUsername();
         UserType userType = registerDto.getUserType();
         String password = registerDto.getPassword();

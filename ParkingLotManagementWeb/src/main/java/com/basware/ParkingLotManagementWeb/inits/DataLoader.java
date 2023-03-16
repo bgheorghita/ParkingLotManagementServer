@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-@Profile("dev")
+@Profile({"dev", "prod"})
 public class DataLoader implements CommandLineRunner {
     @Autowired
     private UserTypeDiscountPercentDao userTypeDiscountPercentDao;
